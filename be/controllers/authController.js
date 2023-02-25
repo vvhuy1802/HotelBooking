@@ -1,8 +1,6 @@
 const User = require("../models/user");
-const Hotel = require("../models/hotel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const PrivateKey = process.env.TOKEN_KEY;
 const Register = async (req, res) => {
   try {
@@ -12,8 +10,8 @@ const Register = async (req, res) => {
     // Validate user input
     if (!(email && password && name)) {
       res.status(400).send("All input is required");
+      return;
     }
-
     // check if user already exist
     // Validate if user exist in our database
     const oldUser = await User.findOne({ email });

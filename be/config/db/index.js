@@ -1,14 +1,21 @@
 const mongoose = require("mongoose");
-mongoose.set("strictQuery", true);
-
-const connect = () => {
-  mongoose
-    .connect("mongodb://localhost:27017/hotel_booking", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then(() => console.log("Connected to Hotel Booking Database"))
-    .catch((err) => console.log(err));
-};
+// 7D8SsMgQbeLCDCms
+mongoose.set('strictQuery', true)
+async function connect() {
+  try {
+    mongoose
+      .connect(
+        "mongodb+srv://vuhuy:7D8SsMgQbeLCDCms@hotel-booking.gujng51.mongodb.net/hotel_booking?retryWrites=true&w=majority",
+        {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        }
+      )
+      .then(() => console.log("Connected to MongoDB"))
+      .catch((err) => console.log(err));
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 module.exports = { connect };

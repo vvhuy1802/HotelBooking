@@ -4,7 +4,7 @@ function router(app) {
   app.use("/auth", AuthRoute);
   app.use("/hotels", HotelRoute);
   app.get("/", (req, res) => {
-    res.send("Hello World!");
+    res.send("Đjtmemay thăng wjbu rách");
   });
 }
 
