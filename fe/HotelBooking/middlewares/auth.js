@@ -40,7 +40,7 @@ export const SignIn = async (email, password) => {
   }
 };
 
-export const CreateSignUp = async (name, phone_number, email, password) => {
+export const CreateAccount = async (name, phone_number, email, password) => {
   console.log('name: ' + name);
   console.log('phone_number: ' + phone_number);
   console.log('email: ' + email);

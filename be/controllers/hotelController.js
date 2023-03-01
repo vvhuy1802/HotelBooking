@@ -1,6 +1,6 @@
 const Hotel = require("../models/hotel");
 
-const Push = (req, res) => {
+const PushHotel = (req, res) => {
   const {
     id,
     name,
@@ -8,6 +8,7 @@ const Push = (req, res) => {
     comments,
     description,
     image,
+    id_room,
     isactive,
     address,
     position,
@@ -20,6 +21,7 @@ const Push = (req, res) => {
     comments,
     description,
     image,
+    id_room,
     isactive,
     address,
     position,
@@ -49,12 +51,20 @@ const UpdateActive = async (req, res) => {
   hotel.isactive = !hotel.isactive;
   hotel.save();
   res.status(200).send(hotel);
-}
+};
+
+const AddIDRoom = async (req, res) => {
+  const hotel = await Hotel.find({ id: req.body.id });
+  hotel[0].id_room.push(req.body.id_room);
+  hotel[0].save();
+  res.status(200).send(hotel);
+};
 
 module.exports = {
-  Push,
+  PushHotel,
   GetAllHotel,
   GetByID,
   FindHotelByActive,
-  UpdateActive
+  UpdateActive,
+  AddIDRoom,
 };

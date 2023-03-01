@@ -18,7 +18,7 @@ import {useTheme} from 'react-native-paper';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {SignIn} from '../../../middlewares/auth';
-import { setAsyncStorage } from '../../../functions/asyncStorageFunctions';
+import {setAsyncStorage} from '../../../functions/asyncStorageFunctions';
 import Globalreducer from '../../../redux/Globalreducer';
 
 const Login = ({navigation}) => {
@@ -39,6 +39,8 @@ const Login = ({navigation}) => {
           ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
           setAsyncStorage('userData', res.data.token);
           dispatch(Globalreducer.actions.setUserData(res.data));
+        } else if (res.status == 400) {
+          ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
         } else {
           ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
         }
@@ -147,7 +149,11 @@ const Login = ({navigation}) => {
               {t('forgot-password')}{' '}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => {SignInWithEmailPassword()}}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              SignInWithEmailPassword();
+            }}>
             <Text
               style={{
                 color: 'white',

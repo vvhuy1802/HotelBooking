@@ -6,6 +6,7 @@ const hotelSchema = new mongoose.Schema({
   advantage: { type: String, default: null },
   comments: { type: Array, default: [] },
   description: { type: String, default: null },
+  id_room: { type: Array, default: [] },
   image: { type: String, default: null },
   isactive: { type: Boolean, default: true },
   address: { type: String, default: null },

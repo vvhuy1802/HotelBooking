@@ -56,7 +56,7 @@ if (config.IPV4_ADDRESS !== ipv4 ) {
         console.error(error);
         return;
       }
-      console.log("IPv4 address at BE updated successfully");
+      console.log("IPv4 at BE updated!");
     });
 
     fs.readFile("../fe/HotelBooking/.env", "utf8", function (error, data) {
@@ -84,7 +84,7 @@ if (config.IPV4_ADDRESS !== ipv4 ) {
           console.error(error);
           return;
         }
-        console.log("IPv4 address at FE updated successfully");
+        console.log("IPv4 at FE updated!");
       });
     });
   });

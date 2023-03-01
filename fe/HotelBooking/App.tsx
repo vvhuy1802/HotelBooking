@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View, LogBox} from 'react-native';
+import Lottie from 'lottie-react-native';
 import RootNavigation from './src/navigation/root';
 import {
   setAsyncStorage,
@@ -15,7 +16,7 @@ LogBox.ignoreAllLogs();
 const App = () => {
   const dispatch = useDispatch();
   const [wait, setWait] = useState(true);
-  
+
   useEffect(() => {
     getAsyncStorage('userData').then(token => {
       if (token) {
@@ -48,12 +49,12 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    getAsyncStorage('language').then((lang) => {
-      console.log('languauge: ' + lang);
+    getAsyncStorage('language').then(lang => {
+      console.log('Languauge: ' + lang);
       if (lang) {
         i18n.changeLanguage(lang);
       } else {
-        console.log('no language');
+        console.log('Languauge: en');
         i18n.changeLanguage('en');
         setAsyncStorage('language', 'en');
       }
@@ -61,20 +62,30 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    getAsyncStorage('theme').then((theme) => {
+    getAsyncStorage('theme').then(theme => {
       if (theme) {
-        console.log('theme: ' + theme);
+        console.log('Theme: ' + theme);
         dispatch(Globalreducer.actions.setTheme(theme));
       } else {
-        console.log('no theme');
+        console.log('No theme');
         setAsyncStorage('theme', 'light');
       }
     });
   }, []);
-  
+
   return (
     <View style={{flex: 1}}>
-      {wait ? <Text>Loading</Text> : <RootNavigation />}
+      {wait ? (
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <Lottie
+            source={require('./src/assets/animations/loading-circle.json')}
+            autoPlay
+            loop
+          />
+        </View>
+      ) : (
+        <RootNavigation />
+      )}
     </View>
   );
 };

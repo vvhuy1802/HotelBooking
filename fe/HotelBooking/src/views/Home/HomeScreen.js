@@ -324,7 +324,7 @@ export default function HomeScreen({navigation}) {
       }}>
       <View
         style={{
-          paddingHorizontal: 20,
+          paddingHorizontal: 10,
         }}>
         <View
           style={{
@@ -386,14 +386,14 @@ export default function HomeScreen({navigation}) {
               navigation.navigate('ListPlace');
             }}
             style={{
-              marginTop: 20,
+              marginTop: 10,
               paddingHorizontal: 20,
               flexDirection: 'row',
               alignItems: 'center',
             }}>
             <Icon4
               name="md-location-sharp"
-              size={25}
+              size={23}
               color="orange"
               style={{}}
             />
@@ -401,7 +401,6 @@ export default function HomeScreen({navigation}) {
               style={{
                 fontSize: 24,
                 color: 'orange',
-                marginLeft: 5,
                 fontWeight: '700',
               }}>
               Hồ Chí Minh
@@ -416,13 +415,82 @@ export default function HomeScreen({navigation}) {
             />
           </Pressable>
 
+          <View style={{marginTop: 10,}}>
+            <Swiper
+              activeDot={
+                <View
+                  style={{
+                    backgroundColor: '#FF6347',
+                    width: 10,
+                    height: 10,
+                    borderRadius: 7,
+                    marginLeft: 7,
+                    marginRight: 7,
+                  }}
+                />
+              }
+              dot={
+                <View
+                  style={{
+                    backgroundColor: colors.icon,
+                    width: 10,
+                    height: 10,
+                    borderRadius: 7,
+                    marginLeft: 7,
+                    marginRight: 7,
+                    marginTop: 3,
+                  }}
+                />
+              }
+              autoplay={true}
+              style={{
+                paddingHorizontal: 20,
+                height: 220,
+                alignSelf: 'center',
+              }}>
+              <Image
+                source={{
+                  uri: 'https://www.vietnambooking.com/wp-content/uploads/2019/12/website-dat-phong-khach-san-1.png',
+                }}
+                style={{
+                  height: 170,
+                  width: 350,
+                  borderRadius: 10,
+                  resizeMode: 'stretch',
+                }}
+              />
+              <Image
+                source={{
+                  uri: 'https://go2joy.s3.ap-southeast-1.amazonaws.com/blog/wp-content/uploads/2022/12/30143402/sansale-t1-2023-55-sidebar-banner.jpg',
+                }}
+                style={{
+                  height: 170,
+                  width: 350,
+                  borderRadius: 10,
+                  resizeMode: 'stretch',
+                }}
+              />
+
+              <Image
+                source={{
+                  uri: 'https://media.vietteltelecom.vn/upload/ckfinder/images/142.jpg',
+                }}
+                style={{
+                  height: 170,
+                  width: 350,
+                  borderRadius: 10,
+                  resizeMode: 'stretch',
+                }}
+              />
+            </Swiper>
+          </View>
+
           <Text
             style={{
               fontWeight: 'bold',
               color: colors.text,
               fontSize: 18,
               paddingHorizontal: 20,
-              marginTop: 10,
             }}>
             {t('top-hotels')}
           </Text>
@@ -499,83 +567,6 @@ export default function HomeScreen({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
         /> */}
-        <View>
-          <Swiper
-            activeDot={
-              <View
-                style={{
-                  backgroundColor: '#FF6347',
-                  width: 10,
-                  height: 10,
-                  borderRadius: 7,
-                  marginLeft: 7,
-                  marginRight: 7,
-                }}
-              />
-            }
-            dot={
-              <View
-                style={{
-                  backgroundColor: colors.icon,
-                  width: 10,
-                  height: 10,
-                  borderRadius: 7,
-                  marginLeft: 7,
-                  marginRight: 7,
-                }}
-              />
-            }
-            autoplay={true}
-            style={{
-              marginTop: 10,
-              paddingHorizontal: 20,
-              height: 250,
-              alignSelf: 'center',
-            }}>
-            <View
-              style={{
-                height: 200,
-                width: 348,
-                borderRadius: 10,
-                overflow: 'hidden',
-              }}>
-              <Image
-                source={{
-                  uri: 'https://www.vietnambooking.com/wp-content/uploads/2019/12/website-dat-phong-khach-san-1.png',
-                }}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-            <View
-              style={{
-                height: 200,
-                width: 348,
-                borderRadius: 10,
-                overflow: 'hidden',
-              }}>
-              <Image
-                source={{
-                  uri: 'https://go2joy.s3.ap-southeast-1.amazonaws.com/blog/wp-content/uploads/2022/12/30143402/sansale-t1-2023-55-sidebar-banner.jpg',
-                }}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-            <View
-              style={{
-                height: 200,
-                width: 348,
-                borderRadius: 10,
-                overflow: 'hidden',
-              }}>
-              <Image
-                source={{
-                  uri: 'https://media.vietteltelecom.vn/upload/ckfinder/images/142.jpg',
-                }}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-          </Swiper>
-        </View>
         <Text
           style={{
             fontWeight: 'bold',
@@ -619,7 +610,7 @@ export default function HomeScreen({navigation}) {
                           justifyContent: 'space-between',
                         }}>
                         <Text style={{color: 'white', fontSize: 18}}>
-                          {hotels[item].name}
+                          {hotels[item]?.name}
                         </Text>
                         <View
                           style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -802,7 +793,7 @@ export default function HomeScreen({navigation}) {
                               height: 20,
                               color: colors.icon,
                             }}>
-                            {item.location}
+                            {item.address}
                           </Text>
                         </View>
                         <TouchableOpacity
@@ -854,7 +845,7 @@ export default function HomeScreen({navigation}) {
                         ]}>
                         <Image
                           source={{
-                            uri: item.image,
+                            uri: image_default,
                           }}
                           style={{
                             width: 75,
@@ -884,7 +875,7 @@ export default function HomeScreen({navigation}) {
                               marginTop: 10,
                               color: colors.icon,
                             }}>
-                            {item.location}
+                            {item.address}
                           </Text>
                         </View>
                       </View>
@@ -911,8 +902,6 @@ const styles = StyleSheet.create({
   },
   searchInputContainer: {
     height: 45,
-
-    marginTop: 5,
     marginLeft: 20,
     marginRight: 20,
     borderRadius: 10,

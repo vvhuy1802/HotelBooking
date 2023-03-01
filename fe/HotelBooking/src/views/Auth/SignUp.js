@@ -16,7 +16,7 @@ import {useTheme} from 'react-native-paper';
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Globalreducer from '../../../redux/Globalreducer';
-import {CreateSignUp} from '../../../middlewares/auth';
+import {CreateAccount} from '../../../middlewares/auth';
 export default function SignUpScreen({navigation}) {
   const [getVisible, setVisible] = useState(false);
   const [name, setName] = useState('');
@@ -50,7 +50,7 @@ export default function SignUpScreen({navigation}) {
             ToastAndroid.SHORT,
           );
         } else {
-          CreateSignUp(name, phone_number, email, password).then(res => {
+          CreateAccount(name, phone_number, email, password).then(res => {
             if (res.status == 200) {
               ToastAndroid.show('Sign up successfully', ToastAndroid.SHORT);
               navigation.goBack();

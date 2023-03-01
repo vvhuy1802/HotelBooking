@@ -56,7 +56,7 @@ const Login = async (req, res) => {
     // Validate if user exist in our database
     const user = await User.findOne({ email });
 
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (user && bcrypt.compare(password, user.password)) {
       // Create token
       const token = jwt.sign(
         { user_id: user._id, email },

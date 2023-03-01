@@ -20,7 +20,7 @@ export default function Header({ name }) {
       />
       <Text
         style={{
-          marginLeft: 10,
+
           fontSize: 20,
           fontWeight: '700',
           color: colors.text,
