@@ -1,8 +1,8 @@
 const Room = require("../models/room");
-const {AddIDRoom} = require("./hotelController");
-const PushRoom = (req, res) => {
+const Hotel = require("../models/hotel");
+
+const AddNewRoom = async (req, res) => {
   const {
-    id,
     name,
     price,
     description,
@@ -13,7 +13,6 @@ const PushRoom = (req, res) => {
     tag,
   } = req.body;
   const room = new Room({
-    id,
     name,
     price,
     description,
@@ -23,8 +22,21 @@ const PushRoom = (req, res) => {
     hotel_id,
     tag,
   });
+  const hotel = await Hotel.find({ id: hotel_id });
+  hotel[0].rooms.push(String(room._id));
+  hotel[0].save();
   room.save();
-  res.status(200).send("Pushed room to database");
+  res.status(200).send(room);
 };
 
-module.exports = { PushRoom };
+const GetAllRooms = async (req, res) => {
+  const rooms = await Room.find();
+  res.status(200).send(rooms);
+};
+
+const GetRoomById = async (req, res) => {
+  const room = Room.findById(req.params.id);
+  res.status(200).send(room);
+};
+
+module.exports = { AddNewRoom, GetAllRooms, GetRoomById };

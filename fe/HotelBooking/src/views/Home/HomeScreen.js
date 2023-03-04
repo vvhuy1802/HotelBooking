@@ -165,7 +165,7 @@ export default function HomeScreen({navigation}) {
   };
 
   const TotalStar = data => {
-    if (data.length > 0) {
+    if (data && data.length > 0) {
       let total = 0;
       data.forEach(item => {
         total += item.star;
@@ -200,10 +200,9 @@ export default function HomeScreen({navigation}) {
         <TouchableOpacity
           disabled={activeCardIndex != index}
           activeOpacity={1}
-          // onPress={() => navigation.navigate('ListRoom', hotel)}
-          onPress={() => {
-            console.log(hotel);
-          }}>
+          onPress={() =>
+            navigation.navigate('DetailHotel', hotel)
+          }>
           <Animated.View
             style={{
               ...styles.card,
@@ -415,7 +414,7 @@ export default function HomeScreen({navigation}) {
             />
           </Pressable>
 
-          <View style={{marginTop: 10,}}>
+          <View style={{marginTop: 10}}>
             <Swiper
               activeDot={
                 <View
@@ -619,7 +618,7 @@ export default function HomeScreen({navigation}) {
                               color: 'white',
                               fontSize: 13,
                             }}>
-                            {hotels[item].tag.split(',')[0]}
+                            {hotels[item]?.tag.split(',')[0]}
                           </Text>
                           <Icon4
                             name="md-location-sharp"
@@ -637,7 +636,7 @@ export default function HomeScreen({navigation}) {
                           marginTop: 5,
                         }}>
                         <Text style={{color: 'white'}}>
-                          {hotels[item].advantage}
+                          {hotels[item]?.advantage}
                         </Text>
                         <View
                           style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -646,9 +645,9 @@ export default function HomeScreen({navigation}) {
                               color: 'white',
                               fontWeight: 'bold',
                             }}>
-                            {TotalStar(hotels[item].comments).star}
+                            {TotalStar(hotels[item]?.comments).star}
                             {' ('}
-                            {TotalStar(hotels[item].comments).count}
+                            {TotalStar(hotels[item]?.comments).count}
                             {')'}
                           </Text>
                           <Icon name="star" size={15} color={'orange'} />

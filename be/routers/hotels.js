@@ -1,7 +1,7 @@
 const express = require("express");
 
 const {
-  PushHotel,
+  AddNewHotel,
   GetAllHotel,
   GetByID,
   FindHotelByActive,
@@ -11,7 +11,7 @@ const {
 
 const router = express.Router();
 
-router.post("/push", PushHotel);
+router.post("/addnewhotel", AddNewHotel);
 router.get("/getall", GetAllHotel);
 router.get("/getbyid/:id", GetByID);
 router.get("/getbyactive", FindHotelByActive);

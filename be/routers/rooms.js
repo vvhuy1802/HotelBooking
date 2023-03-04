@@ -1,9 +1,15 @@
 const express = require("express");
 
-const { PushRoom } = require("../controllers/roomController");
+const {
+  AddNewRoom,
+  GetAllRooms,
+  GetRoomById,
+} = require("../controllers/roomController");
 
 const router = express.Router();
 
-router.post("/push", PushRoom);
+router.post("/addnewroom", AddNewRoom);
+router.get("/getallrooms", GetAllRooms);
+router.get("/getroombyid/:id", GetRoomById);
 
 module.exports = router;

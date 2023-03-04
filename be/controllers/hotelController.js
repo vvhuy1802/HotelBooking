@@ -1,6 +1,6 @@
 const Hotel = require("../models/hotel");
-
-const PushHotel = (req, res) => {
+const Comments = require("../models/comment");
+const AddNewHotel = (req, res) => {
   const {
     id,
     name,
@@ -8,7 +8,7 @@ const PushHotel = (req, res) => {
     comments,
     description,
     image,
-    id_room,
+    rooms,
     isactive,
     address,
     position,
@@ -21,7 +21,7 @@ const PushHotel = (req, res) => {
     comments,
     description,
     image,
-    id_room,
+    rooms,
     isactive,
     address,
     position,
@@ -32,7 +32,11 @@ const PushHotel = (req, res) => {
 };
 
 const GetAllHotel = async (req, res) => {
-  const hotels = await Hotel.find();
+  var hotels = await Hotel.find()
+    .populate("rooms")
+    .populate("comments")
+
+  hotels = await Comments.populate(hotels, { path: "comments.id_user", select: "name" });
   res.status(200).send(hotels);
 };
 
@@ -55,13 +59,13 @@ const UpdateActive = async (req, res) => {
 
 const AddIDRoom = async (req, res) => {
   const hotel = await Hotel.find({ id: req.body.id });
-  hotel[0].id_room.push(req.body.id_room);
+  hotel[0].rooms.push(req.body.rooms);
   hotel[0].save();
   res.status(200).send(hotel);
 };
 
 module.exports = {
-  PushHotel,
+  AddNewHotel,
   GetAllHotel,
   GetByID,
   FindHotelByActive,

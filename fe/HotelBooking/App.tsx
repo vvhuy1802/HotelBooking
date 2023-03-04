@@ -76,7 +76,8 @@ const App = () => {
   return (
     <View style={{flex: 1}}>
       {wait ? (
-        <View style={{flex: 1, justifyContent: 'center'}}>
+        <View
+          style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
           <Lottie
             source={require('./src/assets/animations/loading-circle.json')}
             autoPlay

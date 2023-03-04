@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import HomeScreen from '../views/Home/HomeScreen';
+import DetailHotel from '../views/DetailHotel/DetailHotel';
 import TabNavigator from './tabNavigator';
 const Stack = createNativeStackNavigator();
 
@@ -15,8 +15,8 @@ export default function AppStack() {
         }}
       />
       <Stack.Screen
-        name="HomeScreen"
-        component={HomeScreen}
+        name="DetailHotel"
+        component={DetailHotel}
         options={{
           headerShown: false,
         }}
