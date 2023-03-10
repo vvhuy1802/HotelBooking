@@ -171,9 +171,7 @@ const DetailHotel = ({navigation}) => {
             );
           }
         });
-        UpdateReview(CheckIdRoom().id_order).then(res => {
-          console.log(res);
-        });
+        UpdateReview(CheckIdRoom().id_order);
       } else {
         ToastAndroid.show(
           'You have not booked this hotel yet',
