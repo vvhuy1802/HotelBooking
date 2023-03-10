@@ -1,5 +1,5 @@
 const express = require("express");
-
+const checkComment = require("../middleware/checkcondition");
 const {
   AddNewComment,
   GetAllComment,

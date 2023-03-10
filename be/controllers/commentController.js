@@ -2,10 +2,11 @@ const Comment = require("../models/comment");
 const Hotel = require("../models/hotel");
 
 const AddNewComment = async (req, res) => {
-  const { id_user, id_hotel, content, rating } = req.body;
+  const { id_user, id_hotel, id_room, content, rating } = req.body;
   const comment = new Comment({
     id_user,
     id_hotel,
+    id_room,
     content,
     rating,
   });

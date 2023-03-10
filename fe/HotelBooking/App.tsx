@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, LogBox} from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
+import {Text, View, LogBox, PermissionsAndroid} from 'react-native';
 import Lottie from 'lottie-react-native';
 import RootNavigation from './src/navigation/root';
 import {
@@ -71,6 +72,54 @@ const App = () => {
         setAsyncStorage('theme', 'light');
       }
     });
+  }, []);
+
+  const componentDidMount = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        dispatch(
+          Globalreducer.actions.setUserPosition({
+            // latitude: position.coords.latitude,
+            // longitude: position.coords.longitude,
+            latitude: 10.8702,
+            longitude: 106.8028,
+          }),
+        );
+      },
+      error => {
+        console.log(error.message);
+        dispatch(
+          Globalreducer.actions.setUserPosition({
+            latitude: 10.8702,
+            longitude: 106.8028,
+          }),
+        );
+      },
+      {enableHighAccuracy: true},
+    );
+  };
+  const requestLocation = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message:
+            'Hotel Booking App needs access to your location ' +
+            'so you can see your current location.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  useEffect(() => {
+    requestLocation();
+    componentDidMount();
   }, []);
 
   return (

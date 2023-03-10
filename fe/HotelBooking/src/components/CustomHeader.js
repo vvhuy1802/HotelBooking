@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import '../../i18n/18n';
 const windowWidth = Dimensions.get('window').width;
 const CustomHeader = ({ title }) => {
   const navigation = useNavigation();

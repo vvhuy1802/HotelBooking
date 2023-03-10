@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Order = require("../models/order");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const PrivateKey = process.env.TOKEN_KEY;
@@ -54,7 +55,7 @@ const Login = async (req, res) => {
       res.status(400).send("All input is required");
     }
     // Validate if user exist in our database
-    const user = await User.findOne({ email });
+    var user = await User.findOne({ email }).populate("orders");
 
     if (user && bcrypt.compare(password, user.password)) {
       // Create token
@@ -80,7 +81,7 @@ const Login = async (req, res) => {
 };
 
 const CheckLogin = async (req, res) => {
-  const user = await User.findOne({ email: req.user.email });
+  const user = await User.findOne({ email: req.user.email }).populate("orders");
   res.status(200).send({
     message: "Welcome 🙌 ",
     data: {

@@ -29,6 +29,7 @@ import {
   getAsyncStorage,
   setAsyncStorage,
 } from '../../../functions/asyncStorageFunctions';
+import Globalreducer from '../../../redux/Globalreducer';
 const {width} = Dimensions.get('screen');
 const cardWidth = width / 1.8;
 export default function HomeScreen({navigation}) {
@@ -38,7 +39,7 @@ export default function HomeScreen({navigation}) {
   const {hotels} = useSelector(state => state.Globalreducer);
   const ranHotel = [1, 2, 4];
   const image_default =
-    'https://firebasestorage.googleapis.com/v0/b/hotel-booking-1eb17.appspot.com/o/AaronHotel%2F387110268.jpg?alt=media&token=768b8e36-7ae0-4858-8c8a-4cdf1b252f74';
+    'https://img1.ak.crunchyroll.com/i/spire3/d23bea1cbe84833135f94695d900f0651651339079_main.png';
   const dataExplore = [
     {
       id: 1,
@@ -131,23 +132,10 @@ export default function HomeScreen({navigation}) {
   };
 
   const navigateTo = item => {
-    navigation.navigate('ListRoom', item);
+    dispatch(Globalreducer.actions.setHotelData(item));
+    navigation.navigate('DetailHotel');
     setModalVisible(false);
     addItemToSearchHistory(item);
-  };
-
-  const countHotel = place => {
-    let count = 0;
-    let temp = [];
-    dataProvince.forEach(item => {
-      if (item.index === place) {
-        item.districts.forEach(item => {
-          count += item.data.length;
-          temp.push(...item.data);
-        });
-      }
-    });
-    return {count, temp};
   };
 
   const formatAddress = name => {
@@ -168,7 +156,7 @@ export default function HomeScreen({navigation}) {
     if (data && data.length > 0) {
       let total = 0;
       data.forEach(item => {
-        total += item.star;
+        total += item.rating;
       });
       return {
         star: (total / data.length).toFixed(1),
@@ -200,9 +188,10 @@ export default function HomeScreen({navigation}) {
         <TouchableOpacity
           disabled={activeCardIndex != index}
           activeOpacity={1}
-          onPress={() =>
-            navigation.navigate('DetailHotel', hotel)
-          }>
+          onPress={() => {
+            dispatch(Globalreducer.actions.setHotelData(hotel));
+            navigation.navigate('DetailHotel');
+          }}>
           <Animated.View
             style={{
               ...styles.card,
@@ -586,7 +575,10 @@ export default function HomeScreen({navigation}) {
                 marginBottom: 10,
               }}>
               <Pressable
-                onPress={() => navigation.navigate('ListRoom', hotels[item])}>
+                onPress={() => {
+                  dispatch(Globalreducer.actions.setHotelData(hotels[item]));
+                  navigation.navigate('DetailHotel');
+                }}>
                 <ImageBackground
                   source={{uri: image_default}}
                   style={{
