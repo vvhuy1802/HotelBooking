@@ -379,20 +379,21 @@ export default function HomeScreen({navigation}) {
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Icon4
-              name="md-location-sharp"
-              size={23}
-              color="orange"
-              style={{}}
-            />
-            <Text
-              style={{
-                fontSize: 24,
-                color: 'orange',
-                fontWeight: '700',
+            <Icon4 name="md-location-sharp" size={23} color="orange" />
+            <TouchableOpacity
+              onPress={() => {
+                setAsyncStorage('userData', '');
+                dispatch(Globalreducer.actions.setUserData(''));
               }}>
-              Hồ Chí Minh
-            </Text>
+              <Text
+                style={{
+                  fontSize: 24,
+                  color: 'orange',
+                  fontWeight: '700',
+                }}>
+                Hồ Chí Minh
+              </Text>
+            </TouchableOpacity>
             <Icon3
               name="caretdown"
               size={15}
