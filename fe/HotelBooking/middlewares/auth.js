@@ -65,3 +65,49 @@ export const CreateAccount = async (name, phone_number, email, password) => {
     };
   }
 };
+
+export const APIUpdateProfile = async (name, phone_number, email) => {
+  try {
+    const response = await fetch(`${LOCAL_API_URL}/auth/updateProfile`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({name, phone_number, email}),
+    });
+    const data = await response.json();
+    return {status: 200, data: data};
+  } catch (error) {
+    return {
+      status: 401,
+      data: {
+        message:
+          'An error occurred while updating profile. Please try again later.',
+      },
+      error: error,
+    };
+  }
+};
+
+export const APIChangePassword = async (email, old_password, new_password) => {
+  try {
+    const response = await fetch(`${LOCAL_API_URL}/auth/changePassword`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({email, old_password, new_password}),
+    });
+    const data = await response.json();
+    return {status: 200, data: data};
+  } catch (error) {
+    return {
+      status: 401,
+      data: {
+        message:
+          'An error occurred while changing password. Please try again later.',
+      },
+      error: error,
+    };
+  }
+};

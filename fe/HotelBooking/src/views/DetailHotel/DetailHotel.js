@@ -772,6 +772,7 @@ const DetailHotel = ({navigation}) => {
                           paddingHorizontal: 20,
                           fontWeight: '400',
                           fontSize: 14,
+                          color:colors.text
                         }}>
                         {item1.content}
                       </Text>

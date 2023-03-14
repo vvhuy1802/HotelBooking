@@ -25,17 +25,14 @@ const App = () => {
           if (res.status === 200) {
             console.log('User logged in');
             dispatch(Globalreducer.actions.setUserData(res.data.data.user));
-            setWait(false);
           } else {
             console.log('Token expired');
             dispatch(Globalreducer.actions.setUserData(''));
-            setWait(false);
           }
         });
       } else {
         console.log('User not logged in');
         dispatch(Globalreducer.actions.setUserData(''));
-        setWait(false);
       }
     });
   }, []);
@@ -44,7 +41,9 @@ const App = () => {
     GetAllHotels().then(res => {
       if (res.status === 200) {
         console.log('Data hotels geted');
+        res.data = res.data.filter((item: { isactive: boolean; }) => item.isactive === true);
         dispatch(Globalreducer.actions.setHotels(res.data));
+        setWait(false);
       }
     });
   }, []);
