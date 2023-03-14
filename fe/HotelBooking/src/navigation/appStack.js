@@ -6,6 +6,7 @@ import AllComments from '../views/DetailHotel/AllComments';
 import DetailRoom from '../views/DetalRoom/DetailRoom';
 import ImageRoom from '../views/DetalRoom/ImageRoom';
 import OrderRoom from '../views/OrderRoom/OrderRoom';
+import PaymentMethod from '../views/OrderRoom/PaymentMethod';
 import TabNavigator from './tabNavigator';
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +58,13 @@ export default function AppStack() {
       <Stack.Screen
         name="OrderRoom"
         component={OrderRoom}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PaymentMethod"
+        component={PaymentMethod}
         options={{
           headerShown: false,
         }}

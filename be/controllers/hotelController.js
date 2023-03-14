@@ -37,6 +37,7 @@ const GetAllHotel = async (req, res) => {
     .populate("comments")
 
   hotels = await Comments.populate(hotels, { path: "comments.id_user", select: "name" });
+  hotels = await Comments.populate(hotels, { path: "comments.id_room", select: "name" });
   res.status(200).send(hotels);
 };
 

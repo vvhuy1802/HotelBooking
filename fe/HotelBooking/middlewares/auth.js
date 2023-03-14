@@ -2,7 +2,7 @@ import {LOCAL_API_URL} from '@env';
 
 export const CheckLogin = async token => {
   console.log('HOST: ' + LOCAL_API_URL);
-  const API = `${LOCAL_API_URL}/auth/checklogin`;
+  const API = `${LOCAL_API_URL}/auth/checkLogin`;
   try {
     const response = await fetch(API, {
       method: 'POST',

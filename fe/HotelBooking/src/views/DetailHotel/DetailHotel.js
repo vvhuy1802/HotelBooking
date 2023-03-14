@@ -95,6 +95,13 @@ const DetailHotel = ({navigation}) => {
     return time;
   };
 
+  const FormatRoomNameInComment = name => {
+    if (name?.length > 30) {
+      return name.slice(0, 30) + '...';
+    }
+    return name;
+  };
+
   const TotalStar = () => {
     let rating = 0;
     if (hotelData.comments?.length === 0) return 5;
@@ -121,17 +128,19 @@ const DetailHotel = ({navigation}) => {
   const CheckIdRoom = () => {
     var id_room = '1';
     var id_order = '';
+    var name_room = '';
     var index = 0;
-    userData.orders.forEach((order,index) => {
+    userData.orders.forEach((order, index) => {
       if (order.id_hotel === hotelData.id) {
         if (order.reviewed === false) {
-          id_room = order.id_room;
+          id_room = order.id_room._id;
+          name_room = order.id_room.name;
           id_order = order._id;
           index = index;
         }
       }
     });
-    return {id_room: id_room, id_order: id_order, index: index};
+    return {id_room: id_room, id_order: id_order, index: index,name_room:name_room};
   };
 
   const handleRating = async () => {
@@ -145,7 +154,10 @@ const DetailHotel = ({navigation}) => {
           id_user: {
             name: userData.name,
           },
-          id_room: CheckIdRoom().id_room,
+          id_room: {
+            _id: CheckIdRoom().id_room,
+            name: CheckIdRoom().name_room,
+          },
           time_stamp: new Date(),
         };
         AddNewComment(
@@ -161,7 +173,7 @@ const DetailHotel = ({navigation}) => {
               Globalreducer.actions.addComment({
                 id: hotelData.id,
                 comment: comment,
-                index: CheckIdRoom().index
+                index: CheckIdRoom().index,
               }),
             );
           } else {
@@ -702,16 +714,35 @@ const DetailHotel = ({navigation}) => {
                             }}
                           />
                           <View style={{marginLeft: 10}}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                              }}>
+                              <Text
+                                style={{
+                                  fontWeight: '700',
+                                  fontSize: 16,
+                                  color: colors.text,
+                                }}>
+                                {item1.id_user.name}
+                              </Text>
+                              <Text
+                                style={{
+                                  fontSize: 13,
+                                  fontWeight: '400',
+                                  marginLeft: 10,
+                                }}>
+                                {FormatTimeStamp(item1.time_stamp)}
+                              </Text>
+                            </View>
                             <Text
                               style={{
-                                fontWeight: '700',
-                                fontSize: 16,
+                                fontSize: 14,
                                 color: colors.text,
+                                fontWeight: 'bold',
                               }}>
-                              {item1.id_user.name}
-                            </Text>
-                            <Text style={{fontSize: 13, fontWeight: '400'}}>
-                              {FormatTimeStamp(item1.time_stamp)}
+                              {FormatRoomNameInComment(item1.id_room?.name)}
                             </Text>
                           </View>
                         </View>

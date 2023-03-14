@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Order = require("../models/order");
+const Room = require("../models/room");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const PrivateKey = process.env.TOKEN_KEY;
@@ -56,6 +57,10 @@ const Login = async (req, res) => {
     }
     // Validate if user exist in our database
     var user = await User.findOne({ email }).populate("orders");
+    user = await Order.populate(user, {
+      path: "orders.id_room",
+      select: "name",
+    });
 
     if (user && bcrypt.compare(password, user.password)) {
       // Create token
@@ -63,7 +68,7 @@ const Login = async (req, res) => {
         { user_id: user._id, email },
         process.env.TOKEN_KEY,
         {
-          expiresIn: "2h",
+          expiresIn: "24h",
         }
       );
 
@@ -81,7 +86,11 @@ const Login = async (req, res) => {
 };
 
 const CheckLogin = async (req, res) => {
-  const user = await User.findOne({ email: req.user.email }).populate("orders");
+  var user = await User.findOne({ email: req.user.email }).populate("orders");
+  user = await Order.populate(user, {
+    path: "orders.id_room",
+    select: "name",
+  });
   res.status(200).send({
     message: "Welcome 🙌 ",
     data: {

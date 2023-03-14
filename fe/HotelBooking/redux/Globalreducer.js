@@ -16,6 +16,13 @@ const initialState = {
     total_night: 1,
   },
   hotelData: [],
+  payment_method: {
+    id: 'payment-hotel',
+    name: 'Thanh toán tại khách sạn',
+    image:
+      'https://cdn1.iconfinder.com/data/icons/condominium-juristic-management/64/Common_fee-fee-money-condominium-512.png',
+    available: true,
+  },
 };
 export default createSlice({
   name: 'global',
@@ -45,6 +52,12 @@ export default createSlice({
     },
     setHotelData: (state, action) => {
       state.hotelData = action.payload;
+    },
+    setPaymentMethod: (state, action) => {
+      state.payment_method = action.payload;
+    },
+    addOrder: (state, action) => {
+      state.userData.orders.push(action.payload);
     },
   },
 });

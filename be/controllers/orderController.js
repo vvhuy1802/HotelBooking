@@ -4,23 +4,21 @@ const Hotel = require("../models/hotel");
 const AddNewOrder = async (req, res) => {
   const {
     id_user,
-    id_room,
     id_hotel,
-    checkin,
-    checkout,
+    id_room,
+    check_in,
+    check_out,
     total,
-    status,
-    number_person,
+    payment_method,
   } = req.body;
   const newOrder = new Order({
     id_user,
-    id_room,
     id_hotel,
-    checkin,
-    checkout,
+    id_room,
+    check_in,
+    check_out,
     total,
-    status,
-    number_person,
+    payment_method,
   });
   try {
     const order = await newOrder.save();
