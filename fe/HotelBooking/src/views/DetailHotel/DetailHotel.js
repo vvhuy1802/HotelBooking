@@ -140,7 +140,12 @@ const DetailHotel = ({navigation}) => {
         }
       }
     });
-    return {id_room: id_room, id_order: id_order, index: index,name_room:name_room};
+    return {
+      id_room: id_room,
+      id_order: id_order,
+      index: index,
+      name_room: name_room,
+    };
   };
 
   const handleRating = async () => {
@@ -814,7 +819,7 @@ const DetailHotel = ({navigation}) => {
                     fontWeight: 'bold',
                     fontSize: 16,
                   }}>
-                  12:00, {formatDayShow(booking_date.check_in)}
+                  12:00, {formatDayShow(start)}
                 </Text>
               </View>
               <Icon4 name="long-arrow-alt-right" size={25} color="orange" />
@@ -822,14 +827,23 @@ const DetailHotel = ({navigation}) => {
                 <Text style={{fontSize: 14, color: colors.icon}}>
                   {t('check-out')}
                 </Text>
-                <Text
-                  style={{
-                    color: colors.text,
-                    fontWeight: 'bold',
-                    fontSize: 16,
-                  }}>
-                  12:00, {formatDayShow(booking_date.check_out)}
-                </Text>
+                {end ? (
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      fontSize: 16,
+                    }}>
+                    12:00, {formatDayShow(end)}
+                  </Text>
+                ) : (
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontWeight: 'bold',
+                      fontSize: 16,
+                    }}></Text>
+                )}
               </View>
             </View>
           </View>

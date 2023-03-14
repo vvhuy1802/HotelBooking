@@ -32,7 +32,7 @@ const OrderRoom = ({navigation, route}) => {
   const totalOrder = () => {
     const day = booking_date.total_night;
     const sum = Math.floor(
-      dataRoom.price * (day === 1 ? day : day * (day / (day + 1))),
+      dataRoom.price * (day === 1 ? day : day * (day / (day + 0.5))),
     );
     return sum;
   };
