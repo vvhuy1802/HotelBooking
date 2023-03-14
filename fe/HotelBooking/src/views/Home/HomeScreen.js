@@ -380,11 +380,7 @@ export default function HomeScreen({navigation}) {
               alignItems: 'center',
             }}>
             <Icon4 name="md-location-sharp" size={23} color="orange" />
-            <TouchableOpacity
-              onPress={() => {
-                setAsyncStorage('userData', '');
-                dispatch(Globalreducer.actions.setUserData(''));
-              }}>
+            <TouchableOpacity onPress={() => {}}>
               <Text
                 style={{
                   fontSize: 24,

@@ -7,6 +7,11 @@ import DetailRoom from '../views/DetalRoom/DetailRoom';
 import ImageRoom from '../views/DetalRoom/ImageRoom';
 import OrderRoom from '../views/OrderRoom/OrderRoom';
 import PaymentMethod from '../views/OrderRoom/PaymentMethod';
+import About from '../views/Profile/About';
+import ChangeLanguage from '../views/Profile/ChangeLanguage';
+import Terms from '../views/Profile/Terms';
+import InfoProfile from '../views/Profile/InfoProfile';
+import ChangePassword from '../views/Profile/ChangePassword';
 import TabNavigator from './tabNavigator';
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +70,41 @@ export default function AppStack() {
       <Stack.Screen
         name="PaymentMethod"
         component={PaymentMethod}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="About"
+        component={About}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Terms"
+        component={Terms}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ChangeLanguage"
+        component={ChangeLanguage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="InfoProfile"
+        component={InfoProfile}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ChangePassword"
+        component={ChangePassword}
         options={{
           headerShown: false,
         }}

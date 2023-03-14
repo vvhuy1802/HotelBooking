@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const Order = require("../models/order");
-const Room = require("../models/room");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const PrivateKey = process.env.TOKEN_KEY;
@@ -62,7 +61,7 @@ const Login = async (req, res) => {
       select: "name",
     });
 
-    if (user && bcrypt.compare(password, user.password)) {
+    if (user && await bcrypt.compare(password, user.password)) {
       // Create token
       const token = jwt.sign(
         { user_id: user._id, email },
@@ -103,9 +102,44 @@ const Logout = (req, res) => {
   res.status(200).send("Logout");
 };
 
+const UpdateProfile = async (req, res) => {
+  const { name, phone_number } = req.body;
+  const user = await User.findOne({ email: req.body.email });
+  if (name) user.name = name;
+  if (phone_number) user.phone_number = phone_number;
+  await user.save();
+  res.status(200).send({
+    message: "Update profile successfully",
+    data: {
+      user: user,
+    },
+  });
+};
+
+const ChangePassword = async (req, res) => {
+  const { old_password, new_password } = req.body;
+  const user = await User.findOne({ email: req.body.email });
+  if (await bcrypt.compare(old_password, user.password)) {
+    user.password = await bcrypt.hash(new_password, 10);
+    await user.save();
+    res.status(200).send({
+      message: "Update password successfully",
+      data: {
+        user: user,
+      },
+    });
+  } else {
+    res.status(400).send({
+      message: "Old password is not correct",
+    });
+  }
+};
+
 module.exports = {
   Register,
   Login,
   CheckLogin,
   Logout,
+  UpdateProfile,
+  ChangePassword,
 };
