@@ -17,9 +17,10 @@ import {Icon} from 'react-native-elements';
 import {useTheme} from 'react-native-paper';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {SignIn} from '../../../middlewares/auth';
+import {CreateAccount, SignIn} from '../../../middlewares/auth';
 import {setAsyncStorage} from '../../../functions/asyncStorageFunctions';
 import Globalreducer from '../../../redux/Globalreducer';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
@@ -29,6 +30,34 @@ const Login = ({navigation}) => {
   const [getVisible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const {colors} = useTheme();
+
+
+
+  useEffect(() => {
+    GoogleSignin.configure();
+  }, []);
+
+  const handleGoogleLogin = async()=>{
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const {user}=userInfo;
+      SignIn(user.email, user.id).then(res => {
+        if (res.status == 200) {
+          ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
+          setAsyncStorage('userData', res.data.token);
+          dispatch(Globalreducer.actions.setUserData(res.data));
+        } else if (res.status == 400) {
+          ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
+        } else {
+          CreateAccount(user.name,"",user.email,user.id)
+        }
+      });
+    } catch (error) {
+      throw error;
+  }
+  }
+
 
   const SignInWithEmailPassword = () => {
     if (email == '' || password == '') {
@@ -65,7 +94,7 @@ const Login = ({navigation}) => {
           }}
         />
       </View>
-      <View style={{paddingHorizontal: 25, paddingTop: 20}}>
+      <View style={{paddingHorizontal: 25, paddingTop: 10}}>
         <Text
           style={{
             fontSize: 30,
@@ -206,7 +235,7 @@ const Login = ({navigation}) => {
               justifyContent: 'center',
               backgroundColor: colors.special,
             }}
-            onPress={() => {}}>
+            onPress={() => {handleGoogleLogin()}}>
             <Image
               source={require('../../assets/logo_gg.png')}
               style={{

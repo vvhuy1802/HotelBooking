@@ -29,6 +29,7 @@ const AddNewRoom = async (req, res) => {
   res.status(200).send(room);
 };
 
+
 const GetAllRooms = async (req, res) => {
   const rooms = await Room.find();
   res.status(200).send(rooms);

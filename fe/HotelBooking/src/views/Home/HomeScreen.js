@@ -220,7 +220,7 @@ export default function HomeScreen({navigation}) {
             </View>
             <Image
               source={{
-                uri: image_default,
+                uri: hotel.image,
               }}
               style={styles.cardImage}
             />
@@ -581,7 +581,7 @@ export default function HomeScreen({navigation}) {
                   navigation.navigate('DetailHotel');
                 }}>
                 <ImageBackground
-                  source={{uri: image_default}}
+                  source={{uri: hotels[item]?.image}}
                   style={{
                     width: '100%',
                     height: 150,

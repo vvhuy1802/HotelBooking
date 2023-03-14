@@ -1,5 +1,5 @@
 import {LOCAL_API_URL} from '@env';
-
+console.log(LOCAL_API_URL);
 export const CheckLogin = async token => {
   console.log('HOST: ' + LOCAL_API_URL);
   const API = `${LOCAL_API_URL}/auth/checkLogin`;

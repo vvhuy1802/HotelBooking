@@ -1,5 +1,5 @@
 import {LOCAL_API_URL} from '@env';
-
+console.log(LOCAL_API_URL);
 export const UpdateReview = async id => {
   const API = `${LOCAL_API_URL}/orders/reviewd/${id}`;
   try {
