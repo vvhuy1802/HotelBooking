@@ -59,5 +59,9 @@ export default createSlice({
     addOrder: (state, action) => {
       state.userData.orders.push(action.payload);
     },
+    updateUser: (state, action) => {
+      state.userData.name = action.payload.name;
+      state.userData.phone_number = action.payload.phone_number;
+    },
   },
 });

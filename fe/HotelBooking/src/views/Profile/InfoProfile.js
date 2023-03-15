@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   Dimensions,
   Keyboard,
@@ -11,17 +11,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Globalreducer from '../../../redux/Globalreducer';
 import CustomHeader from '../../components/CustomHeader';
+import {APIUpdateProfile} from '../../../middlewares/auth';
 
-const { width, height } = Dimensions.get('screen');
-const InfoProfile = ({ navigation }) => {
-  const { userData } = useSelector((state) => state.Globalreducer);
+const {width, height} = Dimensions.get('screen');
+const InfoProfile = ({navigation}) => {
+  const {userData} = useSelector(state => state.Globalreducer);
   const dispatch = useDispatch();
-  const { colors } = useTheme();
+  const {t} = useTranslation();
+  const {colors} = useTheme();
   const [name, setName] = useState(userData.name);
   const [email, setEmail] = useState(userData.email);
   const [phone, setPhone] = useState(userData.phone_number);
@@ -37,15 +39,29 @@ const InfoProfile = ({ navigation }) => {
     return false;
   };
 
-  const { t } = useTranslation();
+  const updateInfoUser = () => {
+    const phone_number = phone;
+    APIUpdateProfile(name, phone_number, email).then(res => {
+      if (res.status === 200) {
+        const data ={
+          name: name,
+          phone_number:phone
+        }
+        dispatch(Globalreducer.actions.updateUser(data));
+        Keyboard.dismiss();
+        ToastAndroid.show('Update success', ToastAndroid.SHORT);
+      } else {
+        ToastAndroid.show('Update fail', ToastAndroid.SHORT);
+      }
+    });
+  };
   return (
-    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+    <View style={{flex: 1, backgroundColor: colors.bg}}>
       <View style={{}}>
         <CustomHeader title={'information-account'} />
         <Pressable
-          style={{ paddingHorizontal: 20, height: height, width: '100%' }}
-          onPress={() => Keyboard.dismiss()}
-        >
+          style={{paddingHorizontal: 20, height: height, width: '100%'}}
+          onPress={() => Keyboard.dismiss()}>
           <View
             style={{
               flexDirection: 'row',
@@ -55,16 +71,14 @@ const InfoProfile = ({ navigation }) => {
               height: 60,
               borderBottomWidth: 1,
               borderBottomColor: '#d0d0d0',
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontSize: 16,
                 fontWeight: 'bold',
                 width: '40%',
                 color: colors.icon,
-              }}
-            >
+              }}>
               {t('user-name')}
             </Text>
             <TextInput
@@ -74,7 +88,7 @@ const InfoProfile = ({ navigation }) => {
                 width: '60%',
               }}
               value={name}
-              onChangeText={(text) => setName(text)}
+              onChangeText={text => setName(text)}
             />
           </View>
           <View
@@ -86,16 +100,14 @@ const InfoProfile = ({ navigation }) => {
               height: 60,
               borderBottomWidth: 1,
               borderBottomColor: '#d0d0d0',
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontSize: 16,
                 fontWeight: 'bold',
                 width: '40%',
                 color: colors.icon,
-              }}
-            >
+              }}>
               {t('email')}
             </Text>
             <TextInput
@@ -105,7 +117,7 @@ const InfoProfile = ({ navigation }) => {
                 width: '60%',
               }}
               value={email}
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={text => setEmail(text)}
               editable={false}
             />
           </View>
@@ -118,16 +130,14 @@ const InfoProfile = ({ navigation }) => {
               height: 60,
               borderBottomWidth: 1,
               borderBottomColor: '#d0d0d0',
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontSize: 16,
                 fontWeight: 'bold',
                 width: '40%',
                 color: colors.icon,
-              }}
-            >
+              }}>
               {t('phone')}
             </Text>
             <TextInput
@@ -137,7 +147,7 @@ const InfoProfile = ({ navigation }) => {
                 width: '60%',
               }}
               value={phone}
-              onChangeText={(text) => setPhone(text)}
+              onChangeText={text => setPhone(text)}
             />
           </View>
           <View
@@ -145,8 +155,7 @@ const InfoProfile = ({ navigation }) => {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-            }}
-          >
+            }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -156,19 +165,17 @@ const InfoProfile = ({ navigation }) => {
                 height: 60,
                 borderBottomWidth: 1,
                 borderBottomColor: '#d0d0d0',
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: 16,
                   fontWeight: 'bold',
                   width: '40%',
                   color: colors.icon,
-                }}
-              >
+                }}>
                 {t('password')}
               </Text>
-              <Text style={{ fontSize: 17, color: colors.text }}>
+              <Text style={{fontSize: 17, color: colors.text}}>
                 {'********'}
               </Text>
             </View>
@@ -199,16 +206,14 @@ const InfoProfile = ({ navigation }) => {
             }}
             disabled={!isChange()}
             onPress={() => {
-              // updateInfoUser();
-            }}
-          >
+              updateInfoUser();
+            }}>
             <Text
               style={{
                 fontSize: 15,
                 fontWeight: 'bold',
                 color: 'white',
-              }}
-            >
+              }}>
               {t('update')}
             </Text>
           </TouchableOpacity>

@@ -1,5 +1,5 @@
 import {LOCAL_API_URL} from '@env';
-console.log(LOCAL_API_URL);
+
 export const CheckLogin = async token => {
   console.log('HOST: ' + LOCAL_API_URL);
   const API = `${LOCAL_API_URL}/auth/checkLogin`;
@@ -41,10 +41,6 @@ export const SignIn = async (email, password) => {
 };
 
 export const CreateAccount = async (name, phone_number, email, password) => {
-  console.log('name: ' + name);
-  console.log('phone_number: ' + phone_number);
-  console.log('email: ' + email);
-  console.log('password: ' + password);
   try {
     const response = await fetch(`${LOCAL_API_URL}/auth/register`, {
       method: 'POST',

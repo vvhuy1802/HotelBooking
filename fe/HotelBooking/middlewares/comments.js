@@ -1,5 +1,5 @@
 import {LOCAL_API_URL} from '@env';
-console.log(LOCAL_API_URL);
+
 export const AddNewComment = async (
   id_user,
   id_hotel,
