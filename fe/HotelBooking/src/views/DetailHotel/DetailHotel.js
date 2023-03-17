@@ -102,13 +102,16 @@ const DetailHotel = ({navigation}) => {
     return name;
   };
 
+  const starTemp = [1, 2, 3, 4, 5];
   const TotalStar = () => {
     let rating = 0;
     if (hotelData.comments?.length === 0) return 5;
     hotelData.comments?.map(item1 => {
       rating += item1.rating;
     });
-    return (rating / hotelData.comments.length).toFixed(1);
+    return starTemp.includes(rating / hotelData.comments.length)
+      ? rating / hotelData.comments.length
+      : (rating / hotelData.comments.length).toFixed(1);
   };
 
   const formatDayShow = day => {
@@ -772,7 +775,7 @@ const DetailHotel = ({navigation}) => {
                           paddingHorizontal: 20,
                           fontWeight: '400',
                           fontSize: 14,
-                          color:colors.text
+                          color: colors.text,
                         }}>
                         {item1.content}
                       </Text>

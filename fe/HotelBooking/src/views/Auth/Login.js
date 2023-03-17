@@ -20,7 +20,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {CreateAccount, SignIn} from '../../../middlewares/auth';
 import {setAsyncStorage} from '../../../functions/asyncStorageFunctions';
 import Globalreducer from '../../../redux/Globalreducer';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
@@ -31,17 +31,15 @@ const Login = ({navigation}) => {
   const [isLoading, setLoading] = useState(false);
   const {colors} = useTheme();
 
-
-
   useEffect(() => {
     GoogleSignin.configure();
   }, []);
 
-  const handleGoogleLogin = async()=>{
+  const handleGoogleLogin = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      const {user}=userInfo;
+      const {user} = userInfo;
       SignIn(user.email, user.id).then(res => {
         if (res.status == 200) {
           ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
@@ -50,19 +48,29 @@ const Login = ({navigation}) => {
         } else if (res.status == 400) {
           ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
         } else {
-          CreateAccount(user.name,"",user.email,user.id)
+          CreateAccount(user.name, '', user.email, user.id,'google').then(res => {
+            if (res.status == 200) {
+              ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
+              setAsyncStorage('userData', res.data.token);
+              dispatch(Globalreducer.actions.setUserData(res.data));
+            } else if (res.status == 400) {
+              ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
+            } else {
+              ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+            }
+          });
         }
       });
     } catch (error) {
       throw error;
-  }
-  }
-
+    }
+  };
 
   const SignInWithEmailPassword = () => {
     if (email == '' || password == '') {
       ToastAndroid.show('Please fill all fields', ToastAndroid.SHORT);
     } else {
+      setLoading(true);
       SignIn(email, password).then(res => {
         if (res.status == 200) {
           ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
@@ -73,6 +81,7 @@ const Login = ({navigation}) => {
         } else {
           ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
         }
+        setLoading(false);
       });
     }
   };
@@ -235,7 +244,9 @@ const Login = ({navigation}) => {
               justifyContent: 'center',
               backgroundColor: colors.special,
             }}
-            onPress={() => {handleGoogleLogin()}}>
+            onPress={() => {
+              handleGoogleLogin();
+            }}>
             <Image
               source={require('../../assets/logo_gg.png')}
               style={{

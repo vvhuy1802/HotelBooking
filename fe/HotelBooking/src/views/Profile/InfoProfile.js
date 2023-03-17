@@ -181,7 +181,7 @@ const InfoProfile = ({navigation}) => {
             </View>
             <Icon
               name="edit"
-              size={userData.type === 'google' ? 0 : 25}
+              size={userData?.type === 'google' ? 0 : 25}
               style={{
                 position: 'absolute',
                 right: 15,

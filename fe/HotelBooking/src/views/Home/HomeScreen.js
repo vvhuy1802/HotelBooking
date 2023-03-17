@@ -151,7 +151,7 @@ export default function HomeScreen({navigation}) {
     setModalVisible(true);
     readItemFromStorage();
   };
-
+  const starTemp = [1, 2, 3, 4, 5];
   const TotalStar = data => {
     if (data && data.length > 0) {
       let total = 0;
@@ -159,7 +159,9 @@ export default function HomeScreen({navigation}) {
         total += item.rating;
       });
       return {
-        star: (total / data.length).toFixed(1),
+        star: starTemp.includes(total / data.length)
+          ? total / data.length
+          : (total / data.length).toFixed(1),
         count: data.length,
       };
     }

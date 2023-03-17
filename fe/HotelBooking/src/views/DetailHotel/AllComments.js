@@ -15,7 +15,9 @@ const AllComments = ({navigation, route}) => {
     dataComment.map(item => {
       total += item.rating;
     });
-    return (total / dataComment.length).toFixed(1);
+    return star.includes(total / dataComment.length)
+      ? total / dataComment.length
+      : (total / dataComment.length).toFixed(1);
   };
 
   const StarPercent = star => {
@@ -64,7 +66,7 @@ const AllComments = ({navigation, route}) => {
           </Text>
         </View>
         {star
-          .map((item,index) => {
+          .map((item, index) => {
             return (
               <View key={index} style={{marginTop: 5}}>
                 <View
@@ -124,7 +126,7 @@ const AllComments = ({navigation, route}) => {
         style={{
           flex: 1,
           backgroundColor: colors.bg,
-          paddingHorizontal:10,
+          paddingHorizontal: 10,
           marginBottom: 10,
         }}>
         {dataComment.map((item, index) => {

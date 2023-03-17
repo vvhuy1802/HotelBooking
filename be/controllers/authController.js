@@ -6,7 +6,7 @@ const PrivateKey = process.env.TOKEN_KEY;
 const Register = async (req, res) => {
   try {
     // Get user input
-    const { name, phone_number, email, password } = req.body;
+    const { name, phone_number, email, password, type } = req.body;
 
     // Validate user input
     if (!(email && password && name)) {
@@ -29,6 +29,7 @@ const Register = async (req, res) => {
       phone_number,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
+      type,
     });
 
     // Create token
@@ -61,7 +62,7 @@ const Login = async (req, res) => {
       select: "name",
     });
 
-    if (user && await bcrypt.compare(password, user.password)) {
+    if (user && (await bcrypt.compare(password, user.password))) {
       // Create token
       const token = jwt.sign(
         { user_id: user._id, email },

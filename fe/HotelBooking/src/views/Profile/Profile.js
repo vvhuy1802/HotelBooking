@@ -9,7 +9,9 @@ import {
 import React, {useContext, useState} from 'react';
 import {useTheme} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
+import Icon6 from 'react-native-vector-icons/FontAwesome';
 import Icon5 from 'react-native-vector-icons/AntDesign';
+import Icon4 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -101,14 +103,25 @@ const Profile = ({navigation}) => {
               />
             </View>
           </View>
-          <Text
-            style={{
-              color: colors.text,
-              fontSize: 15,
-              paddingTop: 5,
-            }}>
-            {userData.phone_number}
-          </Text>
+          <View
+            style={{flexDirection: 'row', paddingTop: 5, alignItems: 'center'}}>
+            <Text
+              style={{
+                color:
+                  userData.phone_number?.length > 0 ? colors.text : 'orange',
+                fontSize: 15,
+              }}>
+              {userData.phone_number?.length > 0
+                ? userData.phone_number
+                : 'Chưa cập nhật số điện thoại'}
+            </Text>
+            <Icon6
+              name="exclamation"
+              size={userData.phone_number?.length > 0 ? 0 : 20}
+              style={{marginLeft: 5}}
+              color="orange"
+            />
+          </View>
           <Text style={{color: colors.text, fontSize: 15, paddingTop: 5}}>
             {userData.email}
           </Text>

@@ -40,14 +40,20 @@ export const SignIn = async (email, password) => {
   }
 };
 
-export const CreateAccount = async (name, phone_number, email, password) => {
+export const CreateAccount = async (
+  name,
+  phone_number,
+  email,
+  password,
+  type,
+) => {
   try {
     const response = await fetch(`${LOCAL_API_URL}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({name, phone_number, email, password}),
+      body: JSON.stringify({name, phone_number, email, password, type}),
     });
     const data = await response.json();
     return {status: 200, data: data};
