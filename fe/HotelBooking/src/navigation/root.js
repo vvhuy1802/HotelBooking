@@ -19,6 +19,7 @@ export default function RootNavigation() {
       box: '#fff',
       special: '#f5f5f5',
       primary: '#52c0b4',
+      blurprimary: '#c8f4ef',
     },
   };
 
@@ -31,6 +32,7 @@ export default function RootNavigation() {
       box: '#1a1a1a',
       special: '#666161',
       primary: '#52c0b4',
+      blurprimary: '#c8f4ef',
     },
   };
 

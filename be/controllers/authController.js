@@ -59,7 +59,6 @@ const Login = async (req, res) => {
     var user = await User.findOne({ email }).populate("orders");
     user = await Order.populate(user, {
       path: "orders.id_room",
-      select: "name",
     });
 
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -89,7 +88,6 @@ const CheckLogin = async (req, res) => {
   var user = await User.findOne({ email: req.user.email }).populate("orders");
   user = await Order.populate(user, {
     path: "orders.id_room",
-    select: "name",
   });
   res.status(200).send({
     message: "Welcome 🙌 ",

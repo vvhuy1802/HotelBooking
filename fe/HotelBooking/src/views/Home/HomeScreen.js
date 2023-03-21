@@ -583,6 +583,8 @@ export default function HomeScreen({navigation}) {
                   style={{
                     width: '100%',
                     height: 150,
+                    borderRadius: 10,
+                    overflow: 'hidden',
                   }}>
                   <View
                     style={{

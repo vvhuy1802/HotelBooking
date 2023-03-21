@@ -16,12 +16,15 @@ export default function TabNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#52c0b4',
-        tabBarInactiveTintColor: colors.text,
+        tabBarActiveTintColor: 'orange',
+        tabBarInactiveTintColor: colors.icon,
         tabBarStyle: {
           backgroundColor: colors.bg,
-          borderTopWidth: 0,
-          elevation: 0,
+          elevation: 5,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: 'bold',
         },
       }}
     >
