@@ -30,7 +30,7 @@ Object.keys(interfaces).forEach(function (interface) {
   }
 });
 
-if (config.IPV4_ADDRESS !== ipv4 ) {
+if (config.IPV4_ADDRESS !== ipv4) {
   fs.readFile(".env", "utf8", function (error, data) {
     if (error) {
       console.error(error);
@@ -59,33 +59,37 @@ if (config.IPV4_ADDRESS !== ipv4 ) {
       console.log("IPv4 at BE updated!");
     });
 
-    fs.readFile("../fe/HotelBooking/.env", "utf8", function (error, data) {
+    fs.readFile("../fe/HotelBooking/api.js", "utf8", function (error, data) {
       if (error) {
         console.error(error);
         return;
       }
-    
+
       const lines = data.split("\n");
       let found = false;
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        if (line.startsWith("LOCAL_API_URL=")) {
-          lines[i] = "LOCAL_API_URL=http://" + ipv4 + ":3000";
+        if (line.startsWith("export const LOCAL_API_URL =")) {
+          lines[i] = "export const LOCAL_API_URL ='http://" + ipv4 + ":3000'";
           found = true;
           break;
         }
       }
       if (!found) {
-        lines.push("LOCAL_API_URL=http://" + ipv4 + ":3000");
+        lines.push("export const LOCAL_API_URL ='http://" + ipv4 + ":3000'");
       }
-    
-      fs.writeFile("../fe/HotelBooking/.env", lines.join("\n"), function (error) {
-        if (error) {
-          console.error(error);
-          return;
+
+      fs.writeFile(
+        "../fe/HotelBooking/api.js",
+        lines.join("\n"),
+        function (error) {
+          if (error) {
+            console.error(error);
+            return;
+          }
+          console.log("IPv4 at FE updated!");
         }
-        console.log("IPv4 at FE updated!");
-      });
+      );
     });
   });
 }

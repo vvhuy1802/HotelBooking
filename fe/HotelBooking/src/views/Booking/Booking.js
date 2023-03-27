@@ -17,12 +17,13 @@ import Icon1 from 'react-native-vector-icons/Ionicons';
 import Header from '../../components/Header';
 import {useSelector, useDispatch} from 'react-redux';
 import Globalreducer from '../../../redux/Globalreducer';
+import {UpdateStatus} from '../../../middlewares/orders';
 export default function Booking() {
   const {t} = useTranslation();
   const {colors} = useTheme();
   const [button, setbutton] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
-  const [data, setdata] = useState([]);
+  const dispatch = useDispatch();
   const [idroom, setidroom] = useState('');
   const {userData, hotels} = useSelector(state => state.Globalreducer);
   const navigation = useNavigation();
@@ -51,7 +52,22 @@ export default function Booking() {
     return hotel[0];
   };
 
-  const CancelBooking = () => {};
+  const CancelBooking = idroom => {
+    UpdateStatus(idroom, 'Cancelled').then(res => {
+      if (res.status === 200) {
+        dispatch(
+          Globalreducer.actions.updateStatusOrder({
+            _id: idroom,
+            status: 'Cancelled',
+          }),
+        );
+        setModalVisible(false);
+        ToastAndroid.show('Cancel booking success', ToastAndroid.SHORT);
+      } else {
+        ToastAndroid.show('Cancel booking failed', ToastAndroid.SHORT);
+      }
+    });
+  };
 
   const CardBooking = ({item, user, index}) => {
     return (
@@ -166,7 +182,7 @@ export default function Booking() {
               }}
               onPress={() => {
                 setModalVisible(true);
-                setidroom(item.id);
+                setidroom(item._id);
               }}>
               <Text style={{color: 'white', textAlign: 'center'}}>
                 {t('cancel')}
@@ -380,7 +396,7 @@ export default function Booking() {
             flexDirection: 'row',
             justifyContent: 'space-between',
             paddingBottom: 10,
-            marginTop: 10,
+            paddingHorizontal:10,
           }}>
           <TouchableOpacity
             style={
@@ -527,7 +543,7 @@ export default function Booking() {
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}>
-        <TouchableOpacity
+        <Pressable
           style={{
             justifyContent: 'flex-end',
             flex: 1,
@@ -560,7 +576,6 @@ export default function Booking() {
                 height: 5,
                 top: 10,
               }}
-              onPress={() => setModalVisible(!modalVisible)}
             />
             <Text
               style={{
@@ -634,7 +649,6 @@ export default function Booking() {
                 }}
                 onPress={() => {
                   CancelBooking(idroom);
-                  setModalVisible(!modalVisible);
                 }}>
                 <Text
                   style={{
@@ -647,7 +661,7 @@ export default function Booking() {
               </TouchableOpacity>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </Modal>
     </View>
   );

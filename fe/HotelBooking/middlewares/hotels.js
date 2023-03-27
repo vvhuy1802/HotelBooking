@@ -1,4 +1,4 @@
-import {LOCAL_API_URL} from '@env';
+import { LOCAL_API_URL } from "../api";
 
 export const GetAllHotels = async () => {
   const API = `${LOCAL_API_URL}/hotels/getall`;

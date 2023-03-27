@@ -63,5 +63,11 @@ export default createSlice({
       state.userData.name = action.payload.name;
       state.userData.phone_number = action.payload.phone_number;
     },
+    updateStatusOrder: (state, action) => {
+      const _id = action.payload._id;
+      const status = action.payload.status;
+      const index = state.userData.orders.findIndex(order => order._id === _id);
+      state.userData.orders[index].status = status;
+    },
   },
 });

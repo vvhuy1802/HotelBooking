@@ -96,6 +96,17 @@ const DeleteOrder = async (req, res) => {
   }
 };
 
+const UpdateStatus = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    order.status = req.body.status;
+    await order.save();
+    res.status(200).json({ success: true, data: order });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const UpdateReview = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -116,4 +127,5 @@ module.exports = {
   UpdateOrder,
   DeleteOrder,
   UpdateReview,
+  UpdateStatus
 };
