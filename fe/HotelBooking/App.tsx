@@ -12,6 +12,10 @@ import {GetAllHotels} from './middlewares/hotels';
 import {useDispatch} from 'react-redux';
 import Globalreducer from './redux/Globalreducer';
 import i18n from './src/i18n/18n';
+import {
+  requestUserPermission,
+  NotificationService,
+} from './src/utils/PushNotification';
 //logbox ignore all
 LogBox.ignoreAllLogs();
 const App = () => {
@@ -41,7 +45,9 @@ const App = () => {
     GetAllHotels().then(res => {
       if (res.status === 200) {
         console.log('Data hotels geted');
-        res.data = res.data.filter((item: { isactive: boolean; }) => item.isactive === true);
+        res.data = res.data.filter(
+          (item: {isactive: boolean}) => item.isactive === true,
+        );
         dispatch(Globalreducer.actions.setHotels(res.data));
         setWait(false);
       }
@@ -119,6 +125,8 @@ const App = () => {
   useEffect(() => {
     requestLocation();
     componentDidMount();
+    requestUserPermission();
+    NotificationService();
   }, []);
 
   return (
