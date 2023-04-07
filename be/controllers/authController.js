@@ -97,6 +97,16 @@ const CheckLogin = async (req, res) => {
   });
 };
 
+const GetAllUser = async (req, res) => {
+  const users = await User.find().populate("orders");
+  res.status(200).send({
+    message: "Get all user successfully",
+    data: {
+      users: users,
+    },
+  });
+};
+
 const Logout = (req, res) => {
   res.status(200).send("Logout");
 };
@@ -139,6 +149,7 @@ module.exports = {
   Login,
   CheckLogin,
   Logout,
+  GetAllUser,
   UpdateProfile,
   ChangePassword,
 };

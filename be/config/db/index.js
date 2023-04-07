@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 // 7D8SsMgQbeLCDCms
-mongoose.set('strictQuery', true)
+mongoose.set("strictQuery", true);
 async function connect() {
   try {
     mongoose
@@ -12,7 +12,12 @@ async function connect() {
         }
       )
       .then(() => console.log("Connected to MongoDB"))
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log("Connection failed. Retrying...");
+        setTimeout(() => {
+          connect();
+        }, 5000);
+      });
   } catch (err) {
     console.error(err);
   }

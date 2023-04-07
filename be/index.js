@@ -11,7 +11,7 @@ const router = require("./routers/index");
 const db = require("./config/db");
 db.connect();
 
-const port = 3000;
+const port = 6996;
 let ipv4 = "";
 
 // Get the network interfaces
@@ -29,6 +29,37 @@ Object.keys(interfaces).forEach(function (interface) {
     ipv4 = addresses[0].address;
   }
 });
+
+const UpdateAPI_URL = (path) => {
+  fs.readFile(path, "utf8", function (error, data) {
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const lines = data.split("\n");
+    let found = false;
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.startsWith("export const LOCAL_API_URL =")) {
+        lines[i] = "export const LOCAL_API_URL ='http://" + ipv4 + `:${port}'`;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      lines.push("export const LOCAL_API_URL ='http://" + ipv4 + `:${port}'`);
+    }
+
+    fs.writeFile(path, lines.join("\n"), function (error) {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      console.log(`IPv4 at ${path} updated!`);
+    });
+  });
+};
 
 if (config.IPV4_ADDRESS !== ipv4) {
   fs.readFile(".env", "utf8", function (error, data) {
@@ -56,45 +87,23 @@ if (config.IPV4_ADDRESS !== ipv4) {
         console.error(error);
         return;
       }
-      console.log("IPv4 at BE updated!");
-    });
-
-    fs.readFile("../fe/HotelBooking/api.js", "utf8", function (error, data) {
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      const lines = data.split("\n");
-      let found = false;
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        if (line.startsWith("export const LOCAL_API_URL =")) {
-          lines[i] = "export const LOCAL_API_URL ='http://" + ipv4 + ":3000'";
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        lines.push("export const LOCAL_API_URL ='http://" + ipv4 + ":3000'");
-      }
-
-      fs.writeFile(
-        "../fe/HotelBooking/api.js",
-        lines.join("\n"),
-        function (error) {
-          if (error) {
-            console.error(error);
-            return;
-          }
-          console.log("IPv4 at FE updated!");
-        }
-      );
+      console.log("IPv4 at .env updated!");
     });
   });
+
+  UpdateAPI_URL("../fe/HotelBooking/api.js");
+  UpdateAPI_URL("../fe/admin-web-booking/src/api.js");
 }
 
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
+  res.setHeader("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  res.setHeader("X-Powered-By", "3.2.1");
+  res.setHeader("Content-Type", "application/json;charset=utf-8");
+  next();
+});
 app.use(express.json());
 
 router(app);
