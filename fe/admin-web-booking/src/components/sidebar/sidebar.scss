@@ -24,6 +24,7 @@
 
     .center {
         padding-left: 10px;
+        padding-right: 10px;
     
         ul {
             list-style: none;
@@ -46,10 +47,12 @@
                 
                 &.onUse {
                     background-color: #ece8ff;
+                    border-radius: 5px;
                 }
 
                 &:hover {
                     background-color: #ece8ff;
+                    border-radius: 5px;
                 }
 
                 .icon {
