@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const os = require("os");
 const fs = require("fs");
 require("dotenv").config();
@@ -96,14 +97,14 @@ if (config.IPV4_ADDRESS !== ipv4) {
 }
 
 app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
-  res.setHeader("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-  res.setHeader("X-Powered-By", "3.2.1");
-  res.setHeader("Content-Type", "application/json;charset=utf-8");
-  next();
-});
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 router(app);
