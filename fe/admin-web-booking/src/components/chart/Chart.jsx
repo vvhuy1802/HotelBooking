@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./chart.scss";
 import {
   AreaChart,
@@ -10,8 +10,7 @@ import {
 } from "recharts";
 import { useSelector } from "react-redux";
 const Chart = () => {
-  const { totalOrder } = useSelector((state) => state.global);
-  const [typeMoney] = useState("USD");
+  const { totalOrder, typeMoney } = useSelector((state) => state.global);
 
   const moneyAdapter = (money, type) => {
     var m = 0;
@@ -120,7 +119,7 @@ const Chart = () => {
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip">
-          <p className="intro">{(label)}</p>
+          <p className="intro">{label}</p>
           <p className="label">{`Total : ${payload[0].payload.showTotal}`}</p>
         </div>
       );
@@ -129,8 +128,8 @@ const Chart = () => {
 
   return (
     <div className="chart">
-      <div className="title">Last 6 Months (Revenue) {handlePushData()}</div>
-      <ResponsiveContainer width="100%" aspect={2 / 1}>
+      <div className="title">Last 6 Months (Revenue){handlePushData()}</div>
+      <ResponsiveContainer width="100%" height={360}>
         <AreaChart
           width={730}
           height={250}

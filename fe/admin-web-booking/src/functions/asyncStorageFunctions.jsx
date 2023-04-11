@@ -1,4 +1,4 @@
-const setAsyncStorage = async (key: string, value: any) => {
+const setLocalStorage = async (key, value) => {
   try {
     await localStorage.setItem(key, value);
   } catch (error) {
@@ -6,7 +6,7 @@ const setAsyncStorage = async (key: string, value: any) => {
   }
 };
 
-const getAsyncStorage = async (key: string) => {
+const getLocalStorage = async (key) => {
   try {
     return await localStorage.getItem(key);
   } catch (error) {
@@ -14,4 +14,4 @@ const getAsyncStorage = async (key: string) => {
   }
 };
 
-export { setAsyncStorage, getAsyncStorage };
+export { setLocalStorage, getLocalStorage };

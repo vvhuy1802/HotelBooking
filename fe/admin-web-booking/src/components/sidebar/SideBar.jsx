@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import "./sidebar.scss";
+import { useSelector, useDispatch } from "react-redux";
+import { setStateSidebar } from "../../redux/Slices/Global";
+import CustomLink from "../customlink/CustomLink";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -12,7 +15,13 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 
 const SideBar = () => {
-  const [active, setActive] = useState("Dashboard");
+  const dispatch = useDispatch();
+  const { stateSidebar } = useSelector((state) => state.global);
+
+  const setActive = (name) => {
+    dispatch(setStateSidebar(name));
+  };
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -22,27 +31,31 @@ const SideBar = () => {
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
-          <li
-            className={active === "Dashboard" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Dashboard");
-            }}
-          >
-            <DashboardIcon className="icon" />
-            <span>Dashboard</span>
-          </li>
+          <CustomLink to="/">
+            <li
+              className={stateSidebar === "Dashboard" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Dashboard");
+              }}
+            >
+              <DashboardIcon className="icon" />
+              <span>Dashboard</span>
+            </li>
+          </CustomLink>
           <p className="title">LIST</p>
+          <CustomLink to="users">
+            <li
+              className={stateSidebar === "Users" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Users");
+              }}
+            >
+              <PeopleOutlinedIcon className="icon" />
+              <span>Users</span>
+            </li>
+          </CustomLink>
           <li
-            className={active === "Users" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Users");
-            }}
-          >
-            <PeopleOutlinedIcon className="icon" />
-            <span>Users</span>
-          </li>
-          <li
-            className={active === "Admin" ? "onUse" : ""}
+            className={stateSidebar === "Admin" ? "onUse" : ""}
             onClick={() => {
               setActive("Admin");
             }}
@@ -51,7 +64,7 @@ const SideBar = () => {
             <span>Admin Hotels</span>
           </li>
           <li
-            className={active === "Hotels" ? "onUse" : ""}
+            className={stateSidebar === "Hotels" ? "onUse" : ""}
             onClick={() => {
               setActive("Hotels");
             }}
@@ -60,7 +73,7 @@ const SideBar = () => {
             <span>Hotels</span>
           </li>
           <li
-            className={active === "Orders" ? "onUse" : ""}
+            className={stateSidebar === "Orders" ? "onUse" : ""}
             onClick={() => {
               setActive("Orders");
             }}
@@ -70,7 +83,7 @@ const SideBar = () => {
           </li>
           <p className="title">SERVICE</p>
           <li
-            className={active === "Notifications" ? "onUse" : ""}
+            className={stateSidebar === "Notifications" ? "onUse" : ""}
             onClick={() => {
               setActive("Notifications");
             }}
@@ -79,7 +92,7 @@ const SideBar = () => {
             <span>Notifications</span>
           </li>
           <li
-            className={active === "Settings" ? "onUse" : ""}
+            className={stateSidebar === "Settings" ? "onUse" : ""}
             onClick={() => {
               setActive("Settings");
             }}
@@ -89,7 +102,7 @@ const SideBar = () => {
           </li>
           <p className="title">ACCOUNT</p>
           <li
-            className={active === "Profile" ? "onUse" : ""}
+            className={stateSidebar === "Profile" ? "onUse" : ""}
             onClick={() => {
               setActive("Profile");
             }}
@@ -98,7 +111,7 @@ const SideBar = () => {
             <span>Profile</span>
           </li>
           <li
-            className={active === "Log" ? "onUse" : ""}
+            className={stateSidebar === "Log" ? "onUse" : ""}
             onClick={() => {
               setActive("Log");
             }}

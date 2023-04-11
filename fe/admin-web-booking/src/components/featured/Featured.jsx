@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import "./featured.scss";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -7,8 +6,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpOutLinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
 import { useSelector } from "react-redux";
 const Featured = () => {
-  const { totalOrder } = useSelector((state) => state.global);
-  const [typeMoney] = useState("USD");
+  const { totalOrder, typeMoney } = useSelector((state) => state.global);
   const moneyAdapter = (money, type) => {
     var m = 0;
     if (type === "VND") {

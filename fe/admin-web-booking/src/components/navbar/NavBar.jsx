@@ -1,6 +1,9 @@
 import React from "react";
 import "./navbar.scss";
 import avatar from "../../assets/avatar.jpg";
+import { useDispatch } from "react-redux";
+import { setLocalStorage } from "../../functions/asyncStorageFunctions";
+import { setUserInfo } from "../../redux/Slices/Global";
 
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
@@ -9,7 +12,15 @@ import FullscreenExitOutlinedIcon from "@mui/icons-material/FullscreenExitOutlin
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import ChatBubbleOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
+
 const NavBar = () => {
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    setLocalStorage("token", "");
+    dispatch(setUserInfo(""));
+  };
+
   return (
     <div className="navbar">
       <div className="wrapper">
@@ -39,7 +50,12 @@ const NavBar = () => {
           <div className="item">
             <ListOutlinedIcon className="icon" />
           </div>
-          <div className="item">
+          <div
+            className="item"
+            onClick={() => {
+              handleLogout();
+            }}
+          >
             <img src={avatar} alt="" className="avatar" />
           </div>
         </div>

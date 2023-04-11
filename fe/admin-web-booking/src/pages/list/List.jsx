@@ -1,9 +1,14 @@
-import React from 'react'
+import DataTable from "../../components/datatable/DataTable";
+import "./list.scss";
 
 const List = () => {
   return (
-    <div>List</div>
-  )
-}
+    <div className="list">
+      <div className="listContainer">
+        <DataTable />
+      </div>
+    </div>
+  );
+};
 
-export default List
+export default List;

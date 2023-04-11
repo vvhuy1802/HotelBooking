@@ -1,14 +1,15 @@
-import { LOCAL_API_URL } from "../api";
+import { POST } from "../functions/fetchToBE";
 
-export const GetAllUsers = async () => {
-  const API = `${LOCAL_API_URL}/auth/getalluser`;
-  try {
-    const response = await fetch(API, {
-      method: "GET",
-    });
-    const data = await response.json();
-    return { status: 200, data: data };
-  } catch (error) {
-    return { status: 500, data: error };
-  }
+export const CheckLogin = async (token) => {
+  const path = `/auth/checkLogin`;
+  const data = { token: token };
+  const response = await POST(path, data);
+  return response;
+};
+
+export const SignIn = async (email, password) => {
+  const path = `/auth/login`;
+  const data = { email: email, password: password };
+  const response = await POST(path, data);
+  return response;
 };

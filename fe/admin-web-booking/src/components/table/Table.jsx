@@ -10,7 +10,23 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useSelector } from "react-redux";
 const ListTable = () => {
-  const { totalOrder } = useSelector((state) => state.global);
+  const { totalOrder, typeMoney } = useSelector((state) => state.global);
+
+  const moneyAdapter = (money, type) => {
+    var m = 0;
+    if (type === "VND") {
+      m = money.toLocaleString("it-IT", {
+        style: "currency",
+        currency: "VND",
+      });
+    } else if (type === "USD") {
+      m = (money / 23000).toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+      });
+    }
+    return m.split(".")[1] === "00" ? m.split(".")[0] : m;
+  };
 
   const paymentAdapter = (method) => {
     if (method === "payment-hotel") {
@@ -18,6 +34,11 @@ const ListTable = () => {
     } else if (method === "payment-online") {
       return "Payment online";
     }
+  };
+
+  const formatID = (id) => {
+    //break id into 2 parts and add ... between them
+    return id.slice(0, 5) + "..." + id.slice(id.length - 5, id.length);
   };
 
   const formatDate = (date) => {
@@ -64,7 +85,7 @@ const ListTable = () => {
               (item, index) =>
                 index < 5 && (
                   <TableRow key={item._id}>
-                    <TableCell>{item._id}</TableCell>
+                    <TableCell>{formatID(item._id)}</TableCell>
                     <TableCell className="tableCell">
                       {item.id_user.name}
                     </TableCell>
@@ -83,7 +104,9 @@ const ListTable = () => {
                     <TableCell className="tableCell">
                       {formatDate(item.check_out)}
                     </TableCell>
-                    <TableCell className="tableCell">{item.total}</TableCell>
+                    <TableCell className="tableCell">
+                      {moneyAdapter(item.total, typeMoney)}
+                    </TableCell>
                     <TableCell className="tableCell">
                       {paymentAdapter(item.payment_method)}
                     </TableCell>

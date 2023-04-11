@@ -5,11 +5,10 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
-
+import { useSelector } from "react-redux";
 const Widget = ({ type }) => {
+  const { totalOrder, totalUser } = useSelector((state) => state.global);
   let data;
-
-  const amount = 100;
   const diff = 20;
 
   switch (type) {
@@ -18,6 +17,7 @@ const Widget = ({ type }) => {
         title: "USERS",
         isMoney: false,
         link: "See all users",
+        amount: totalUser?.data?.users?.length,
         icon: (
           <PersonOutlinedIcon
             className="icon"
@@ -31,6 +31,7 @@ const Widget = ({ type }) => {
         title: "ORDERS",
         isMoney: false,
         link: "View all orders",
+        amount: totalOrder?.data?.length,
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
@@ -42,9 +43,9 @@ const Widget = ({ type }) => {
         ),
       };
       break;
-    case "erarning":
+    case "earning":
       data = {
-        title: "ERARNINGS",
+        title: "EARNINGS",
         isMoney: false,
         link: "View net earnings",
         icon: (
@@ -77,7 +78,7 @@ const Widget = ({ type }) => {
       <div className="left">
         <span className="title">{data.title}</span>
         <span className="counter">
-          {data.isMoney && "$"} {amount}
+          {data.isMoney && "$"} {data.amount}
         </span>
         <span className="link">{data.link}</span>
       </div>
