@@ -5,3 +5,9 @@ export const GetAllUsers = async () => {
   const response = await GET(path);
   return response;
 };
+
+export const GetSingleUser = async (id) => {
+  const path = `/auth/getuser/${id}`;
+  const response = await GET(path);
+  return response;
+};

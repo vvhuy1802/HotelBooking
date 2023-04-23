@@ -107,6 +107,11 @@ app.use(
 );
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
 router(app);
 
 app.listen(port, ipv4, () => {

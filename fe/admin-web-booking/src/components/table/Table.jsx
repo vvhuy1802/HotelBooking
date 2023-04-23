@@ -9,8 +9,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useSelector } from "react-redux";
-const ListTable = () => {
-  const { totalOrder, typeMoney } = useSelector((state) => state.global);
+const ListTable = ({ dataTable,userName }) => {
+  const { typeMoney } = useSelector((state) => state.global);
 
   const moneyAdapter = (money, type) => {
     var m = 0;
@@ -63,7 +63,7 @@ const ListTable = () => {
     } else return "No Data";
   };
 
-  return (
+  return dataTable? (
     <TableContainer component={Paper} className="table">
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -80,49 +80,59 @@ const ListTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {totalOrder.data
-            ?.map(
-              (item, index) =>
-                index < 5 && (
-                  <TableRow key={item._id}>
-                    <TableCell>{formatID(item._id)}</TableCell>
-                    <TableCell className="tableCell">
-                      {item.id_user.name}
-                    </TableCell>
-                    <TableCell className="tableCell">
-                      {nameHotel(item.id_hotel)}
-                    </TableCell>
-                    <TableCell className="tableCell">
-                      <div className="cellWrapper">
-                        <img src={avatar} alt="" className="cellImg" />
-                        {item.id_room.name}
-                      </div>
-                    </TableCell>
-                    <TableCell className="tableCell">
-                      {formatDate(item.check_in)}
-                    </TableCell>
-                    <TableCell className="tableCell">
-                      {formatDate(item.check_out)}
-                    </TableCell>
-                    <TableCell className="tableCell">
-                      {moneyAdapter(item.total, typeMoney)}
-                    </TableCell>
-                    <TableCell className="tableCell">
-                      {paymentAdapter(item.payment_method)}
-                    </TableCell>
-                    <TableCell className="tableCell">
-                      <span className={`status ${item.status}`}>
-                        {item.status}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                )
-            )
-            .reverse()}
+          {dataTable?.length > 0 ? (
+            dataTable
+              ?.map(
+                (item, index) =>
+                  index < 5 && (
+                    <TableRow key={item._id}>
+                      <TableCell>{formatID(item._id)}</TableCell>
+                      <TableCell className="tableCell">
+                        {item.id_user.name||userName}
+                      </TableCell>
+                      <TableCell className="tableCell">
+                        {nameHotel(item.id_hotel)}
+                      </TableCell>
+                      <TableCell className="tableCell">
+                        <div className="cellWrapper">
+                          <img src={avatar} alt="" className="cellImg" />
+                          {item.id_room.name}
+                        </div>
+                      </TableCell>
+                      <TableCell className="tableCell">
+                        {formatDate(item.check_in)}
+                      </TableCell>
+                      <TableCell className="tableCell">
+                        {formatDate(item.check_out)}
+                      </TableCell>
+                      <TableCell className="tableCell">
+                        {moneyAdapter(item.total, typeMoney)}
+                      </TableCell>
+                      <TableCell className="tableCell">
+                        {paymentAdapter(item.payment_method)}
+                      </TableCell>
+                      <TableCell className="tableCell">
+                        <span className={`status ${item.status}`}>
+                          {item.status}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  )
+              )
+              .reverse()
+          ) : (
+            <div className="empty">
+              <p className="emptyText">No data</p>
+            </div>
+          )}
         </TableBody>
       </Table>
     </TableContainer>
-  );
+  ) :(
+    <div className="loading-table">
+      <div className="loading-spinner-table"/>
+    </div>
+  )
 };
 
 export default ListTable;

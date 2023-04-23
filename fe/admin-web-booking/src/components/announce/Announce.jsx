@@ -10,7 +10,6 @@ const Announce = () => {
   const { announcement } = useSelector((state) => state.global);
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("aaa");
     const timer = setTimeout(() => {
       dispatch(defaultAnnouncement());
     }, 5000);

@@ -85,7 +85,7 @@ const Login = async (req, res) => {
 };
 
 const CheckLogin = async (req, res) => {
-  var user = await User.findOne({ email: req.user.email }).populate("orders");
+  var user = await User.findOne({ email: req.auth.email }).populate("orders");
   user = await Order.populate(user, {
     path: "orders.id_room",
   });
@@ -105,6 +105,25 @@ const GetAllUser = async (req, res) => {
       users: users,
     },
   });
+};
+
+const GetSingleUser = async (req, res) => {
+  try {
+    var user = await User.findById(req.params.id).populate("orders");
+    user = await Order.populate(user, {
+      path: "orders.id_room",
+    });
+    res.status(200).send({
+      message: "Get single user successfully",
+      data: {
+        user: user,
+      },
+    });
+  } catch (error) {
+    res.status(400).send({
+      message: "Get single user failed",
+    });
+  }
 };
 
 const Logout = (req, res) => {
@@ -150,6 +169,7 @@ module.exports = {
   CheckLogin,
   Logout,
   GetAllUser,
+  GetSingleUser,
   UpdateProfile,
   ChangePassword,
 };

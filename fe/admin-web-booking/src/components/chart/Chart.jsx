@@ -9,8 +9,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useSelector } from "react-redux";
-const Chart = () => {
-  const { totalOrder, typeMoney } = useSelector((state) => state.global);
+const Chart = ({ dataChart, height, title }) => {
+  const { typeMoney } = useSelector((state) => state.global);
 
   const moneyAdapter = (money, type) => {
     var m = 0;
@@ -95,7 +95,7 @@ const Chart = () => {
   ];
 
   const handlePushData = () => {
-    totalOrder.data?.forEach((item) => {
+    dataChart?.forEach((item) => {
       if (item.status !== "Cancelled") {
         const date = new Date(item.created_at);
         if (date.getMonth() >= 0 && date.getMonth() <= 5) {
@@ -128,8 +128,11 @@ const Chart = () => {
 
   return (
     <div className="chart">
-      <div className="title">Last 6 Months (Revenue){handlePushData()}</div>
-      <ResponsiveContainer width="100%" height={360}>
+      <div className="title">
+        {title}
+        {handlePushData()}
+      </div>
+      <ResponsiveContainer width="100%" height={height}>
         <AreaChart
           width={730}
           height={250}

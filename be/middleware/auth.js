@@ -9,7 +9,7 @@ const verifyToken = (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, config.TOKEN_KEY);
-    req.user = decoded;
+    req.auth = decoded;
 
   } catch (err) {
     if(err.message == "jwt expired") {

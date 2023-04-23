@@ -1,7 +1,8 @@
 import React from "react";
 import "./sidebar.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { setStateSidebar } from "../../redux/Slices/Global";
+import { setStateSidebar, setUserInfo } from "../../redux/Slices/Global";
+import { setLocalStorage } from "../../functions/asyncStorageFunctions";
 import CustomLink from "../customlink/CustomLink";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -20,6 +21,11 @@ const SideBar = () => {
 
   const setActive = (name) => {
     dispatch(setStateSidebar(name));
+  };
+
+  const handleLogout = () => {
+    setLocalStorage("token", "");
+    dispatch(setUserInfo(""));
   };
 
   return (
@@ -54,33 +60,39 @@ const SideBar = () => {
               <span>Users</span>
             </li>
           </CustomLink>
-          <li
-            className={stateSidebar === "Admin" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Admin");
-            }}
-          >
-            <AdminPanelSettingsOutlinedIcon className="icon" />
-            <span>Admin Hotels</span>
-          </li>
-          <li
-            className={stateSidebar === "Hotels" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Hotels");
-            }}
-          >
-            <ApartmentOutlinedIcon className="icon" />
-            <span>Hotels</span>
-          </li>
-          <li
-            className={stateSidebar === "Orders" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Orders");
-            }}
-          >
-            <ViewListOutlinedIcon className="icon" />
-            <span>Orders</span>
-          </li>
+          <CustomLink to="admins">
+            <li
+              className={stateSidebar === "Admin" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Admin");
+              }}
+            >
+              <AdminPanelSettingsOutlinedIcon className="icon" />
+              <span>Admins</span>
+            </li>
+          </CustomLink>
+          <CustomLink to="hotels">
+            <li
+              className={stateSidebar === "Hotels" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Hotels");
+              }}
+            >
+              <ApartmentOutlinedIcon className="icon" />
+              <span>Hotels</span>
+            </li>
+          </CustomLink>
+          <CustomLink to="bookings">
+            <li
+              className={stateSidebar === "Bookings" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Bookings");
+              }}
+            >
+              <ViewListOutlinedIcon className="icon" />
+              <span>Bookings</span>
+            </li>
+          </CustomLink>
           <p className="title">SERVICE</p>
           <li
             className={stateSidebar === "Notifications" ? "onUse" : ""}
@@ -113,7 +125,7 @@ const SideBar = () => {
           <li
             className={stateSidebar === "Log" ? "onUse" : ""}
             onClick={() => {
-              setActive("Log");
+              handleLogout();
             }}
           >
             <LogoutOutlinedIcon className="icon" />
@@ -121,10 +133,10 @@ const SideBar = () => {
           </li>
         </ul>
       </div>
-      <div className="bottom">
+      {/* <div className="bottom">
         <div className="colorOption"></div>
         <div className="colorOption"></div>
-      </div>
+      </div> */}
     </div>
   );
 };

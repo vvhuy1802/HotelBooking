@@ -1,5 +1,9 @@
 import React from "react";
 import "./widget.scss";
+import { setStateSidebar } from "../../redux/Slices/Global";
+import { useDispatch } from "react-redux";
+import CustomLink from "../customlink/CustomLink";
+
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
@@ -8,8 +12,13 @@ import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlin
 import { useSelector } from "react-redux";
 const Widget = ({ type }) => {
   const { totalOrder, totalUser } = useSelector((state) => state.global);
+  const dispatch = useDispatch();
   let data;
   const diff = 20;
+
+  const handleNavigate = (state) => {
+    dispatch(setStateSidebar(state));
+  };
 
   switch (type) {
     case "user":
@@ -24,13 +33,16 @@ const Widget = ({ type }) => {
             style={{ color: "crimson", backgroundColor: "rgba(255,0,0,0.2)" }}
           />
         ),
+        state: "Users",
+        to: "/users",
       };
+
       break;
     case "order":
       data = {
-        title: "ORDERS",
+        title: "BOOKINGS",
         isMoney: false,
-        link: "View all orders",
+        link: "View all bookings",
         amount: totalOrder?.data?.length,
         icon: (
           <ShoppingCartOutlinedIcon
@@ -41,6 +53,8 @@ const Widget = ({ type }) => {
             }}
           />
         ),
+        state: "Orders",
+        to: "/bookings",
       };
       break;
     case "earning":
@@ -80,7 +94,16 @@ const Widget = ({ type }) => {
         <span className="counter">
           {data.isMoney && "$"} {data.amount}
         </span>
-        <span className="link">{data.link}</span>
+        <CustomLink to={data.to}>
+          <span
+            className="link"
+            onClick={() => {
+              handleNavigate(data.state, data.path);
+            }}
+          >
+            {data.link}
+          </span>
+        </CustomLink>
       </div>
       <div className="right">
         <div className="percentage positive">

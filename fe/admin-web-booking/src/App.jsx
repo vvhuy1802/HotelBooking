@@ -4,7 +4,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
-import { Home, Login, List, Single, New } from "./pages";
+import { Home, Login, List, SingleUser, New } from "./pages";
 import SideBar from "./components/sidebar/SideBar";
 import NavBar from "./components/navbar/NavBar";
 import Announce from "./components/announce/Announce";
@@ -60,15 +60,8 @@ function App() {
       if (res) {
         CheckLogin(res).then((res) => {
           if (res.status === 200) {
-            dispatch(setUserInfo(res.data.data.user));
+            dispatch(setUserInfo(res.data.data.admin));
             dispatch(setIsLoading(false));
-            dispatch(
-              setAnnouncement({
-                message: "Welcome back!",
-                type: "success",
-                id: Math.random(),
-              })
-            );
           } else {
             dispatch(setUserInfo(""));
             dispatch(setIsLoading(false));
@@ -102,14 +95,15 @@ function App() {
     } else if (currentpath === "/users") {
       dispatch(setStateSidebar("Users"));
     }
+    else if (currentpath === "/admins") {
+      dispatch(setStateSidebar("Admin"));
+    }
   }, [location.pathname, dispatch]);
 
   return (
     <div className="app">
       {isLoading ? (
-        <div className="loading-container">
-          <div className="loading-spinner" />
-        </div>
+        <></>
       ) : (
         <>
           <div className="main">
@@ -126,32 +120,39 @@ function App() {
                     path="login"
                     element={userInfo ? <Navigate to="/" /> : <Login />}
                   />
+
                   <Route path="users">
                     <Route
                       index
                       element={userInfo ? <List /> : <Navigate to="/login" />}
                     />
+                  </Route>
+
+                  <Route path="admins">
                     <Route
-                      path=":userId"
-                      element={
-                        userInfo ? <Single /> : <Navigate to="/login/" />
-                      }
-                    />
-                    <Route
-                      path="new"
-                      element={userInfo ? <New /> : <Navigate to="/login/" />}
+                      index
+                      element={userInfo ? <List /> : <Navigate to="/login" />}
                     />
                   </Route>
 
-                  <Route path="products">
+                  <Route path="user">
+                    <Route
+                      path=":userId"
+                      element={
+                        userInfo ? <SingleUser /> : <Navigate to="/login/" />
+                      }
+                    />
+                  </Route>
+
+                  <Route path="hotels">
                     <Route
                       index
                       element={userInfo ? <List /> : <Navigate to="/login" />}
                     />
                     <Route
-                      path=":productId"
+                      path=":hotelId"
                       element={
-                        userInfo ? <Single /> : <Navigate to="/login/" />
+                        userInfo ? <SingleUser /> : <Navigate to="/login/" />
                       }
                     />
                     <Route
@@ -160,6 +161,19 @@ function App() {
                     />
                   </Route>
                 </Route>
+
+                <Route
+                  path="*"
+                  element={
+                    <h1>
+                      <div className="notfound">
+                        <div className="notfound-404">
+                          <h1>404</h1>
+                        </div>
+                      </div>
+                    </h1>
+                  }
+                />
               </Routes>
             </div>
           </div>
