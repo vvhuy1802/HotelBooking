@@ -25,6 +25,7 @@ import {
 } from "./redux/Slices/Global";
 
 import { getLocalStorage } from "./functions/asyncStorageFunctions";
+import HomeHotel from "./ContainerAdminHotel/Home/Home";
 
 function App() {
   const dispatch = useDispatch();
@@ -100,11 +101,13 @@ function App() {
     }
   }, [location.pathname, dispatch]);
 
+
   return (
     <div className="app">
       {isLoading ? (
         <></>
-      ) : (
+      ) : 
+        userInfo.roll === "adminapp"?
         <>
           <div className="main">
             {userInfo && <SideBar />}
@@ -178,7 +181,81 @@ function App() {
             </div>
           </div>
         </>
-      )}
+        : 
+      <>
+        <div className="main">
+            {userInfo && <SideBar />}
+            <div className="container">
+              {userInfo && <NavBar />}
+              <Routes>
+                <Route path="/">
+                  <Route
+                    path="/"
+                    element={userInfo ? <HomeHotel /> : <Navigate to="/login" />}
+                  />
+                  <Route
+                    path="login"
+                    element={userInfo ? <Navigate to="/" /> : <Login />}
+                  />
+
+                  <Route path="users">
+                    <Route
+                      index
+                      element={userInfo ? <List /> : <Navigate to="/login" />}
+                    />
+                  </Route>
+
+                  <Route path="admins">
+                    <Route
+                      index
+                      element={userInfo ? <List /> : <Navigate to="/login" />}
+                    />
+                  </Route>
+
+                  <Route path="user">
+                    <Route
+                      path=":userId"
+                      element={
+                        userInfo ? <SingleUser /> : <Navigate to="/login/" />
+                      }
+                    />
+                  </Route>
+
+                  <Route path="hotels">
+                    <Route
+                      index
+                      element={userInfo ? <List /> : <Navigate to="/login" />}
+                    />
+                    <Route
+                      path=":hotelId"
+                      element={
+                        userInfo ? <SingleUser /> : <Navigate to="/login/" />
+                      }
+                    />
+                    <Route
+                      path="new"
+                      element={userInfo ? <New /> : <Navigate to="/login/" />}
+                    />
+                  </Route>
+                </Route>
+
+                <Route
+                  path="*"
+                  element={
+                    <h1>
+                      <div className="notfound">
+                        <div className="notfound-404">
+                          <h1>404</h1>
+                        </div>
+                      </div>
+                    </h1>
+                  }
+                />
+              </Routes>
+            </div>
+          </div>
+      </>
+    }
       <Announce />
     </div>
   );

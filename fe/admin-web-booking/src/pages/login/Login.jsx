@@ -7,13 +7,14 @@ import { useDispatch } from "react-redux";
 import { setUserInfo, setAnnouncement } from "../../redux/Slices/Global";
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("adminapp@gmail.com");
+  const [email, setEmail] = useState("adminamis@gmail.com");
   const [password, setPassword] = useState("123456");
   const dispatch = useDispatch();
   const handleLogin = () => {
     setIsLoading(true);
     SignIn(email, password).then((res) => {
-      if (res.status === 200 && res.data.roll === "adminapp") {
+      if (res.status === 200) {
+        if(res.data.roll === "adminapp"){
         setLocalStorage("token", res.data.token);
         dispatch(setUserInfo(res.data));
         dispatch(
@@ -24,7 +25,22 @@ const Login = () => {
           })
         );
         setIsLoading(false);
-      } else {
+      }
+      if(res.data.roll==="adminks"){
+        setLocalStorage("token", res.data.token);
+        dispatch(setUserInfo(res.data));
+        dispatch(
+          setAnnouncement({
+            message: "Login Success",
+            type: "success",
+            id: Math.random(),
+          })
+        );
+        setIsLoading(false);
+      }
+    }
+      
+      else {
         dispatch(
           setAnnouncement({
             message: "Login Failed",
