@@ -21,7 +21,6 @@ const SingleUser = () => {
     dispatch(setStateSidebar("Users"));
     GetSingleUser(currentPath.split("/")[2]).then((res) => {
       setUser(res.data.data.user);
-      console.log(res.data.data.user);
     });
   }, [dispatch, currentPath]);
 

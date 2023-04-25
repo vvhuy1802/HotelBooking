@@ -4,17 +4,44 @@ import { setStateSidebar } from "../../redux/Slices/Global";
 import { useDispatch } from "react-redux";
 import CustomLink from "../customlink/CustomLink";
 
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+// import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import ApartmentIcon from "@mui/icons-material/Apartment";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { useSelector } from "react-redux";
 const Widget = ({ type }) => {
-  const { totalOrder, totalUser } = useSelector((state) => state.global);
+  const { totalOrder, totalHotel, totalUser, typeMoney } = useSelector(
+    (state) => state.global
+  );
   const dispatch = useDispatch();
   let data;
-  const diff = 20;
+
+  const moneyAdapter = (money, type) => {
+    var m = 0;
+    if (type === "VND") {
+      m = money.toLocaleString("it-IT", {
+        style: "currency",
+        currency: "VND",
+      });
+    } else if (type === "USD") {
+      m = (money / 23000).toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+      });
+    }
+    return m.split(".")[1] === "00" ? m.split(".")[0] : m;
+  };
+
+  const totalEarnings = () => {
+    var total = 0;
+    totalOrder.data?.forEach((item) => {
+      if (item.status !== "Cancelled") {
+        total += item.total;
+      }
+    });
+    return moneyAdapter(total, typeMoney);
+  };
 
   const handleNavigate = (state) => {
     dispatch(setStateSidebar(state));
@@ -57,11 +84,12 @@ const Widget = ({ type }) => {
         to: "/bookings",
       };
       break;
-    case "earning":
+    case "revenue":
       data = {
-        title: "EARNINGS",
+        title: "Revenue",
         isMoney: false,
-        link: "View net earnings",
+        amount: totalEarnings(),
+        link: "View revenue details",
         icon: (
           <MonetizationOnOutlinedIcon
             className="icon"
@@ -70,17 +98,20 @@ const Widget = ({ type }) => {
         ),
       };
       break;
-    case "balance":
+    case "hotel":
       data = {
-        title: "MY BALANCE",
+        title: "Hotels",
         isMoney: false,
-        link: "See details",
+        amount: totalHotel?.length,
+        link: "See all hotels",
         icon: (
-          <AccountBalanceWalletOutlinedIcon
+          <ApartmentIcon
             className="icon"
             style={{ color: "purple", backgroundColor: "rgba(128,0,128,0.2)" }}
           />
         ),
+        state: "Hotels",
+        to: "/hotels",
       };
       break;
     default:
@@ -90,27 +121,22 @@ const Widget = ({ type }) => {
   return (
     <div className="widget">
       <div className="left">
-        <span className="title">{data.title}</span>
-        <span className="counter">
-          {data.isMoney && "$"} {data.amount}
-        </span>
-        <CustomLink to={data.to}>
+        <span className="title">{data?.title}</span>
+        <span className="counter">{data?.amount}</span>
+        <CustomLink to={data?.to}>
           <span
             className="link"
             onClick={() => {
-              handleNavigate(data.state, data.path);
+              handleNavigate(data?.state, data?.path);
             }}
           >
-            {data.link}
+            {data?.link}
           </span>
         </CustomLink>
       </div>
       <div className="right">
-        <div className="percentage positive">
-          <KeyboardArrowUpIcon />
-          {diff} %
-        </div>
-        {data.icon}
+        <div></div>
+        {data?.icon}
       </div>
     </div>
   );

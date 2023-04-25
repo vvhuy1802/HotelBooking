@@ -1,6 +1,33 @@
 .datatable {
-  height: 550px;
+  height: 500px;
   padding: 20px;
+
+  .datatableTitle {
+    width: 100%;
+    font-size: 24px;
+    color: gray;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .link {
+      text-decoration: none;
+      color:green;
+      font-size: 14px;
+      font-weight: 400;
+      border:1px solid green;
+      padding: 5px;
+      border-radius: 5px;
+      transform: all 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        transition: all 0.3s ease;
+        scale: 1.02;
+      }
+    }
+  }
 
   .cellWithImg {
     display: flex;
@@ -13,6 +40,54 @@
       object-fit: cover;
       margin-right: 10px;
     }
+  }
+
+  .status {
+    padding: 5px;
+    border-radius: 5px;
+
+    &.Approved {
+      background-color: rgba(0, 128, 0, 0.151);
+      color: green;
+    }
+    &.Pending {
+      background-color: rgba(255, 165, 0, 0.151);
+      color: orange;
+    }
+    &.Cancelled {
+      background-color: rgba(255, 0, 0, 0.151);
+      color: red;
+    }
+  }
+
+  .cellWithActive {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    width: 100px;
+    color: #fff;
+
+    .active {
+      background: green;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .inactive {
+      background: red;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+    }
+  }
+
+  .cellNumbeRoom {
+    display: flex;
+    width: 70px;
+    align-items: center;
+    justify-content: center;
   }
 
   .action {
@@ -33,7 +108,7 @@
 
   .delete {
     position: fixed;
-    bottom: 35px;
+    bottom: 40px;
     right: 40%;
     width: 100px;
     background-color: #ff1744;

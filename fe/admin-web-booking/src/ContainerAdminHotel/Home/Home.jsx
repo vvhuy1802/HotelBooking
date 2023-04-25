@@ -6,7 +6,6 @@ import ListTable from "../../components/table/Table";
 import { useSelector } from "react-redux";
 const HomeHotel = () => {
   const { totalOrder } = useSelector((state) => state.global);
-  console.log(totalOrder)
   return (
     <div className="home">
       <div className="homeContainer">
