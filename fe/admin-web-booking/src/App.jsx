@@ -13,15 +13,18 @@ import { GetAllOrders } from "./middlewares/order";
 import { GetAllHotels } from "./middlewares/hotel";
 import { GetAllUsers } from "./middlewares/user";
 import { CheckLogin } from "./middlewares/auth";
+import { GetAllAdmins } from "./middlewares/admin";
 
 import {
   setTotalHotel,
   setTotalOrder,
   setTotalUser,
+  setTotalAdmin,
   setUserInfo,
   setStateSidebar,
   setIsLoading,
   setAnnouncement,
+  defaultAnnouncement,
 } from "./redux/Slices/Global";
 
 import { getLocalStorage } from "./functions/asyncStorageFunctions";
@@ -57,6 +60,14 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
+    GetAllAdmins().then((res) => {
+      if (res.status === 200) {
+        dispatch(setTotalAdmin(res.data));
+      }
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
     getLocalStorage("token").then((res) => {
       if (res) {
         CheckLogin(res).then((res) => {
@@ -73,6 +84,9 @@ function App() {
                 id: Math.random(),
               })
             );
+            setTimeout(() => {
+              dispatch(defaultAnnouncement());
+            }, 3000);
           }
         });
       } else {
@@ -85,6 +99,9 @@ function App() {
             id: Math.random(),
           })
         );
+        setTimeout(() => {
+          dispatch(defaultAnnouncement());
+        }, 3000);
       }
     });
   }, [dispatch]);
@@ -95,8 +112,7 @@ function App() {
       dispatch(setStateSidebar("Dashboard"));
     } else if (currentpath === "/users") {
       dispatch(setStateSidebar("Users"));
-    }
-    else if (currentpath === "/admins") {
+    } else if (currentpath === "/admins") {
       dispatch(setStateSidebar("Admin"));
     }
   }, [location.pathname, dispatch]);

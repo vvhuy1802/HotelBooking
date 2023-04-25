@@ -6,10 +6,10 @@ const fs = require("fs");
 require("dotenv").config();
 const config = process.env;
 
-const router = require("./routers/index");
+const router = require("./src/routers/index");
 
 //connect to db
-const db = require("./config/db");
+const db = require("./src/config/db");
 db.connect();
 
 const port = 6996;

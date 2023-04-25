@@ -98,14 +98,18 @@ const GetAllAdmin = async (req, res) => {
   admins.map(async (admin) => {
     if (admin.idHotel != null) {
       var hotel = await Hotel.findOne({ id: admin.idHotel });
-      admin.dataHotel = hotel;
+      admin.dataHotel.push(hotel);
     }
-  });
-  res.status(200).send({
-    message: "Get all user successfully",
-    data: {
-      admin: admins,
-    },
+
+    // if end of array
+    if (admins.indexOf(admin) === admins.length - 1) {
+      res.status(200).send({
+        message: "Get all user successfully",
+        data: {
+          admin: admins,
+        },
+      });
+    }
   });
 };
 

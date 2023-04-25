@@ -8,16 +8,6 @@ import { defaultAnnouncement } from "../../redux/Slices/Global";
 
 const Announce = () => {
   const { announcement } = useSelector((state) => state.global);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch(defaultAnnouncement());
-    }, 5000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [announcement,dispatch]);
   return (
     <div className="announce">
       {announcement

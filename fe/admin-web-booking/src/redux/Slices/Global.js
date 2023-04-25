@@ -10,6 +10,7 @@ const initialState = {
   totalHotel: [],
   totalOrder: [],
   totalUser: [],
+  totalAdmin: [],
 };
 
 export const globalSlice = createSlice({
@@ -30,6 +31,9 @@ export const globalSlice = createSlice({
     },
     setTotalUser: (state, action) => {
       state.totalUser = action.payload;
+    },
+    setTotalAdmin: (state, action) => {
+      state.totalAdmin = action.payload;
     },
     setTypeMoney: (state, action) => {
       state.typeMoney = action.payload;
@@ -54,12 +58,13 @@ export const {
   setTotalHotel,
   setTotalOrder,
   setTotalUser,
+  setTotalAdmin,
   setTypeMoney,
   setUserInfo,
   setStateSidebar,
   setIsLoading,
   setAnnouncement,
-  defaultAnnouncement
+  defaultAnnouncement,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;
