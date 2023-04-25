@@ -13,11 +13,13 @@ import { GetAllOrders } from "./middlewares/order";
 import { GetAllHotels } from "./middlewares/hotel";
 import { GetAllUsers } from "./middlewares/user";
 import { CheckLogin } from "./middlewares/auth";
+import { GetAllAdmins } from "./middlewares/admin";
 
 import {
   setTotalHotel,
   setTotalOrder,
   setTotalUser,
+  setTotalAdmin,
   setUserInfo,
   setStateSidebar,
   setIsLoading,
@@ -51,6 +53,14 @@ function App() {
     GetAllUsers().then((res) => {
       if (res.status === 200) {
         dispatch(setTotalUser(res.data));
+      }
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    GetAllAdmins().then((res) => {
+      if (res.status === 200) {
+        dispatch(setTotalAdmin(res.data));
       }
     });
   }, [dispatch]);
@@ -94,8 +104,7 @@ function App() {
       dispatch(setStateSidebar("Dashboard"));
     } else if (currentpath === "/users") {
       dispatch(setStateSidebar("Users"));
-    }
-    else if (currentpath === "/admins") {
+    } else if (currentpath === "/admins") {
       dispatch(setStateSidebar("Admin"));
     }
   }, [location.pathname, dispatch]);

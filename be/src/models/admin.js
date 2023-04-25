@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const adminSchema = new mongoose.Schema({
   idHotel: { type: String, default: null },
-  dataHotel: { type: String },
+  dataHotel: { type: Array },
   name: { type: String, default: null },
   phone_number: { type: String, default: null },
   email: { type: String, unique: true },
