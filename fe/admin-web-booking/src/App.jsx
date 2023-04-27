@@ -3,11 +3,14 @@ import React, { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { getLocalStorage } from "./functions/asyncStorageFunctions";
 
-import { Home, Login, List, SingleUser, New } from "./pages";
+import { Home, Login, List, Single, New } from "./pages";
 import SideBar from "./components/sidebar/SideBar";
 import NavBar from "./components/navbar/NavBar";
 import Announce from "./components/announce/Announce";
+import HomeHotel from "./ContainerAdminHotel/Home/Home";
+import { AdminInputs, HotelInputs } from "./formSource";
 
 import { GetAllOrders } from "./middlewares/order";
 import { GetAllHotels } from "./middlewares/hotel";
@@ -26,9 +29,6 @@ import {
   setAnnouncement,
   defaultAnnouncement,
 } from "./redux/Slices/Global";
-
-import { getLocalStorage } from "./functions/asyncStorageFunctions";
-import HomeHotel from "./ContainerAdminHotel/Home/Home";
 
 function App() {
   const dispatch = useDispatch();
@@ -111,13 +111,13 @@ function App() {
       const currentpath = location.pathname;
       if (currentpath === "/") {
         dispatch(setStateSidebar("Dashboard"));
-      } else if (currentpath === "/users") {
+      } else if (currentpath.split("/")[1] === "user") {
         dispatch(setStateSidebar("Users"));
-      } else if (currentpath === "/admins") {
+      } else if (currentpath.split("/")[1] === "admin") {
         dispatch(setStateSidebar("Admin"));
-      } else if (currentpath === "/hotels") {
+      } else if (currentpath.split("/")[1] === "hotel") {
         dispatch(setStateSidebar("Hotels"));
-      } else if (currentpath === "/bookings")
+      } else if (currentpath.split("/")[1] === "booking")
         dispatch(setStateSidebar("Bookings"));
     }
   }, [location.pathname, userInfo.roll, dispatch]);
@@ -142,54 +142,64 @@ function App() {
                     path="login"
                     element={userInfo ? <Navigate to="/" /> : <Login />}
                   />
-                  <Route path="users">
-                    <Route
-                      index
-                      element={userInfo ? <List /> : <Navigate to="/login" />}
-                    />
-                  </Route>
+
                   <Route path="user">
                     <Route
-                      path=":userId"
-                      element={
-                        userInfo ? <SingleUser /> : <Navigate to="/login/" />
-                      }
-                    />
-                  </Route>
-                  <Route path="admins">
-                    <Route
                       index
                       element={userInfo ? <List /> : <Navigate to="/login" />}
                     />
+                    <Route
+                      path=":userId"
+                      element={userInfo ? <Single /> : <Navigate to="/login" />}
+                    />
                   </Route>
+
                   <Route path="admin">
                     <Route
+                      index
+                      element={userInfo ? <List /> : <Navigate to="/login" />}
+                    />
+                    <Route
                       path=":adminId"
+                      element={userInfo ? <Single /> : <Navigate to="/login" />}
+                    />
+                    <Route
+                      path="new"
                       element={
-                        userInfo ? <SingleUser /> : <Navigate to="/login/" />
+                        userInfo ? (
+                          <New title={"Add New Admin"} inputs={AdminInputs} />
+                        ) : (
+                          <Navigate to="/login" />
+                        )
                       }
                     />
                   </Route>
-                  <Route path="bookings">
+
+                  <Route path="booking">
                     <Route
                       index
                       element={userInfo ? <List /> : <Navigate to="/login" />}
                     />
                   </Route>
-                  <Route path="hotels">
+
+                  <Route path="hotel">
                     <Route
                       index
                       element={userInfo ? <List /> : <Navigate to="/login" />}
                     />
                     <Route
                       path=":hotelId"
-                      element={
-                        userInfo ? <SingleUser /> : <Navigate to="/login/" />
-                      }
+                      element={userInfo ? <Single /> : <Navigate to="/login" />}
                     />
                     <Route
                       path="new"
-                      element={userInfo ? <New /> : <Navigate to="/login/" />}
+                      element={
+                        userInfo ? (
+                          <New title={"Add New Hotel"} inputs={HotelInputs} />
+                        ) : (
+                          <Navigate to="/login" />
+                        )
+                      }
                     />
                   </Route>
                 </Route>
@@ -246,9 +256,7 @@ function App() {
                   <Route path="user">
                     <Route
                       path=":userId"
-                      element={
-                        userInfo ? <SingleUser /> : <Navigate to="/login/" />
-                      }
+                      element={userInfo ? <Single /> : <Navigate to="/login" />}
                     />
                   </Route>
 
@@ -259,13 +267,11 @@ function App() {
                     />
                     <Route
                       path=":hotelId"
-                      element={
-                        userInfo ? <SingleUser /> : <Navigate to="/login/" />
-                      }
+                      element={userInfo ? <Single /> : <Navigate to="/login" />}
                     />
                     <Route
                       path="new"
-                      element={userInfo ? <New /> : <Navigate to="/login/" />}
+                      element={userInfo ? <New /> : <Navigate to="/login" />}
                     />
                   </Route>
                 </Route>

@@ -5,23 +5,10 @@ import "react-circular-progressbar/dist/styles.css";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpOutLinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
 import { useSelector } from "react-redux";
+import { moneyAdapter } from "../../functions/Adapter";
+
 const Featured = () => {
   const { totalOrder, typeMoney } = useSelector((state) => state.global);
-  const moneyAdapter = (money, type) => {
-    var m = 0;
-    if (type === "VND") {
-      m = money.toLocaleString("it-IT", {
-        style: "currency",
-        currency: "VND",
-      });
-    } else if (type === "USD") {
-      m = (money / 23000).toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
-      });
-    }
-    return m.split(".")[1] === "00" ? m.split(".")[0] : m;
-  };
 
   const totalToday = () => {
     var total = 0;

@@ -10,28 +10,14 @@ import ApartmentIcon from "@mui/icons-material/Apartment";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { useSelector } from "react-redux";
+import { moneyAdapter } from "../../functions/Adapter";
+
 const Widget = ({ type }) => {
   const { totalOrder, totalHotel, totalUser, typeMoney } = useSelector(
     (state) => state.global
   );
   const dispatch = useDispatch();
   let data;
-
-  const moneyAdapter = (money, type) => {
-    var m = 0;
-    if (type === "VND") {
-      m = money.toLocaleString("it-IT", {
-        style: "currency",
-        currency: "VND",
-      });
-    } else if (type === "USD") {
-      m = (money / 23000).toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
-      });
-    }
-    return m.split(".")[1] === "00" ? m.split(".")[0] : m;
-  };
 
   const totalEarnings = () => {
     var total = 0;
@@ -61,7 +47,7 @@ const Widget = ({ type }) => {
           />
         ),
         state: "Users",
-        to: "/users",
+        to: "/user",
       };
 
       break;
@@ -81,7 +67,7 @@ const Widget = ({ type }) => {
           />
         ),
         state: "Orders",
-        to: "/bookings",
+        to: "/booking",
       };
       break;
     case "revenue":
@@ -111,7 +97,7 @@ const Widget = ({ type }) => {
           />
         ),
         state: "Hotels",
-        to: "/hotels",
+        to: "/hotel",
       };
       break;
     default:

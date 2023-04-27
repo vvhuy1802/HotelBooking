@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
@@ -6,6 +5,7 @@ import avatar from "../../assets/avatar.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import { moneyAdapter, paymentAdapter } from "../../functions/Adapter";
 
 const Type = (type) => {
   return type === "app" ? "App" : type === "google" ? "Google" : "Facebook";
@@ -13,7 +13,7 @@ const Type = (type) => {
 
 const handleColumnsUser = (navigate) => {
   return [
-    { field: "id", headerName: "ID", width: 170 },
+    { field: "id", headerName: "ID", width: 250 },
     {
       field: "name",
       headerName: "Name",
@@ -31,7 +31,7 @@ const handleColumnsUser = (navigate) => {
         );
       },
     },
-    { field: "email", headerName: "Email", width: 200 },
+    { field: "email", headerName: "Email", width: 230 },
     {
       field: "phone",
       headerName: "Phone Number",
@@ -65,7 +65,7 @@ const handleColumnsUser = (navigate) => {
 
 const handleColumnsAdmin = (navigate) => {
   return [
-    { field: "id", headerName: "ID", width: 170 },
+    { field: "id", headerName: "ID", width: 200 },
     {
       field: "name",
       headerName: "Name",
@@ -87,8 +87,9 @@ const handleColumnsAdmin = (navigate) => {
     {
       field: "phone",
       headerName: "Phone Number",
-      width: 200,
+      width: 150,
     },
+    { field: "country", headerName: "Country", width: 130 },
     { field: "hotel", headerName: "Hotel", width: 170 },
     {
       field: "action",
@@ -117,11 +118,11 @@ const handleColumnsAdmin = (navigate) => {
 
 const handleColumnsHotel = (navigate) => {
   return [
-    { field: "id", headerName: "ID", width: 170 },
+    { field: "id", headerName: "ID", width: 200 },
     {
       field: "name",
       headerName: "Name",
-      width: 200,
+      width: 210,
       renderCell: (params) => {
         return (
           <div className="cellWithImg">
@@ -150,7 +151,7 @@ const handleColumnsHotel = (navigate) => {
     {
       field: "address",
       headerName: "Address",
-      width: 380,
+      width: 450,
     },
     {
       field: "isactive",
@@ -219,14 +220,14 @@ const handleColumnsBooking = (navigate) => {
     {
       field: "room",
       headerName: "Room",
-      width: 150,
+      width: 160,
       renderCell: (params) => {
-        return(
+        return (
           <div>
             <span>{params.row.room}</span>
           </div>
-        )
-      }
+        );
+      },
     },
     {
       field: "checkin",
@@ -244,11 +245,20 @@ const handleColumnsBooking = (navigate) => {
       width: 100,
     },
     {
+      field: "payment_method",
+      headerName: "Payment",
+      width: 100,
+    },
+    {
       field: "status",
       headerName: "Status",
       width: 110,
       renderCell: (params) => {
-        return <span className={`status ${params.row.status}`}>{params.row.status}</span>;
+        return (
+          <span className={`status ${params.row.status}`}>
+            {params.row.status}
+          </span>
+        );
       },
     },
     {
@@ -286,7 +296,6 @@ const DataTable = () => {
     typeMoney,
     stateSidebar,
   } = useSelector((state) => state.global);
-  const [selectionModel, setSelectionModel] = useState([]);
 
   var dataTitle = {};
   switch (stateSidebar) {
@@ -317,30 +326,6 @@ const DataTable = () => {
     default:
       break;
   }
-
-  const moneyAdapter = (money, type) => {
-    var m = 0;
-    if (type === "VND") {
-      m = money.toLocaleString("it-IT", {
-        style: "currency",
-        currency: "VND",
-      });
-    } else if (type === "USD") {
-      m = (money / 23000).toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
-      });
-    }
-    return m.split(".")[1] === "00" ? m.split(".")[0] : m;
-  };
-
-  // const paymentAdapter = (method) => {
-  //   if (method === "payment-hotel") {
-  //     return "Payment at hotel";
-  //   } else if (method === "payment-online") {
-  //     return "Payment online";
-  //   }
-  // };
 
   const nameHotel = (id) => {
     if (id === "amishotel") {
@@ -389,6 +374,7 @@ const DataTable = () => {
           id: admin._id,
           name: admin.name,
           email: admin.email,
+          country: admin.country || "Viet Nam",
           phone: admin.phone_number || "...",
           hotel: admin.dataHotel[0]?.name || "...",
         })
@@ -419,6 +405,7 @@ const DataTable = () => {
         customer: order.id_user.name,
         hotel: nameHotel(order.id_hotel),
         room: order.id_room.name,
+        payment_method: paymentAdapter(order.payment_method),
         checkin: formatDate(order.check_in),
         checkout: formatDate(order.check_out),
         cost: moneyAdapter(order.total, typeMoney),
@@ -479,17 +466,16 @@ const DataTable = () => {
           pageSize={5}
           rowsPerPageOptions={[5]}
           checkboxSelection
-          disableRowSelectionOnClick
           disableVirtualization
           disableDensitySelector
-          disableColumnMenu
           disableColumnSelector
-          onRowSelectionModelChange={(e) => {
-            setSelectionModel(e);
-          }}
+          disableRowSelectionOnClick
+          hideFooterSelectedRowCount
+          disableColumnFilter
+          disableSelectionOnClick
+          
         />
       )}
-      {selectionModel?.length > 0 && <div className="delete">Delete</div>}
     </div>
   );
 };

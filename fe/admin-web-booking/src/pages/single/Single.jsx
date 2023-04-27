@@ -1,4 +1,4 @@
-import "./singleuser.scss";
+import "./single.scss";
 import React, { useEffect, useState } from "react";
 import avatar from "../../assets/avatar.jpg";
 import Skeleton from "@mui/material/Skeleton";
@@ -9,6 +9,7 @@ import { GetSingleUser } from "../../middlewares/user";
 import { setStateSidebar } from "../../redux/Slices/Global";
 import Chart from "../../components/chart/Chart";
 import ListTable from "../../components/table/Table";
+import { moneyAdapter } from "../../functions/Adapter";
 
 const SingleUser = () => {
   const location = useLocation();
@@ -23,22 +24,6 @@ const SingleUser = () => {
       setUser(res.data.data.user);
     });
   }, [dispatch, currentPath]);
-
-  const moneyAdapter = (money, type) => {
-    var m = 0;
-    if (type === "VND") {
-      m = money.toLocaleString("it-IT", {
-        style: "currency",
-        currency: "VND",
-      });
-    } else if (type === "USD") {
-      m = (money / 23000).toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
-      });
-    }
-    return m.split(".")[1] === "00" ? m.split(".")[0] : m;
-  };
 
   const totalSpending = () => {
     var total = 0;

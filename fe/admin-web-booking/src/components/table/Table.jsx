@@ -9,32 +9,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useSelector } from "react-redux";
+import { moneyAdapter, paymentAdapter } from "../../functions/Adapter";
+
 const ListTable = ({ dataTable,userName }) => {
   const { typeMoney } = useSelector((state) => state.global);
-
-  const moneyAdapter = (money, type) => {
-    var m = 0;
-    if (type === "VND") {
-      m = money.toLocaleString("it-IT", {
-        style: "currency",
-        currency: "VND",
-      });
-    } else if (type === "USD") {
-      m = (money / 23000).toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
-      });
-    }
-    return m.split(".")[1] === "00" ? m.split(".")[0] : m;
-  };
-
-  const paymentAdapter = (method) => {
-    if (method === "payment-hotel") {
-      return "Payment at hotel";
-    } else if (method === "payment-online") {
-      return "Payment online";
-    }
-  };
 
   const formatID = (id) => {
     //break id into 2 parts and add ... between them
