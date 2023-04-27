@@ -28,7 +28,12 @@ import {
 } from "./redux/Slices/Global";
 
 import { getLocalStorage } from "./functions/asyncStorageFunctions";
-import HomeHotel from "./ContainerAdminHotel/Home/Home";
+import HomeHotel from "./ContainerAdminHotel/Container/Home/Home";
+import SideBarHotel from "./ContainerAdminHotel/Components/SideBarHotel/SideBarHotel";
+import NavBarHotel from "./ContainerAdminHotel/Components/NavBarHotel/NavBarHotel";
+import ListRoom from "./ContainerAdminHotel/Container/ListRoom/ListRoom";
+import ListBooking from "./ContainerAdminHotel/Container/ListBooking/ListBooking";
+import RoomDetail from "./ContainerAdminHotel/Container/ListRoom/RoomDetail";
 
 function App() {
   const dispatch = useDispatch();
@@ -200,9 +205,9 @@ function App() {
         : 
       <>
         <div className="main">
-            {userInfo && <SideBar />}
+            {userInfo && <SideBarHotel />}
             <div className="container">
-              {userInfo && <NavBar />}
+              {userInfo && <NavBarHotel />}
               <Routes>
                 <Route path="/">
                   <Route
@@ -214,17 +219,24 @@ function App() {
                     element={userInfo ? <Navigate to="/" /> : <Login />}
                   />
 
-                  <Route path="users">
+                  <Route path="listroom">
                     <Route
                       index
-                      element={userInfo ? <List /> : <Navigate to="/login" />}
+                      element={userInfo ? <ListRoom /> : <Navigate to="/login" />}
                     />
                   </Route>
 
-                  <Route path="admins">
+                  <Route path="listroom/:id">
                     <Route
                       index
-                      element={userInfo ? <List /> : <Navigate to="/login" />}
+                      element={userInfo ? <RoomDetail/> : <Navigate to="/login" />}
+                    />
+                  </Route>
+
+                  <Route path="listbooking">
+                    <Route
+                      index
+                      element={userInfo ? <ListBooking /> : <Navigate to="/login" />}
                     />
                   </Route>
 

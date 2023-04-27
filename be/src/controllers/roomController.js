@@ -29,6 +29,46 @@ const AddNewRoom = async (req, res) => {
   res.status(200).send(room);
 };
 
+const UpdateRoom = async (req, res) => {
+  try{
+  const {
+    name,
+    price,
+    description,
+    utility,
+    image,
+    isactive,
+    hotel_id,
+    tag,
+  } = req.body;
+  const room = await Room.findByIdAndUpdate(
+    req.params.id,
+    {
+      name,
+      price,
+      description,
+      utility,
+      image,
+      isactive,
+      hotel_id,
+      tag,
+    }
+  );
+  res.status(200).json({ success: true, data: room });
+} catch (error) {
+  res.status(500).json({ success: false, message: error.message });
+}
+}
+
+const DeleteRoom = async (req, res) => {
+  try {
+    const room = await Room.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true, message: "Delete room success" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 
 const GetAllRooms = async (req, res) => {
   const rooms = await Room.find();
@@ -40,4 +80,4 @@ const GetRoomById = async (req, res) => {
   res.status(200).send(room);
 };
 
-module.exports = { AddNewRoom, GetAllRooms, GetRoomById };
+module.exports = { AddNewRoom, GetAllRooms, GetRoomById,UpdateRoom,DeleteRoom };
