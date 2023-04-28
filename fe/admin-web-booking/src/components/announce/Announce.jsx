@@ -1,10 +1,7 @@
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import "./announce.scss";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
-import { defaultAnnouncement } from "../../redux/Slices/Global";
 
 const Announce = () => {
   const { announcement } = useSelector((state) => state.global);

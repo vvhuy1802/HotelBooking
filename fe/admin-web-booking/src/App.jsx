@@ -26,8 +26,7 @@ import {
   setUserInfo,
   setStateSidebar,
   setIsLoading,
-  setAnnouncement,
-  defaultAnnouncement,
+  setAnnouncementAuto,
 } from "./redux/Slices/Global";
 
 function App() {
@@ -78,30 +77,24 @@ function App() {
             dispatch(setUserInfo(""));
             dispatch(setIsLoading(false));
             dispatch(
-              setAnnouncement({
+              setAnnouncementAuto({
                 message: "Please login to continue!",
                 type: "error",
                 id: Math.random(),
               })
             );
-            setTimeout(() => {
-              dispatch(defaultAnnouncement());
-            }, 3000);
           }
         });
       } else {
         dispatch(setUserInfo(""));
         dispatch(setIsLoading(false));
         dispatch(
-          setAnnouncement({
+          setAnnouncementAuto({
             message: "Please login to continue!",
             type: "error",
             id: Math.random(),
           })
         );
-        setTimeout(() => {
-          dispatch(defaultAnnouncement());
-        }, 3000);
       }
     });
   }, [dispatch]);

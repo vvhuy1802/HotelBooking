@@ -47,8 +47,8 @@ export const globalSlice = createSlice({
     setAnnouncement: (state, action) => {
       state.announcement.push(action.payload);
     },
-    defaultAnnouncement: (state) => {
-      state.announcement = [];
+    removeAnnouncement: (state) => {
+      state.announcement.shift();
     },
   },
 });
@@ -64,7 +64,14 @@ export const {
   setStateSidebar,
   setIsLoading,
   setAnnouncement,
-  defaultAnnouncement,
+  removeAnnouncement,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;
+
+export const setAnnouncementAuto = (announcement) => (dispatch) => {
+  dispatch(setAnnouncement(announcement));
+  setTimeout(() => {
+    dispatch(removeAnnouncement());
+  }, 3500);
+};
