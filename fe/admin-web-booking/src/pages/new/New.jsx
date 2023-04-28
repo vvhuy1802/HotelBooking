@@ -3,8 +3,8 @@ import "./new.scss";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import CancelIcon from "@mui/icons-material/Cancel";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+// import VisibilityIcon from "@mui/icons-material/Visibility";
+// import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import * as XLSX from "xlsx";
 
 const New = ({ title, inputs }) => {
@@ -15,6 +15,7 @@ const New = ({ title, inputs }) => {
   const [imgIndex, setImgIndex] = useState(null);
   const [indexItemExcel, setIndexItemExcel] = useState(null);
   const [isSet, setIsSet] = useState(true);
+  const [ExcelInfo, setExcelInfo] = useState(null);
 
   const handleAddListImage = (file) => {
     //listImage have id, img
@@ -87,15 +88,6 @@ const New = ({ title, inputs }) => {
     });
   };
 
-  const handleHidePassword = (id) => {
-    const input = document.getElementById(id);
-    if (input.type === "password") {
-      input.type = "text";
-    } else {
-      input.type = "password";
-    }
-  };
-
   const handleImportExcel = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -104,6 +96,7 @@ const New = ({ title, inputs }) => {
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
+      setExcelInfo(file);
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workBook = XLSX.read(data, { type: "array" });
@@ -154,6 +147,14 @@ const New = ({ title, inputs }) => {
         </div>
         {dataFromExcel ? (
           <>
+            <div className="middleExcel">
+              {ExcelInfo && (
+                <div className="infoExcel">
+                  <p>Name: {ExcelInfo.name}</p>
+                  <p>Size: {ExcelInfo.size} bytes</p>
+                </div>
+              )}
+            </div>
             <div className="bottomExcel">
               {dataFromExcel.map((item, index) => (
                 <div className="bottom" key={index}>
