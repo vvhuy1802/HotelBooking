@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import DataRoom from "../../Components/DataRoom/DataRoom";
 import "./listbooking.scss";
 import { GetAllOrders } from "./apiListBooking";
 import { useSelector } from "react-redux";
-import DataBooking from "../../Components/DataBooking/DataBooking";
+import DataTable from "../../Components/DataTable/DataTable";
 
 const ListBooking = () => {
   const [data, setData] = useState([]);
@@ -30,7 +29,7 @@ const ListBooking = () => {
       ) : (
         <div className="list">
           <div className="listContainer">
-            <DataBooking data={data} />
+            <DataTable data={data} />
           </div>
         </div>
       )}

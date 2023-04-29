@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import DataRoom from "../../Components/DataRoom/DataRoom";
 import "./listroom.scss";
 import { getAllRoomInHotel } from "./apiListRoom";
 import { useSelector } from "react-redux";
+import DataTable from "../../Components/DataTable/DataTable";
 
 const ListRoom = () => {
   const [data, setData] = useState([]);
@@ -29,7 +29,7 @@ const ListRoom = () => {
       ) : (
         <div className="list">
           <div className="listContainer">
-            <DataRoom data={data} />
+            <DataTable data={data} />
           </div>
         </div>
       )}

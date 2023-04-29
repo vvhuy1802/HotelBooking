@@ -117,7 +117,7 @@ const GetAdminById = async (req, res) => {
   const admin = await Admin.findById(req.params.id);
   if (admin.idHotel != null) {
     var hotel = await Hotel.findOne({ id: admin.id });
-    admin.idHotel = hotel;
+    admin.dataHotel.push(hotel);
   }
   res.status(200).send({
     message: "Get user by id successfully",
@@ -132,14 +132,17 @@ const GetAdminByIdHotel = async (req, res) => {
   admins.map(async (admin) => {
     if (admin.idHotel != null) {
       var hotel = await Hotel.findOne({ id: admin.id });
-      admin.idHotel = hotel;
+      admin.dataHotel.push(hotel);
     }
-  });
-  res.status(200).send({
-    message: "Get user by id successfully",
-    data: {
-      admin: admins,
-    },
+
+    if (admins.indexOf(admin) === admins.length - 1) {
+      res.status(200).send({
+        message: "Get all user successfully",
+        data: {
+          admin: admins,
+        },
+      });
+    }
   });
 };
 

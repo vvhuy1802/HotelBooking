@@ -11,9 +11,9 @@ const Home = () => {
       <div className="homeContainer">
         <div className="widgets">
           <Widget type="user" />
+          <Widget type="hotel" />
           <Widget type="order" />
-          <Widget type="earning" />
-          <Widget type="balance" />
+          <Widget type="revenue" />
         </div>
         <div className="charts">
           <Featured />

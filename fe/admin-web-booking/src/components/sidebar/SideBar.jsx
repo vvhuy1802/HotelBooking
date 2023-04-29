@@ -49,18 +49,7 @@ const SideBar = () => {
             </li>
           </CustomLink>
           <p className="title">LIST</p>
-          <CustomLink to="users">
-            <li
-              className={stateSidebar === "Users" ? "onUse" : ""}
-              onClick={() => {
-                setActive("Users");
-              }}
-            >
-              <PeopleOutlinedIcon className="icon" />
-              <span>Users</span>
-            </li>
-          </CustomLink>
-          <CustomLink to="admins">
+          <CustomLink to="admin">
             <li
               className={stateSidebar === "Admin" ? "onUse" : ""}
               onClick={() => {
@@ -71,7 +60,18 @@ const SideBar = () => {
               <span>Admins</span>
             </li>
           </CustomLink>
-          <CustomLink to="hotels">
+          <CustomLink to="user">
+            <li
+              className={stateSidebar === "Users" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Users");
+              }}
+            >
+              <PeopleOutlinedIcon className="icon" />
+              <span>Users</span>
+            </li>
+          </CustomLink>
+          <CustomLink to="hotel">
             <li
               className={stateSidebar === "Hotels" ? "onUse" : ""}
               onClick={() => {
@@ -82,7 +82,7 @@ const SideBar = () => {
               <span>Hotels</span>
             </li>
           </CustomLink>
-          <CustomLink to="bookings">
+          <CustomLink to="booking">
             <li
               className={stateSidebar === "Bookings" ? "onUse" : ""}
               onClick={() => {
