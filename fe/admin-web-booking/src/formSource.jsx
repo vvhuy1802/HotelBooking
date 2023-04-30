@@ -5,6 +5,7 @@ export const AdminInputs = [
     type: "text",
     id_input: "email",
     placeholder: "hotel@gmail.com",
+    disabled: true,
   },
   {
     id: 2,
@@ -12,6 +13,7 @@ export const AdminInputs = [
     type: "password",
     id_input: "password",
     placeholder: "********",
+    disabled: true,
   },
   {
     id: 3,
@@ -26,6 +28,7 @@ export const AdminInputs = [
     type: "text",
     id_input: "idhotel",
     placeholder: "ID",
+    disabled: true,
   },
   {
     id: 5,
@@ -50,6 +53,7 @@ export const HotelInputs = [
     type: "text",
     id_input: "id",
     placeholder: "ID Hotel",
+    disabled: true,
   },
   {
     id: 2,
@@ -86,14 +90,14 @@ export const HotelInputs = [
   },
   {
     id: 7,
-    label: "Longitude",
-    id_input: "longitude",
-    placeholder: "106.123456",
-  },
-  {
-    id: 8,
     label: "Latitude",
     id_input: "latitude",
     placeholder: "10.123456",
+  },
+  {
+    id: 8,
+    label: "Longitude",
+    id_input: "longitude",
+    placeholder: "106.123456",
   },
 ];

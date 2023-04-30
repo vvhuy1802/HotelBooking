@@ -127,7 +127,9 @@ const UpdateRoom = ({ title }) => {
   const handleDeleteImage = (img) => {
     const listImageTemp = [...listImage];
     const index = listImageTemp.findIndex((item) => item === img);
-    const desertRef = ref(storage, "images/desert.jpg");
+    var fileName = img.substring(img.lastIndexOf('/') + 1, img.indexOf('?'));
+    var filetrue=fileName.split("%2F")[1];
+    const desertRef = ref(storage, `/${state.hotel_id}/${filetrue}`);
     // Delete the file
     deleteObject(desertRef)
       .then(() => {

@@ -5,11 +5,14 @@ const adminSchema = new mongoose.Schema({
   idHotel: { type: String, default: null },
   dataHotel: { type: Array },
   name: { type: String, default: null },
+  avatar: { type: String, default: null },
   phone_number: { type: String, default: null },
   email: { type: String, unique: true },
-  roll: { type: String },
+  country: { type: String, default: "Viet Nam" },
+  roll: { type: String, default: "adminks" },
   password: { type: String },
   token: { type: String },
 });
 
+adminSchema.index({ roll: 1 }, { unique: false });
 module.exports = mongoose.model("admin", adminSchema);

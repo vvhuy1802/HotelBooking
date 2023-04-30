@@ -1,5 +1,6 @@
 const Room = require("../models/room");
 const Hotel = require("../models/hotel");
+const { GetAllHotel } = require("./hotelController");
 
 const AddNewRoom = async (req, res) => {
   const {
@@ -63,7 +64,11 @@ const UpdateRoom = async (req, res) => {
 const DeleteRoom = async (req, res) => {
   try {
     const room = await Room.findByIdAndDelete(req.params.id);
-    const hotel = await Hotel.rooms.findByIdAndDelete(req.params.id);
+    const hotel = await Hotel.findOne({ rooms: req.params.id });
+    const hotelupdate = await Hotel.findByIdAndUpdate(hotel._id, {
+      $pull: { rooms: req.params.id },
+    });
+    hotelupdate.save();
     res.status(200).json({ success: true, message: "Delete room success" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

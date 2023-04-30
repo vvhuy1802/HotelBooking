@@ -1,13 +1,17 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import "./new.scss";
+
+import { CreateHotel } from "../../middlewares/hotel";
+import { setAnnouncementAuto } from "../../redux/Slices/Global";
+
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import CancelIcon from "@mui/icons-material/Cancel";
-// import VisibilityIcon from "@mui/icons-material/Visibility";
-// import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import * as XLSX from "xlsx";
 
 const New = ({ title, inputs }) => {
+  const dispatch = useDispatch();
   const [file, setFile] = useState(null);
   const [dataFromExcel, setDataFromExcel] = useState(null);
   const [listImage, setListImage] = useState([]);
@@ -122,7 +126,35 @@ const New = ({ title, inputs }) => {
       ).value;
     }
     data.image = inputs.length === 6 ? file : listImage;
-    console.log(data);
+    data.position = [data.latitude, data.longitude];
+    CreateHotel(data).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
+        dispatch(
+          setAnnouncementAuto({
+            message: "Create hotel success!",
+            type: "success",
+            id: Math.random(),
+          })
+        );
+      } else if (res.status === 400) {
+        dispatch(
+          setAnnouncementAuto({
+            message: res.data.message,
+            type: "error",
+            id: Math.random(),
+          })
+        );
+      } else {
+        dispatch(
+          setAnnouncementAuto({
+            message: "Create hotel fail!",
+            type: "error",
+            id: Math.random(),
+          })
+        );
+      }
+    });
   };
 
   return (

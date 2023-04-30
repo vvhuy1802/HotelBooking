@@ -8,6 +8,7 @@ const {
   GetAllAdmin,
   GetAdminById,
   GetAdminByIdHotel,
+  UpdateInfoAdmin,
 } = require("../controllers/adminController");
 
 const router = express.Router();
@@ -19,5 +20,7 @@ router.post("/checkLogin", auth, checkLogin);
 router.get("/getall", GetAllAdmin);
 router.get("/:id", GetAdminById);
 router.get("/hotel/:id", GetAdminByIdHotel);
+
+router.put("/update/:id", UpdateInfoAdmin);
 
 module.exports = router;

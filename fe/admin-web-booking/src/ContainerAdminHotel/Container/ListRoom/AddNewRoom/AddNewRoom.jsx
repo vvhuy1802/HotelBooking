@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./addnewroom.scss";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -6,8 +6,12 @@ import Select from "react-select";
 import Switch from "../../../Components/Switch/Switch";
 import { AddNewRoomInHotel } from "./apiAddNewRoom";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { storage } from "../../../../configFirebase/config";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const AddNewRoom = ({ title, inputs }) => {
+  const navigate=useNavigate();
   const [file, setFile] = useState(null);
   const {userInfo}=useSelector(state=>state.global)
   const [formData, setFormData] = useState({});
@@ -15,12 +19,23 @@ const AddNewRoom = ({ title, inputs }) => {
   const [uti, setUti] = useState([]);
   const [value, setValue] = useState(false);
   const [listImage, setListImage] = useState([]);
-  const options = [
-    { value: "Internet Explorer", label: "Internet Explorer" },
-    { value: "Firefox", label: "Firefox" },
-    { value: "Google Chrome", label: "Google Chrome" },
-    { value: "Opera", label: "Opera" },
-    { value: "Safari", label: "Safari" },
+  let options = [
+    { value: "Bồn tắm", label: "Bồn tắm" },
+    { value: "Bếp riêng", label: "Bếp riêng" },
+    { value: "Nhìn ra hồ", label: "Nhìn ra hồ" },
+    { value: "Nhìn ra thành phố", label: "Nhìn ra thành phố" },
+    { value: "Nhìn ra sông", label: "Nhìn ra sông" },
+    { value: "TV màn hình phẳng", label: "TV màn hình phẳng" },
+    { value: "Hệ thống cách âm", label: "Hệ thống cách âm" },
+    { value: "Wifi miễn phí", label: "Wifi miễn phí" },
+    { value: "Ban công", label: "Ban công" },
+    { value: "Tầm nhìn ra khung cảnh", label: "Tầm nhìn ra khung cảnh" },
+    {
+      value: "Phòng tắm riêng trong phòng",
+      label: "Phòng tắm riêng trong phòng",
+    },
+    { value: "Điều hòa không khí", label: "Điều hòa không khí" },
+    { value: "Sân hiên", label: "Sân hiên" },
   ];
 
   const handleChange = (selectedOptions) => {
@@ -29,17 +44,26 @@ const AddNewRoom = ({ title, inputs }) => {
     setSelectedOptions(selectedOptions);
   };
 
+ 
   const handleAddListImage = (file) => {
     //listImage have id, img
     const listImageTemp = [...listImage];
     for (let i = 0; i < file.length; i++) {
-      listImageTemp.push({
-        id: Math.random(),
-        img: URL.createObjectURL(file[i]),
+      const storageRef = ref(storage, `/${userInfo.idHotel}/${file[i].name}`);
+      uploadBytes(storageRef, file[i]).then((snapshot) => {
+        const pathReference = ref(storage, `/${userInfo.idHotel}/${file[i].name}`);
+        getDownloadURL(pathReference).then((url) => {
+          listImageTemp.push(url);
+          setListImage(listImageTemp);
+        });
       });
     }
-    setListImage(listImageTemp);
+    // 'file' comes from the Blob or File API
   };
+
+  useEffect(() => {
+    setFormData({ ...formData, hotel_id: userInfo.idHotel });
+  }, []);
 
   const handleChangeInput = (e) => {
     const { id, value } = e.target;
@@ -52,9 +76,20 @@ const AddNewRoom = ({ title, inputs }) => {
     }
   };
 
-  const handleDeleteImage = (id) => {
+  const handleDeleteImage = (img) => {
     const listImageTemp = [...listImage];
-    const index = listImageTemp.findIndex((item) => item.id === id);
+    const index = listImageTemp.findIndex((item) => item === img);
+    var fileName = img.substring(img.lastIndexOf('/') + 1, img.indexOf('?'));
+    var filetrue=fileName.split("%2F")[1];
+    const desertRef = ref(storage, `/${userInfo.idHotel}/${filetrue}`);
+    // Delete the file
+    deleteObject(desertRef)
+      .then(() => {
+        // File deleted successfully
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+      });
     listImageTemp.splice(index, 1);
     setListImage(listImageTemp);
   };
@@ -62,8 +97,8 @@ const AddNewRoom = ({ title, inputs }) => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     const data={...formData,image:listImage,isactive:value,utility:uti,tag:[]}
-    console.log(data);
     const res = await AddNewRoomInHotel(data);
+    navigate("/listroom");
   }
 
   return (
@@ -74,35 +109,14 @@ const AddNewRoom = ({ title, inputs }) => {
         </div>
         <div className="bottom">
           <div className="left">
-            <label htmlFor="file">
-              <img
-                src={
-                  file
-                    ? URL.createObjectURL(file)
-                    : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-                }
-                alt=""
-                className="imgAvatar"
-              />
-              <input
-                type="file"
-                id="file"
-                onChange={(e) => {
-                  if (e.target.files[0]) {
-                    setFile(e.target.files[0]);
-                  }
-                }}
-                style={{ display: "none", cursor: "pointer" }}
-              />
-            </label>
             <div className="listImageContainer">
               <div className="content">
                 {listImage.map((img) => (
-                  <div className="item" key={img.id}>
-                    <img src={img.img} alt="" className="imgList" />
+                  <div className="item">
+                    <img src={img} alt="" className="imgList" />
                     <ClearOutlinedIcon
                       onClick={() => {
-                        handleDeleteImage(img.id);
+                        handleDeleteImage(img);
                       }}
                       className="divDelete"
                     />
