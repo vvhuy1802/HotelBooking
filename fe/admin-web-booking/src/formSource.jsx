@@ -48,7 +48,7 @@ export const HotelInputs = [
     id: 1,
     label: "ID Hotel",
     type: "text",
-    id_input: "idhotel",
+    id_input: "id",
     placeholder: "ID Hotel",
   },
   {

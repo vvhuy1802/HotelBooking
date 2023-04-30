@@ -390,7 +390,7 @@ const DataTable = () => {
         name: hotel.name,
         isactive: hotel.isactive,
         room: hotel.rooms.length,
-        image: hotel.image,
+        image: hotel.image[0],
         address: hotel.address,
       })
     );
@@ -473,7 +473,6 @@ const DataTable = () => {
           hideFooterSelectedRowCount
           disableColumnFilter
           disableSelectionOnClick
-          
         />
       )}
     </div>

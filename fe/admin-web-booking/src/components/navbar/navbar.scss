@@ -13,6 +13,10 @@
         align-items: center;
         justify-content: space-between;
 
+        .search {
+            font-size: 17px;
+        }
+
         .items {
             display: flex;
             align-items: center;
@@ -23,8 +27,18 @@
                 margin-right: 20px;
                 position: relative;
 
+                span {
+                    margin-left: 5px;
+                }
+
                 .icon {
-                    font-size: 20px;
+                    font-size: 25px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+
+                    &:hover {
+                        scale: 1.05;
+                    }
                 }
 
                 .avatar {

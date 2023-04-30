@@ -7,6 +7,7 @@ import DataTable from "../../Components/DataTable/DataTable";
 const ListRoom = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [reload, setReload] = useState(false);
   const {userInfo}=useSelector(state=>state.global)
   const initFetch = async () => {
     setIsLoading(true);
@@ -22,6 +23,13 @@ const ListRoom = () => {
   useEffect(() => {
     initFetch();
   }, []);
+
+  useEffect(() => {
+    if(reload){
+      initFetch();
+      setReload(false)
+    }
+  }, [reload]);
   return (
     <>
       {isLoading ? (
@@ -29,7 +37,7 @@ const ListRoom = () => {
       ) : (
         <div className="list">
           <div className="listContainer">
-            <DataTable data={data} />
+            <DataTable data={data} setReload={setReload}/>
           </div>
         </div>
       )}

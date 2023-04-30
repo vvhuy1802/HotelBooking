@@ -4,7 +4,7 @@ import avatar from "../../assets/avatar.jpg";
 import { SignIn } from "../../middlewares/auth";
 import { setLocalStorage } from "../../functions/asyncStorageFunctions";
 import { useDispatch } from "react-redux";
-import { setUserInfo, setAnnouncement } from "../../redux/Slices/Global";
+import { setUserInfo, setAnnouncementAuto } from "../../redux/Slices/Global";
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("adminamis@gmail.com");
@@ -14,35 +14,33 @@ const Login = () => {
     setIsLoading(true);
     SignIn(email, password).then((res) => {
       if (res.status === 200) {
-        if(res.data.roll === "adminapp"){
-        setLocalStorage("token", res.data.token);
-        dispatch(setUserInfo(res.data));
+        if (res.data.roll === "adminapp") {
+          setLocalStorage("token", res.data.token);
+          dispatch(setUserInfo(res.data));
+          dispatch(
+            setAnnouncementAuto({
+              message: "Login Success",
+              type: "success",
+              id: Math.random(),
+            })
+          );
+          setIsLoading(false);
+        }
+        if (res.data.roll === "adminks") {
+          setLocalStorage("token", res.data.token);
+          dispatch(setUserInfo(res.data));
+          dispatch(
+            setAnnouncementAuto({
+              message: "Login Success",
+              type: "success",
+              id: Math.random(),
+            })
+          );
+          setIsLoading(false);
+        }
+      } else {
         dispatch(
-          setAnnouncement({
-            message: "Login Success",
-            type: "success",
-            id: Math.random(),
-          })
-        );
-        setIsLoading(false);
-      }
-      if(res.data.roll==="adminks"){
-        setLocalStorage("token", res.data.token);
-        dispatch(setUserInfo(res.data));
-        dispatch(
-          setAnnouncement({
-            message: "Login Success",
-            type: "success",
-            id: Math.random(),
-          })
-        );
-        setIsLoading(false);
-      }
-    }
-      
-      else {
-        dispatch(
-          setAnnouncement({
+          setAnnouncementAuto({
             message: "Login Failed",
             type: "error",
           })

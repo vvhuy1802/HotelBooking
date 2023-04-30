@@ -32,3 +32,16 @@ export const GET = async (path) => {
     return { status: 500, data: error };
   }
 };
+
+export const DELETE = async (path) => {
+  const API = `${LOCAL_API_URL}${path}`;
+  try {
+    const response = await fetch(API, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    return { status: 200, data: data };
+  } catch (error) {
+    return { status: 500, data: error };
+  }
+}

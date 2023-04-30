@@ -5,9 +5,11 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import Select from "react-select";
 import Switch from "../../../Components/Switch/Switch";
 import { AddNewRoomInHotel } from "./apiAddNewRoom";
+import { useSelector } from "react-redux";
 
 const AddNewRoom = ({ title, inputs }) => {
   const [file, setFile] = useState(null);
+  const {userInfo}=useSelector(state=>state.global)
   const [formData, setFormData] = useState({});
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [uti, setUti] = useState([]);
@@ -131,7 +133,7 @@ const AddNewRoom = ({ title, inputs }) => {
                   <input
                     type={input.type}
                     id={input.id_input}
-                    value={formData[input.id_input] || ''}
+                    value={input.id_input!=="hotel_id"?(formData[input.id_input] || ''):userInfo.idHotel}
                     placeholder={input.placeholder}
                     onChange={handleChangeInput}
                   />
@@ -145,7 +147,7 @@ const AddNewRoom = ({ title, inputs }) => {
                 onChange={handleChange}
               />
               <div className="switchStyle">
-                <span>Active</span>
+                <span className="spanStyle">Active</span>
               <Switch
               isOn={value}
               handleToggle={() => setValue(!value)}

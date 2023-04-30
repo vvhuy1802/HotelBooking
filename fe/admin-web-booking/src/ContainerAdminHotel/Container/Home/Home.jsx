@@ -12,6 +12,7 @@ const HomeHotel = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const {userInfo}=useSelector(state=>state.global)
+  console.log(userInfo);
   const initFetch = async () => {
     setIsLoading(true);
     const res = await GetAllOrders();

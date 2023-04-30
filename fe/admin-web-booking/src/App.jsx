@@ -26,8 +26,7 @@ import {
   setUserInfo,
   setStateSidebar,
   setIsLoading,
-  setAnnouncement,
-  defaultAnnouncement,
+  setAnnouncementAuto,
 } from "./redux/Slices/Global";
 
 
@@ -38,6 +37,7 @@ import ListRoom from "./ContainerAdminHotel/Container/ListRoom/ListRoom";
 import ListBooking from "./ContainerAdminHotel/Container/ListBooking/ListBooking";
 import { RoomInputs } from "./ContainerAdminHotel/Components/Input/DataInput";
 import AddNewRoom from "./ContainerAdminHotel/Container/ListRoom/AddNewRoom/AddNewRoom";
+import UpdateRoom from "./ContainerAdminHotel/Container/ListRoom/UpdateRoom/UpdateRoom";
 
 function App() {
   const dispatch = useDispatch();
@@ -87,30 +87,24 @@ function App() {
             dispatch(setUserInfo(""));
             dispatch(setIsLoading(false));
             dispatch(
-              setAnnouncement({
+              setAnnouncementAuto({
                 message: "Please login to continue!",
                 type: "error",
                 id: Math.random(),
               })
             );
-            setTimeout(() => {
-              dispatch(defaultAnnouncement());
-            }, 3000);
           }
         });
       } else {
         dispatch(setUserInfo(""));
         dispatch(setIsLoading(false));
         dispatch(
-          setAnnouncement({
+          setAnnouncementAuto({
             message: "Please login to continue!",
             type: "error",
             id: Math.random(),
           })
         );
-        setTimeout(() => {
-          dispatch(defaultAnnouncement());
-        }, 3000);
       }
     });
   }, [dispatch]);
@@ -254,14 +248,20 @@ function App() {
                       element={userInfo ? <ListRoom /> : <Navigate to="/login" />}
                     />
                     <Route
-                      path=":roomId"
-                      element={userInfo ? <Single /> : <Navigate to="/login" />}
-                    />
-                    <Route
                       path="new"
                       element={
                         userInfo ? (
                           <AddNewRoom title={"Add New Room"} inputs={RoomInputs}/>
+                        ) : (
+                          <Navigate to="/login" />
+                        )
+                      }
+                    />
+                    <Route 
+                      path="edit/:roomId"
+                      element={
+                        userInfo ? (
+                          <UpdateRoom title={"Update Room"}/>
                         ) : (
                           <Navigate to="/login" />
                         )

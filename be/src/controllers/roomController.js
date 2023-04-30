@@ -63,6 +63,7 @@ const UpdateRoom = async (req, res) => {
 const DeleteRoom = async (req, res) => {
   try {
     const room = await Room.findByIdAndDelete(req.params.id);
+    const hotel = await Hotel.rooms.findByIdAndDelete(req.params.id);
     res.status(200).json({ success: true, message: "Delete room success" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

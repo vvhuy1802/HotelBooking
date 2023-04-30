@@ -1,16 +1,34 @@
 import React from "react";
 import "./navbar.scss";
 import avatar from "../../assets/avatar.jpg";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setTypeMoney, setAnnouncementAuto } from "../../redux/Slices/Global";
 
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import ChatBubbleOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
-import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
+// import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+// import ChatBubbleOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
+// import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 const NavBar = () => {
-  const { userInfo } = useSelector((state) => state.global);
+  const dispatch = useDispatch();
+  const { userInfo, typeMoney } = useSelector((state) => state.global);
+
+  const handleChangeTypeMoney = () => {
+    if (typeMoney === "VND") {
+      dispatch(setTypeMoney("USD"));
+    } else {
+      dispatch(setTypeMoney("VND"));
+    }
+    dispatch(
+      setAnnouncementAuto({
+        message: "Change type money successfully!",
+        type: "success",
+        id: Math.random(),
+      })
+    );
+  };
 
   return (
     <div className="navbar">
@@ -26,17 +44,22 @@ const NavBar = () => {
           <div className="item">
             <DarkModeOutlinedIcon className="icon" />
           </div>
-          <div className="item">
+          <div
+            className="item"
+            onClick={() => {
+              handleChangeTypeMoney();
+            }}
+          >
+            <AttachMoneyIcon className="icon" />
+          </div>
+          {/* <div className="item">
             <NotificationsNoneOutlinedIcon className="icon" />
             <div className="counter">1</div>
           </div>
           <div className="item">
             <ChatBubbleOutlinedIcon className="icon" />
             <div className="counter">2</div>
-          </div>
-          <div className="item">
-            <ListOutlinedIcon className="icon" />
-          </div>
+          </div> */}
           <div className="item">
             <img src={avatar} alt="" className="avatar" />
           </div>

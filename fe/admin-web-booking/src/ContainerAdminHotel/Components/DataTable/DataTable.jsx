@@ -6,10 +6,11 @@ import avatar from "../../../assets/avatar.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import { DeleteRoomInHotel } from "./apiDataTable";
 
 
 const DataTable = (props) => {
-  const { data } = props;
+  const { data,setReload } = props;
   const navigate = useNavigate();
   const {stateSidebar } = useSelector((state) => state.global);
   const [selectionModel, setSelectionModel] = useState([]);
@@ -21,6 +22,7 @@ const DataTable = (props) => {
       dataTitle = {
         title: "List Room",
         path: "/listroom/new",
+        pathEdit: "/listroom/edit/:roomId",
       };
       break;
     case "Bookings":
@@ -55,20 +57,20 @@ const DataTable = (props) => {
           );
         },
       },
-      { field: "check_in", headerName: "Check In", width: 200 },
+      { field: "check_in", headerName: "Check In", width: 110 },
       {
         field: "check_out",
         headerName: "Check Out",
-        width: 200,
+        width: 110,
       },
-      { field: "cost", headerName: "Cost", width: 170 },
+      { field: "cost", headerName: "Cost", width: 100},
       { field: "payment_method",
        headerName: "Payment Method",
-        width: 200,
+        width: 180,
       },
       { field: "status",
        headerName: "Status",
-        width: 170,
+        width: 140,
         renderCell: (params) => {
           return (
             <div>
@@ -137,18 +139,18 @@ const DataTable = (props) => {
       {
         field: "name",
         headerName: "Name",
-        width: 260,
+        width: 250,
       },
       { field: "description", headerName: "Description", width: 200 },
       {
         field: "price",
         headerName: "Price",
-        width: 200,
+        width: 100,
       },
       { field: "utility", headerName: "Utility", width: 170 },
       { field: "image",
        headerName: "Image",
-        width: 170,
+        width: 100,
         renderCell: (params) => {
           return (
             <div className="cellWithImg">
@@ -166,14 +168,15 @@ const DataTable = (props) => {
         headerName: "Action",
         width: 100,
         renderCell: (params) => {
-          const handleView = () => {
-            navigate(`/listroom/${params.row.id}`,{
+          const handleEdit = () => {
+            navigate(`/listroom/edit/${params.row.id}`,{
               state: {
                 id: params.row.id,
                 name: params.row.name,
                 description: params.row.description,
                 price: params.row.price,
                 image: params.row.image,
+                isactive: params.row.isactive,
                 utility: params.row.utility,
                 hotel_id: params.row.hotel_id,
                 tag: params.row.tag,
@@ -185,10 +188,10 @@ const DataTable = (props) => {
               <div
                 className="btnEdit"
                 onClick={() => {
-                  handleView();
+                  handleEdit();
                 }}
               >
-                View
+                Edit
               </div>
             </div>
           );
@@ -207,6 +210,7 @@ const DataTable = (props) => {
           description: item.description,
           price: item.price,
           image: item.image,
+          isactive: item.isactive,
           utility: item.utility,
           hotel_id: item.hotel_id,
           tag: item.tag,
@@ -216,16 +220,25 @@ const DataTable = (props) => {
     return rows;
   };
 
+  const deleteRoom = async() => {
+    for (let i=0;i<selectionModel.length;i++){
+    const res =await DeleteRoomInHotel(selectionModel[i])
+    setReload(true);
+    }
+  }
+
   return (
     <div className="datatable">
         <div className="datatableTitle">
         {dataTitle.title}
+        <div style={{}}>
           <Link to={dataTitle.path}
-            style={{ textDecoration: "none" }}
+            style={{ textDecoration: "none"}}
             className="link"
           >
             Add new
           </Link>
+          </div>
       </div>
       {data.length===0 ? (
         <Box
@@ -261,11 +274,12 @@ const DataTable = (props) => {
           disableColumnMenu
           disableColumnSelector
           onRowSelectionModelChange={(e) => {
+            console.log(e);
             setSelectionModel(e);
           }}
         />
       )}
-      {selectionModel?.length > 0 && <div className="delete">Delete</div>}
+      {selectionModel?.length > 0 && <div onClick={deleteRoom} className="delete">Delete</div>}
     </div>
   );
 };
