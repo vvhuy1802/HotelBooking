@@ -21,7 +21,6 @@ const Login = () => {
             setAnnouncementAuto({
               message: "Login Success",
               type: "success",
-              id: Math.random(),
             })
           );
           setIsLoading(false);
@@ -33,7 +32,6 @@ const Login = () => {
             setAnnouncementAuto({
               message: "Login Success",
               type: "success",
-              id: Math.random(),
             })
           );
           setIsLoading(false);

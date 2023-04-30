@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import "./new.scss";
 
 import { CreateHotel } from "../../middlewares/hotel";
-import { setAnnouncementAuto } from "../../redux/Slices/Global";
+import { setAnnouncementAuto, updateData } from "../../redux/Slices/Global";
 
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
@@ -118,43 +118,62 @@ const New = ({ title, inputs }) => {
     input.click();
   };
 
+  const handleClearValue = () => {
+    const inputs = document.querySelectorAll(".input");
+    for (let i = 0; i < inputs.length; i++) {
+      inputs[i].value = "";
+    }
+    setListImage([]);
+  };
+
   const handleSave = () => {
     const data = {};
-    for (let i = 0; i < inputs.length; i++) {
-      data[inputs[i].id_input] = document.getElementById(
-        inputs[i].id_input
-      ).value;
-    }
-    data.image = inputs.length === 6 ? file : listImage;
-    data.position = [data.latitude, data.longitude];
-    CreateHotel(data).then((res) => {
-      console.log(res);
-      if (res.status === 200) {
-        dispatch(
-          setAnnouncementAuto({
-            message: "Create hotel success!",
-            type: "success",
-            id: Math.random(),
-          })
-        );
-      } else if (res.status === 400) {
-        dispatch(
-          setAnnouncementAuto({
-            message: res.data.message,
-            type: "error",
-            id: Math.random(),
-          })
-        );
-      } else {
-        dispatch(
-          setAnnouncementAuto({
-            message: "Create hotel fail!",
-            type: "error",
-            id: Math.random(),
-          })
-        );
+    if (inputs.length === 6) {
+    } else if (inputs.length === 8) {
+      for (let i = 0; i < inputs.length; i++) {
+        data[inputs[i].id_input] = document.getElementById(
+          inputs[i].id_input
+        ).value;
       }
-    });
+      data.image = listImage;
+      data.position = [data.latitude, data.longitude];
+      CreateHotel(data).then((res) => {
+        if (res.status === 200 && res.data.status !== 400) {
+          dispatch(
+            updateData({
+              type: "hotel",
+              data: res.data,
+            })
+          );
+          dispatch(
+            setAnnouncementAuto({
+              message: "Create hotel success!",
+              type: "success",
+              id: Math.random(),
+            })
+          );
+          handleClearValue();
+        } else if (res.data.status === 400) {
+          dispatch(
+            setAnnouncementAuto({
+              message: res.data.message,
+              type: "error",
+              id: Math.random(),
+            })
+          );
+        } else {
+          dispatch(
+            setAnnouncementAuto({
+              message: "Create hotel fail!",
+              type: "error",
+              id: Math.random(),
+            })
+          );
+        }
+      });
+    } else {
+      console.log("error");
+    }
   };
 
   return (

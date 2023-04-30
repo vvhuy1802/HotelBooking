@@ -6,7 +6,8 @@ const {
   GetByID,
   FindHotelByActive,
   UpdateActive,
-  AddIDRoom
+  AddIDRoom,
+  DeleteHotel
 } = require("../controllers/hotelController");
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.post("/addnewhotel", AddNewHotel);
 router.get("/getall", GetAllHotel);
 router.get("/getbyid/:id", GetByID);
 router.get("/getbyactive", FindHotelByActive);
+router.delete("/delete/:id", DeleteHotel);
 router.put("/updateactive/:id", UpdateActive);
 router.put("/addidroom", AddIDRoom);
 

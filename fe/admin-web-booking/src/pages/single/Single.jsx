@@ -128,14 +128,12 @@ const Single = ({ inputs }) => {
           setAnnouncementAuto({
             message: "Update successfully!",
             type: "success",
-            id: Math.random(),
           })
         );
       } else {
         setAnnouncementAuto({
           message: "Update failed!",
           type: "error",
-          id: Math.random(),
         });
       }
     });

@@ -29,13 +29,11 @@ const AddNewHotel = async (req, res) => {
       tag,
     });
     const oldHotel = await Hotel.find({ id: id });
-    if (oldHotel.length > 0) {
-      res.status(400).send({
-        message: "Hotel already exists",
-      });
+    if (oldHotel.length !== 0) {
+      return res.status(400).send({ message: "Hotel already exists" });
     } else {
-      hotel.save();
-      res.status(200).send(hotel);
+      await hotel.save();
+      return res.status(200).send(hotel);
     }
   } catch (error) {
     res.status(500).send(error);
@@ -80,6 +78,11 @@ const AddIDRoom = async (req, res) => {
   res.status(200).send(hotel);
 };
 
+const DeleteHotel = async (req, res) => {
+  const hotel = await Hotel.findByIdAndDelete(req.params.id);
+  res.status(200).send({ message: "Delete hotel successfully" });
+};
+
 module.exports = {
   AddNewHotel,
   GetAllHotel,
@@ -87,4 +90,5 @@ module.exports = {
   FindHotelByActive,
   UpdateActive,
   AddIDRoom,
+  DeleteHotel,
 };

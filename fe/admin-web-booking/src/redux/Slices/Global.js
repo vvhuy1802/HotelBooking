@@ -50,6 +50,43 @@ export const globalSlice = createSlice({
     removeAnnouncement: (state) => {
       state.announcement.shift();
     },
+    updateData: (state, action) => {
+      switch (action.payload.type) {
+        case "hotel":
+          state.totalHotel.push(action.payload.data);
+          break;
+        case "admin":
+          state.totalAdmin.data.admin.push(action.payload.data);
+          break;
+        case "user":
+          state.totalUser.data.users.push(action.payload.data);
+          break;
+        default:
+          break;
+      }
+    },
+    deleteData: (state, action) => {
+      switch (action.payload.type) {
+        case "hotel":
+          state.totalHotel = state.totalHotel.filter(
+            (item) => item._id !== action.payload.id
+          );
+          console.log('aaa')
+          break;
+        case "admin":
+          state.totalAdmin.data.admin = state.totalAdmin.data.admin.filter(
+            (item) => item._id !== action.payload.id
+          );
+          break;
+        case "user":
+          state.totalUser.data.users = state.totalUser.data.users.filter(
+            (item) => item._id !== action.payload.id
+          );
+          break;
+        default:
+          break;
+      }
+    },
   },
 });
 
@@ -65,6 +102,8 @@ export const {
   setIsLoading,
   setAnnouncement,
   removeAnnouncement,
+  updateData,
+  deleteData
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

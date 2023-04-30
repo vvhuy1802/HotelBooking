@@ -80,7 +80,6 @@ function App() {
               setAnnouncementAuto({
                 message: "Please login to continue!",
                 type: "error",
-                id: Math.random(),
               })
             );
           }
@@ -92,7 +91,6 @@ function App() {
           setAnnouncementAuto({
             message: "Please login to continue!",
             type: "error",
-            id: Math.random(),
           })
         );
       }

@@ -1,11 +1,14 @@
 import "./datatable.scss";
+import { useState, useEffect, useCallback } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import avatar from "../../assets/avatar.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { moneyAdapter, paymentAdapter } from "../../functions/Adapter";
+import { DeleteHotel } from "../../middlewares/hotel";
+import { setAnnouncementAuto, deleteData } from "../../redux/Slices/Global";
 
 const Type = (type) => {
   return type === "app" ? "App" : type === "google" ? "Google" : "Facebook";
@@ -45,6 +48,7 @@ const handleColumnsUser = (navigate) => {
       renderCell: (params) => {
         const handleView = () => {
           navigate(`/user/${params.row.id}`);
+          console.log(params.row);
         };
         return (
           <div className="action">
@@ -327,28 +331,6 @@ const DataTable = () => {
       break;
   }
 
-  const nameHotel = (id) => {
-    if (id === "amishotel") {
-      return "Amis Hotel";
-    } else if (id === "raondalat") {
-      return "Raon Dalat";
-    } else if (id === "aaronhotel") {
-      return "Aaron Hotel";
-    } else if (id === "azuraresort") {
-      return "Azura Resort";
-    } else if (id === "maybungalow") {
-      return "May Bungalow";
-    } else return "No Data";
-  };
-
-  const formatDate = (date) => {
-    const newDate = new Date(date);
-    const day = newDate.getDate();
-    const month = newDate.getMonth() + 1;
-    const year = newDate.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   const handleAddRowsUser = (totalUser) => {
     var rows = [];
     totalUser?.data?.users
@@ -397,22 +379,121 @@ const DataTable = () => {
     return rows;
   };
 
-  const handleAddRowsBooking = (totalOrder) => {
-    var rows = [];
-    totalOrder?.data?.map((order) =>
-      rows.push({
-        id: order._id,
-        customer: order.id_user.name,
-        hotel: nameHotel(order.id_hotel),
-        room: order.id_room.name,
-        payment_method: paymentAdapter(order.payment_method),
-        checkin: formatDate(order.check_in),
-        checkout: formatDate(order.check_out),
-        cost: moneyAdapter(order.total, typeMoney),
-        status: order.status,
-      })
-    );
-    return rows;
+  const handleAddRowsBooking = useCallback(
+    (totalOrder) => {
+      const nameHotel = (id) => {
+        if (id === "amishotel") {
+          return "Amis Hotel";
+        } else if (id === "raondalat") {
+          return "Raon Dalat";
+        } else if (id === "aaronhotel") {
+          return "Aaron Hotel";
+        } else if (id === "azuraresort") {
+          return "Azura Resort";
+        } else if (id === "maybungalow") {
+          return "May Bungalow";
+        } else return "No Data";
+      };
+
+      const formatDate = (date) => {
+        const newDate = new Date(date);
+        const day = newDate.getDate();
+        const month = newDate.getMonth() + 1;
+        const year = newDate.getFullYear();
+        return `${day}/${month}/${year}`;
+      };
+
+      var rows = [];
+      totalOrder?.data?.map((order) =>
+        rows.push({
+          id: order._id,
+          customer: order.id_user.name,
+          hotel: nameHotel(order.id_hotel),
+          room: order.id_room.name,
+          payment_method: paymentAdapter(order.payment_method),
+          checkin: formatDate(order.check_in),
+          checkout: formatDate(order.check_out),
+          cost: moneyAdapter(order.total, typeMoney),
+          status: order.status,
+        })
+      );
+      return rows;
+    },
+    [typeMoney]
+  );
+
+  const dispatch = useDispatch();
+  const [selectionModel, setSelectionModel] = useState([]);
+  const [rowss, setRowss] = useState([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    switch (stateSidebar) {
+      case "Admin":
+        setRowss(handleAddRowsAdmin(totalAdmin));
+        break;
+      case "Users":
+        setRowss(handleAddRowsUser(totalUser));
+        break;
+      case "Hotels":
+        setRowss(handleAddRowsHotel(totalHotel));
+        break;
+      case "Bookings":
+        setRowss(handleAddRowsBooking(totalOrder));
+        break;
+      default:
+        break;
+    }
+  }, [
+    stateSidebar,
+    totalAdmin,
+    totalUser,
+    totalHotel,
+    totalOrder,
+    typeMoney,
+    handleAddRowsBooking,
+  ]);
+
+  const handleDelete = () => {
+    switch (stateSidebar) {
+      case "Admin":
+        break;
+      case "Users":
+        break;
+      case "Hotels":
+        selectionModel.map(async (id) => {
+          const res = await DeleteHotel(id);
+          if (res.status === 200) {
+            dispatch(
+              deleteData({
+                id: id,
+                type: "hotel",
+              })
+            );
+          } else {
+            dispatch(
+              setAnnouncementAuto({
+                message: `Delete hotel fail ${id}`,
+                type: "error",
+              })
+            );
+          }
+
+          if (selectionModel[selectionModel.length - 1] === id) {
+            dispatch(
+              setAnnouncementAuto({
+                message: `Delete hotel success`,
+                type: "success",
+              })
+            );
+          }
+        });
+
+        break;
+      case "Bookings":
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -445,15 +526,7 @@ const DataTable = () => {
         </Box>
       ) : (
         <DataGrid
-          rows={
-            stateSidebar === "Admin"
-              ? handleAddRowsAdmin(totalAdmin)
-              : stateSidebar === "Users"
-              ? handleAddRowsUser(totalUser)
-              : stateSidebar === "Bookings"
-              ? handleAddRowsBooking(totalOrder)
-              : handleAddRowsHotel(totalHotel)
-          }
+          rows={rowss}
           columns={
             stateSidebar === "Admin"
               ? handleColumnsAdmin(navigate)
@@ -473,7 +546,20 @@ const DataTable = () => {
           hideFooterSelectedRowCount
           disableColumnFilter
           disableSelectionOnClick
+          onRowSelectionModelChange={(e) => {
+            setSelectionModel(e);
+          }}
         />
+      )}
+      {selectionModel?.length > 0 && (
+        <div
+          className="delete"
+          onClick={() => {
+            handleDelete();
+          }}
+        >
+          Delete
+        </div>
       )}
     </div>
   );
