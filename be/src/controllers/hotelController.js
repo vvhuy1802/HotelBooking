@@ -1,43 +1,58 @@
 const Hotel = require("../models/hotel");
 const Comments = require("../models/comment");
-const AddNewHotel = (req, res) => {
-  const {
-    id,
-    name,
-    advantage,
-    comments,
-    description,
-    image,
-    rooms,
-    isactive,
-    address,
-    position,
-    tag,
-  } = req.body;
-  const hotel = new Hotel({
-    id,
-    name,
-    advantage,
-    comments,
-    description,
-    image,
-    rooms,
-    isactive,
-    address,
-    position,
-    tag,
-  });
-  hotel.save();
-  res.status(200).send("Pushed to database");
+const AddNewHotel = async (req, res) => {
+  try {
+    const {
+      id,
+      name,
+      advantage,
+      comments,
+      description,
+      image,
+      rooms,
+      isactive,
+      address,
+      position,
+      tag,
+    } = req.body;
+    const hotel = new Hotel({
+      id,
+      name,
+      advantage,
+      comments,
+      description,
+      image,
+      rooms,
+      isactive,
+      address,
+      position,
+      tag,
+    });
+    const oldHotel = await Hotel.find({ id: id });
+    if (oldHotel.length > 0) {
+      res.status(400).send({
+        message: "Hotel already exists",
+      });
+    } else {
+      hotel.save();
+      res.status(200).send(hotel);
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
 };
 
 const GetAllHotel = async (req, res) => {
-  var hotels = await Hotel.find()
-    .populate("rooms")
-    .populate("comments")
+  var hotels = await Hotel.find().populate("rooms").populate("comments");
 
-  hotels = await Comments.populate(hotels, { path: "comments.id_user", select: "name" });
-  hotels = await Comments.populate(hotels, { path: "comments.id_room", select: "name" });
+  hotels = await Comments.populate(hotels, {
+    path: "comments.id_user",
+    select: "name",
+  });
+  hotels = await Comments.populate(hotels, {
+    path: "comments.id_room",
+    select: "name",
+  });
   res.status(200).send(hotels);
 };
 

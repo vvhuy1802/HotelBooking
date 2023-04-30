@@ -154,7 +154,13 @@ function App() {
                     />
                     <Route
                       path=":adminId"
-                      element={userInfo ? <Single /> : <Navigate to="/login" />}
+                      element={
+                        userInfo ? (
+                          <Single inputs={AdminInputs} />
+                        ) : (
+                          <Navigate to="/login" />
+                        )
+                      }
                     />
                     <Route
                       path="new"
@@ -182,7 +188,13 @@ function App() {
                     />
                     <Route
                       path=":hotelId"
-                      element={userInfo ? <Single /> : <Navigate to="/login" />}
+                      element={
+                        userInfo ? (
+                          <Single inputs={HotelInputs} />
+                        ) : (
+                          <Navigate to="/login" />
+                        )
+                      }
                     />
                     <Route
                       path="new"

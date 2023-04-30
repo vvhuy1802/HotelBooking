@@ -7,10 +7,19 @@ const PrivateKey = process.env.TOKEN_KEY;
 const Register = async (req, res) => {
   try {
     // Get admin input
-    const { idHotel, name, phone_number, email, roll, password } = req.body;
+    const {
+      idHotel,
+      name,
+      phone_number,
+      avatar,
+      email,
+      country,
+      roll,
+      password,
+    } = req.body;
 
     // Validate admin input
-    if (!(email && password && name && roll)) {
+    if (!(email && password && name)) {
       res.status(400).send("All input is required");
       return;
     }
@@ -20,6 +29,11 @@ const Register = async (req, res) => {
     if (oldAdmin) {
       return res.status(409).send("Admin Already Exist. Please Login");
     }
+    // check if hotel already exist
+    const existHotel = await Hotel.findOne({ id: idHotel });
+    if (!existHotel) {
+      return res.status(409).send("ID Hotel not exist");
+    }
 
     //Encrypt admin password
     encryptedPassword = await bcrypt.hash(password, 10);
@@ -28,8 +42,10 @@ const Register = async (req, res) => {
     const admin = await Admin.create({
       idHotel,
       name,
+      avatar,
       phone_number,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
+      country,
       roll,
       password: encryptedPassword,
     });
@@ -95,8 +111,8 @@ const checkLogin = async (req, res) => {
 
 const GetAllAdmin = async (req, res) => {
   var admins = await Admin.find();
-  admins.map(async (admin) => {
-    if (admin.idHotel != null) {
+  admins?.map(async (admin) => {
+    if (admin?.idHotel != null) {
       var hotel = await Hotel.findOne({ id: admin.idHotel });
       admin.dataHotel.push(hotel);
     }
@@ -104,7 +120,7 @@ const GetAllAdmin = async (req, res) => {
     // if end of array
     if (admins.indexOf(admin) === admins.length - 1) {
       res.status(200).send({
-        message: "Get all user successfully",
+        message: "Get all admin successfully",
         data: {
           admin: admins,
         },
@@ -115,35 +131,58 @@ const GetAllAdmin = async (req, res) => {
 
 const GetAdminById = async (req, res) => {
   const admin = await Admin.findById(req.params.id);
-  if (admin.idHotel != null) {
-    var hotel = await Hotel.findOne({ id: admin.id });
+  if (admin?.idHotel != null) {
+    var hotel = await Hotel.findOne({ id: admin.idHotel });
     admin.dataHotel.push(hotel);
+
+    res.status(200).send({
+      message: "Get admin by id successfully",
+      data: {
+        admin: admin,
+      },
+    });
   }
-  res.status(200).send({
-    message: "Get user by id successfully",
-    data: {
-      admin: admin,
-    },
-  });
 };
 
 const GetAdminByIdHotel = async (req, res) => {
   const admins = await Admin.find({ idHotel: req.params.id });
   admins.map(async (admin) => {
-    if (admin.idHotel != null) {
+    if (admin?.idHotel != null) {
       var hotel = await Hotel.findOne({ id: admin.id });
       admin.dataHotel.push(hotel);
     }
 
     if (admins.indexOf(admin) === admins.length - 1) {
       res.status(200).send({
-        message: "Get all user successfully",
+        message: "Get all admin successfully",
         data: {
           admin: admins,
         },
       });
     }
   });
+};
+
+const UpdateInfoAdmin = async (req, res) => {
+  try {
+    const admin = await Admin.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.status(200).send({
+      message: "Update admin successfully",
+      data: {
+        admin: admin,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Update admin failed",
+      data: {
+        admin: null,
+      },
+    });
+  }
 };
 
 module.exports = {
@@ -153,4 +192,5 @@ module.exports = {
   GetAllAdmin,
   GetAdminById,
   GetAdminByIdHotel,
+  UpdateInfoAdmin,
 };

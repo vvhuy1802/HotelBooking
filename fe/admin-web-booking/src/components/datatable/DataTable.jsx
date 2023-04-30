@@ -173,7 +173,7 @@ const handleColumnsHotel = (navigate) => {
       width: 100,
       renderCell: (params) => {
         const handleView = () => {
-          navigate(`/admin/${params.row.id}`);
+          navigate(`/hotel/${params.row.id}`);
         };
         return (
           <div className="action">
