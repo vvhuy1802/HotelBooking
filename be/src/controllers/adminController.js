@@ -112,10 +112,8 @@ const checkLogin = async (req, res) => {
 const GetAllAdmin = async (req, res) => {
   var admins = await Admin.find();
   admins?.map(async (admin) => {
-    if (admin?.idHotel != null) {
-      var hotel = await Hotel.findOne({ id: admin.idHotel });
-      admin.dataHotel.push(hotel);
-    }
+    var hotel = await Hotel.findOne({ id: admin.idHotel });
+    admin.dataHotel.push(hotel);
 
     // if end of array
     if (admins.indexOf(admin) === admins.length - 1) {
@@ -185,6 +183,16 @@ const UpdateInfoAdmin = async (req, res) => {
   }
 };
 
+const DeleteAdmin = async (req, res) => {
+  const admin = await Admin.findByIdAndDelete(req.params.id);
+  res.status(200).send({
+    message: "Delete admin successfully",
+    data: {
+      admin: null,
+    },
+  });
+};
+
 module.exports = {
   Register,
   Login,
@@ -193,4 +201,5 @@ module.exports = {
   GetAdminById,
   GetAdminByIdHotel,
   UpdateInfoAdmin,
+  DeleteAdmin,
 };

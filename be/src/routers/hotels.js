@@ -7,7 +7,8 @@ const {
   FindHotelByActive,
   UpdateActive,
   AddIDRoom,
-  DeleteHotel
+  DeleteHotel,
+  UpdateHotel,
 } = require("../controllers/hotelController");
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.get("/getbyactive", FindHotelByActive);
 router.delete("/delete/:id", DeleteHotel);
 router.put("/updateactive/:id", UpdateActive);
 router.put("/addidroom", AddIDRoom);
+router.put("/update/:id", UpdateHotel);
 
 module.exports = router;

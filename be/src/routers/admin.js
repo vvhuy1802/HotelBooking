@@ -9,6 +9,7 @@ const {
   GetAdminById,
   GetAdminByIdHotel,
   UpdateInfoAdmin,
+  DeleteAdmin,
 } = require("../controllers/adminController");
 
 const router = express.Router();
@@ -22,5 +23,7 @@ router.get("/:id", GetAdminById);
 router.get("/hotel/:id", GetAdminByIdHotel);
 
 router.put("/update/:id", UpdateInfoAdmin);
+
+router.delete("/delete/:id", DeleteAdmin);
 
 module.exports = router;
