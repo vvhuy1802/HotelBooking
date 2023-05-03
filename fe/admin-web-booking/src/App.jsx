@@ -9,7 +9,7 @@ import { Home, Login, List, Single, New } from "./pages";
 import SideBar from "./components/sidebar/SideBar";
 import NavBar from "./components/navbar/NavBar";
 import Announce from "./components/announce/Announce";
-import HomeHotel from "./ContainerAdminHotel/Home/Home";
+
 import { AdminInputs, HotelInputs } from "./formSource";
 
 import { GetAllOrders } from "./middlewares/order";
@@ -28,6 +28,15 @@ import {
   setIsLoading,
   setAnnouncementAuto,
 } from "./redux/Slices/Global";
+
+import HomeHotel from "./ContainerAdminHotel/Container/Home/Home";
+import SideBarHotel from "./ContainerAdminHotel/Components/SideBarHotel/SideBarHotel";
+import NavBarHotel from "./ContainerAdminHotel/Components/NavBarHotel/NavBarHotel";
+import ListRoom from "./ContainerAdminHotel/Container/ListRoom/ListRoom";
+import ListBooking from "./ContainerAdminHotel/Container/ListBooking/ListBooking";
+import { RoomInputs } from "./ContainerAdminHotel/Components/Input/DataInput";
+import AddNewRoom from "./ContainerAdminHotel/Container/ListRoom/AddNewRoom/AddNewRoom";
+import UpdateRoom from "./ContainerAdminHotel/Container/ListRoom/UpdateRoom/UpdateRoom";
 
 function App() {
   const dispatch = useDispatch();
@@ -226,9 +235,9 @@ function App() {
       ) : (
         <>
           <div className="main">
-            {userInfo && <SideBar />}
+            {userInfo && <SideBarHotel />}
             <div className="container">
-              {userInfo && <NavBar />}
+              {userInfo && <NavBarHotel />}
               <Routes>
                 <Route path="/">
                   <Route
@@ -242,17 +251,44 @@ function App() {
                     element={userInfo ? <Navigate to="/" /> : <Login />}
                   />
 
-                  <Route path="users">
+                  <Route path="listroom">
                     <Route
                       index
-                      element={userInfo ? <List /> : <Navigate to="/login" />}
+                      element={
+                        userInfo ? <ListRoom /> : <Navigate to="/login" />
+                      }
+                    />
+                    <Route
+                      path="new"
+                      element={
+                        userInfo ? (
+                          <AddNewRoom
+                            title={"Add New Room"}
+                            inputs={RoomInputs}
+                          />
+                        ) : (
+                          <Navigate to="/login" />
+                        )
+                      }
+                    />
+                    <Route
+                      path="edit/:roomId"
+                      element={
+                        userInfo ? (
+                          <UpdateRoom title={"Update Room"} />
+                        ) : (
+                          <Navigate to="/login" />
+                        )
+                      }
                     />
                   </Route>
 
-                  <Route path="admins">
+                  <Route path="listbooking">
                     <Route
                       index
-                      element={userInfo ? <List /> : <Navigate to="/login" />}
+                      element={
+                        userInfo ? <ListBooking /> : <Navigate to="/login" />
+                      }
                     />
                   </Route>
 

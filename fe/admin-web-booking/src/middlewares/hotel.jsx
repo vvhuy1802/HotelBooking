@@ -1,4 +1,4 @@
-import { GET, POST, DELETE } from "../functions/fetchToBE";
+import { GET, POST, DELETE, PUT } from "../functions/fetchToBE";
 
 export const GetAllHotels = async () => {
   const path = `/hotels/getall`;
@@ -21,5 +21,11 @@ export const CreateHotel = async (data) => {
 export const DeleteHotel = async (id) => {
   const path = `/hotels/delete/${id}`;
   const response = await DELETE(path);
+  return response;
+};
+
+export const UpdateHotel = async (id, data) => {
+  const path = `/hotels/update/${id}`;
+  const response = await PUT(path, data);
   return response;
 };

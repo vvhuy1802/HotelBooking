@@ -34,7 +34,7 @@ export const AdminInputs = [
     id: 5,
     label: "Phone",
     type: "text",
-    id_input: "phone",
+    id_input: "phone_number",
     placeholder: "0123456789",
   },
   {

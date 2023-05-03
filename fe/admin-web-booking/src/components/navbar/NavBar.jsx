@@ -25,6 +25,7 @@ const NavBar = () => {
       setAnnouncementAuto({
         message: "Change type money successfully!",
         type: "success",
+        id: Math.random(),
       })
     );
   };

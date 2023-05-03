@@ -6,8 +6,13 @@ import avatar from "../../assets/avatar.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import { storage } from "../../configFirebase/config";
+import { deleteObject, ref } from "firebase/storage";
+
+import { GetImageUrl } from "../../functions/Global";
 import { moneyAdapter, paymentAdapter } from "../../functions/Adapter";
 import { DeleteHotel } from "../../middlewares/hotel";
+import { DeleteAdmin } from "../../middlewares/admin";
 import { setAnnouncementAuto, deleteData } from "../../redux/Slices/Global";
 
 const Type = (type) => {
@@ -78,7 +83,7 @@ const handleColumnsAdmin = (navigate) => {
         return (
           <div className="cellWithImg">
             <img
-              src={params.row.img || avatar}
+              src={params.row.avatar || avatar}
               alt="avatar"
               className="cellImg"
             />
@@ -359,6 +364,7 @@ const DataTable = () => {
           country: admin.country || "Viet Nam",
           phone: admin.phone_number || "...",
           hotel: admin.dataHotel[0]?.name || "...",
+          avatar: admin.avatar,
         })
     );
     return rows;
@@ -371,7 +377,7 @@ const DataTable = () => {
         id: hotel._id,
         name: hotel.name,
         isactive: hotel.isactive,
-        room: hotel.rooms.length,
+        room: hotel.rooms?.length,
         image: hotel.image[0],
         address: hotel.address,
       })
@@ -452,10 +458,59 @@ const DataTable = () => {
     typeMoney,
     handleAddRowsBooking,
   ]);
+  const handleDeleteImageToFirebase = async (img) => {
+    const path = GetImageUrl(img);
+    const desertRef = ref(storage, `/${path}`);
+    await deleteObject(desertRef)
+      .then(() => {
+        console.log(`${path} deleted successfully`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleDelete = () => {
     switch (stateSidebar) {
       case "Admin":
+        selectionModel.map(async (id) => {
+          const res = await DeleteAdmin(id);
+          console.log(res);
+          if (res.status === 200) {
+            //get this admin by id in totalAdmin
+            const admin = totalAdmin?.data?.admin?.find(
+              (admin) => admin._id === id
+            );
+            //delete image avatar in firebase
+            if (admin?.avatar) {
+              handleDeleteImageToFirebase(admin.avatar);
+            }
+
+            dispatch(
+              deleteData({
+                id: id,
+                type: "admin",
+              })
+            );
+          } else {
+            dispatch(
+              setAnnouncementAuto({
+                message: `Delete admin fail ${id}`,
+                type: "error",
+              })
+            );
+            return;
+          }
+
+          if (selectionModel[selectionModel?.length - 1] === id) {
+            dispatch(
+              setAnnouncementAuto({
+                message: `Delete admin success`,
+                type: "success",
+              })
+            );
+          }
+        });
         break;
       case "Users":
         break;
@@ -463,6 +518,15 @@ const DataTable = () => {
         selectionModel.map(async (id) => {
           const res = await DeleteHotel(id);
           if (res.status === 200) {
+            //get this hotel by id in totalHotel
+            const hotel = totalHotel?.find((hotel) => hotel._id === id);
+            //delete image in firebase
+            if (hotel?.image?.length > 0) {
+              for (let i = 0; i < hotel.image?.length; ) {
+                await handleDeleteImageToFirebase(hotel.image[i]);
+                i++;
+              }
+            }
             dispatch(
               deleteData({
                 id: id,
@@ -476,6 +540,7 @@ const DataTable = () => {
                 type: "error",
               })
             );
+            return;
           }
 
           if (selectionModel[selectionModel.length - 1] === id) {
@@ -510,10 +575,10 @@ const DataTable = () => {
           </Link>
         )}
       </div>
-      {(stateSidebar === "Admin" && totalAdmin.length === 0) ||
-      (stateSidebar === "Users" && totalUser.length === 0) ||
-      (stateSidebar === "Hotels" && totalHotel.length === 0) ||
-      (stateSidebar === "Bookings" && totalOrder.length === 0) ? (
+      {(stateSidebar === "Admin" && totalAdmin?.length === 0) ||
+      (stateSidebar === "Users" && totalUser?.length === 0) ||
+      (stateSidebar === "Hotels" && totalHotel?.length === 0) ||
+      (stateSidebar === "Bookings" && totalOrder?.length === 0) ? (
         <Box
           sx={{
             display: "flex",

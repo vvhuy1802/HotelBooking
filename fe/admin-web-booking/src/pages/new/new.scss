@@ -1,6 +1,7 @@
 .new {
   display: flex;
   width: 100%;
+  height: 90%;
 
   .container {
     padding: 6px;
@@ -14,6 +15,23 @@
       margin: 20px;
       display: flex;
       justify-content: space-between;
+      position: relative;
+
+      .status {
+        position: absolute;
+        height: 100%;
+        width: 10px;
+        top: 0;
+        left: 0;
+
+        &.success {
+          background-color: green;
+        }
+
+        &.error {
+          background-color: red;
+        }
+      }
 
       &.title {
         align-items: center;
@@ -33,7 +51,24 @@
       .infoExcel {
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        width: 100%;
         gap: 10px;
+
+        .content {
+          display: flex;
+          gap: 10px;
+
+          p {
+            font-size: 15px;
+            color: gray;
+          }
+        }
+
+        .tool {
+          display: flex;
+          gap: 10px;
+        }
       }
 
       .uploadExcel {
@@ -50,10 +85,24 @@
         &:hover {
           scale: 1.05;
         }
+
+        &.clear {
+          background-color: red;
+        }
       }
 
       .left {
         flex: 1;
+        position: relative;
+
+        .progress {
+          position: absolute;
+          top: 30px;
+          left: 5%;
+          width: 90%;
+          height: 100%;
+          display: flex;
+        }
 
         .container {
           text-align: center;
@@ -73,6 +122,25 @@
             object-fit: cover;
             cursor: pointer;
             transition: all 0.3s ease;
+
+            &:hover {
+              scale: 1.05;
+            }
+          }
+
+          .deleteAvatar {
+            position: absolute;
+            top: 10%;
+            right: 25%;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: red;
 
             &:hover {
               scale: 1.05;
@@ -158,6 +226,7 @@
           gap: 30px;
           justify-content: space-around;
           margin-top: 20px;
+          margin-bottom: 20px;
 
           .formInput {
             width: 40%;
@@ -200,6 +269,7 @@
         }
       }
     }
+
     .middle {
       width: 100%;
       height: 100%;
