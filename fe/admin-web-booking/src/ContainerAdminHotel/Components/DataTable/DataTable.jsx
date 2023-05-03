@@ -8,13 +8,11 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { DeleteRoomInHotel } from "./apiDataTable";
 
-
 const DataTable = (props) => {
-  const { data,setReload } = props;
+  const { data, setReload } = props;
   const navigate = useNavigate();
-  const {stateSidebar } = useSelector((state) => state.global);
+  const { stateSidebar } = useSelector((state) => state.global);
   const [selectionModel, setSelectionModel] = useState([]);
-
 
   var dataTitle = {};
   switch (stateSidebar) {
@@ -35,7 +33,6 @@ const DataTable = (props) => {
       break;
   }
 
-
   const handleColumnsBooking = () => {
     return [
       { field: "id", headerName: "ID", width: 170 },
@@ -52,7 +49,7 @@ const DataTable = (props) => {
                 alt="avatar"
                 className="cellImg"
               />
-               <span>{params.row.room_name}</span>
+              <span>{params.row.room_name}</span>
             </div>
           );
         },
@@ -63,18 +60,18 @@ const DataTable = (props) => {
         headerName: "Check Out",
         width: 110,
       },
-      { field: "cost", headerName: "Cost", width: 100},
-      { field: "payment_method",
-       headerName: "Payment Method",
-        width: 180,
-      },
-      { field: "status",
-       headerName: "Status",
+      { field: "cost", headerName: "Cost", width: 100 },
+      { field: "payment_method", headerName: "Payment Method", width: 180 },
+      {
+        field: "status",
+        headerName: "Status",
         width: 140,
         renderCell: (params) => {
           return (
             <div>
-               <span className={`status ${params.row.status}`}>{params.row.status}</span>
+              <span className={`status ${params.row.status}`}>
+                {params.row.status}
+              </span>
             </div>
           );
         },
@@ -103,7 +100,7 @@ const DataTable = (props) => {
       },
     ];
   };
-  
+
   const paymentAdapter = (method) => {
     if (method === "payment-hotel") {
       return "Payment at hotel";
@@ -115,20 +112,18 @@ const DataTable = (props) => {
   const handleAddRowsBooking = () => {
     var rows = [];
     data.map((item) => {
-      rows.push(
-        {
-          id: item._id,
-          customer: item.id_user.name,
-          room_name: item.id_room.name,
-          cost: item.total,
-          image: item.image,
-          check_in: item.check_in,
-          check_out: item.check_out,
-          payment_method: paymentAdapter(item.payment_method),
-          status: item.status,
-        }
-      )
-    })
+      rows.push({
+        id: item._id,
+        customer: item.id_user.name,
+        room_name: item.id_room.name,
+        cost: item.total,
+        image: item.image,
+        check_in: item.check_in,
+        check_out: item.check_out,
+        payment_method: paymentAdapter(item.payment_method),
+        status: item.status,
+      });
+    });
     return rows;
   };
 
@@ -148,8 +143,9 @@ const DataTable = (props) => {
         width: 100,
       },
       { field: "utility", headerName: "Utility", width: 170 },
-      { field: "image",
-       headerName: "Image",
+      {
+        field: "image",
+        headerName: "Image",
         width: 100,
         renderCell: (params) => {
           return (
@@ -161,7 +157,7 @@ const DataTable = (props) => {
               />
             </div>
           );
-        }, 
+        },
       },
       {
         field: "action",
@@ -169,7 +165,7 @@ const DataTable = (props) => {
         width: 100,
         renderCell: (params) => {
           const handleEdit = () => {
-            navigate(`/listroom/edit/${params.row.id}`,{
+            navigate(`/listroom/edit/${params.row.id}`, {
               state: {
                 id: params.row.id,
                 name: params.row.name,
@@ -180,7 +176,7 @@ const DataTable = (props) => {
                 utility: params.row.utility,
                 hotel_id: params.row.hotel_id,
                 tag: params.row.tag,
-              }
+              },
             });
           };
           return (
@@ -203,44 +199,45 @@ const DataTable = (props) => {
   const handleAddRowsRoom = () => {
     var rows = [];
     data.map((item) => {
-      rows.push(
-        {
-          id: item._id,
-          name: item.name,
-          description: item.description,
-          price: item.price,
-          image: item.image,
-          isactive: item.isactive,
-          utility: item.utility,
-          hotel_id: item.hotel_id,
-          tag: item.tag,
-        }
-      )
-    })
+      rows.push({
+        id: item._id,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        image: item.image,
+        isactive: item.isactive,
+        utility: item.utility,
+        hotel_id: item.hotel_id,
+        tag: item.tag,
+      });
+    });
     return rows;
   };
 
-  const deleteRoom = async() => {
-    for (let i=0;i<selectionModel.length;i++){
-    const res =await DeleteRoomInHotel(selectionModel[i])
-    setReload(true);
+  const deleteRoom = async () => {
+    for (let i = 0; i < selectionModel.length; i++) {
+      const res = await DeleteRoomInHotel(selectionModel[i]);
+      setReload(true);
     }
-  }
+  };
 
   return (
     <div className="datatable">
-        <div className="datatableTitle">
+      <div className="datatableTitle">
         {dataTitle.title}
+        {stateSidebar === "rooms"&&
         <div style={{}}>
-          <Link to={dataTitle.path}
-            style={{ textDecoration: "none"}}
+          <Link
+            to={dataTitle.path}
+            style={{ textDecoration: "none" }}
             className="link"
           >
             Add new
           </Link>
-          </div>
+        </div>
+        }
       </div>
-      {data.length===0 ? (
+      {data.length === 0 ? (
         <Box
           sx={{
             display: "flex",
@@ -254,16 +251,18 @@ const DataTable = (props) => {
       ) : (
         <DataGrid
           rows={
-            stateSidebar === "rooms"?
-              handleAddRowsRoom():
-              stateSidebar === "Bookings"?
-              handleAddRowsBooking():null
+            stateSidebar === "rooms"
+              ? handleAddRowsRoom()
+              : stateSidebar === "Bookings"
+              ? handleAddRowsBooking()
+              : null
           }
           columns={
             stateSidebar === "rooms"
-            ? handleColumnsRoom():
-            stateSidebar === "Bookings"?
-            handleColumnsBooking():null
+              ? handleColumnsRoom()
+              : stateSidebar === "Bookings"
+              ? handleColumnsBooking()
+              : null
           }
           pageSize={5}
           rowsPerPageOptions={[5]}
@@ -279,7 +278,11 @@ const DataTable = (props) => {
           }}
         />
       )}
-      {selectionModel?.length > 0 && <div onClick={deleteRoom} className="delete">Delete</div>}
+      {selectionModel?.length > 0 && (
+        <div onClick={deleteRoom} className="delete">
+          Delete
+        </div>
+      )}
     </div>
   );
 };

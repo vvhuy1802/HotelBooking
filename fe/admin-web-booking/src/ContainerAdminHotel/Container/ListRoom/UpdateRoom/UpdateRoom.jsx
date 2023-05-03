@@ -127,9 +127,12 @@ const UpdateRoom = ({ title }) => {
   const handleDeleteImage = (img) => {
     const listImageTemp = [...listImage];
     const index = listImageTemp.findIndex((item) => item === img);
-    var fileName = img.substring(img.lastIndexOf('/') + 1, img.indexOf('?'));
-    var filetrue=fileName.split("%2F")[1];
-    const desertRef = ref(storage, `/${state.hotel_id}/${filetrue}`);
+    const match = img.match(/\/o\/(.+?)\?/);
+    let imagePath = "";
+    if (match) {
+      imagePath = decodeURIComponent(match[1]);
+    }
+    const desertRef = ref(storage, `/${imagePath}`);
     // Delete the file
     deleteObject(desertRef)
       .then(() => {
