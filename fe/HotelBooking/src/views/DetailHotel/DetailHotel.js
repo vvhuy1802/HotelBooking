@@ -67,8 +67,8 @@ const DetailHotel = ({navigation}) => {
   const calculateDistance = () => {
     const lat1 = user_position.latitude;
     const lon1 = user_position.longitude;
-    const lat2 = hotelData.position[0];
-    const lon2 = hotelData.position[1];
+    const lat2 = Number(hotelData.position[0]);
+    const lon2 = Number(hotelData.position[1]);
     const R = 6371; // radius of the earth in km
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -381,10 +381,25 @@ const DetailHotel = ({navigation}) => {
         }}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}>
-        <Image
-          source={{uri: image_default}}
-          style={{width: width, height: 300, resizeMode: 'cover'}}
-        />
+        <View>
+          <ScrollView
+            pagingEnabled={true}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            style={{width: width, height: 300}}>
+            {hotelData.image.map((item, index) => (
+              <Image
+                key={index}
+                source={{uri: item}}
+                style={{
+                  width: width,
+                  height: 300,
+                  resizeMode: 'cover',
+                }}
+              />
+            ))}
+          </ScrollView>
+        </View>
         <View style={{paddingHorizontal: 15, paddingBottom: 100}}>
           <View
             style={{
@@ -497,15 +512,15 @@ const DetailHotel = ({navigation}) => {
                 style={{flex: 1}}
                 provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                 region={{
-                  latitude: hotelData.position[0],
-                  longitude: hotelData.position[1],
+                  latitude: Number(hotelData.position[0]),
+                  longitude: Number(hotelData.position[1]),
                   latitudeDelta: LATITUDE_DELTA,
                   longitudeDelta: LONGITUDE_DELTA,
                 }}>
                 <Marker
                   coordinate={{
-                    latitude: hotelData.position[0],
-                    longitude: hotelData.position[1],
+                    latitude: Number(hotelData?.position[0]),
+                    longitude: Number(hotelData?.position[1]),
                   }}
                 />
               </MapView>

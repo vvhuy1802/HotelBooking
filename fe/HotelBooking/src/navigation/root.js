@@ -1,13 +1,13 @@
 import React from 'react';
 import {StatusBar} from 'react-native';
-import { Provider as PaperProvider } from 'react-native-paper';
+import {Provider as PaperProvider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthStack from './authStack';
 import AppStack from './appStack';
 import {useSelector} from 'react-redux';
-import {CheckLogin} from '../../middlewares/auth';
+import Notification from '../components/Notification';
 export default function RootNavigation() {
-  const {userData,theme} = useSelector(state => state.Globalreducer);
+  const {userData, theme} = useSelector(state => state.Globalreducer);
   // console.log(userData.roll);
 
   const lightTheme = {
@@ -42,9 +42,9 @@ export default function RootNavigation() {
         backgroundColor={theme === 'light' ? '#fff' : '#000'}
         barStyle={theme === 'light' ? 'dark-content' : 'light-content'}
       />
-    <NavigationContainer>
-      {userData ? <AppStack /> : <AuthStack />}
-    </NavigationContainer>
+      <NavigationContainer>
+        {userData ? <AppStack /> : <AuthStack />}
+      </NavigationContainer>
     </PaperProvider>
   );
 }

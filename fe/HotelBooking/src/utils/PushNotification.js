@@ -3,6 +3,7 @@ import {
   setAsyncStorage,
   getAsyncStorage,
 } from '../../functions/asyncStorageFunctions';
+import Globalreducer from '../../redux/Globalreducer';
 
 export async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -31,7 +32,7 @@ const getFcmToken = async () => {
   }
 };
 
-export const NotificationService = () => {
+export const NotificationService = dispatch => {
   messaging().onNotificationOpenedApp(remoteMessage => {
     console.log(
       'Notification caused app to open from background state:',
@@ -42,6 +43,15 @@ export const NotificationService = () => {
   //Foreground notification
   messaging().onMessage(async remoteMessage => {
     console.log('Notification in Foreground', remoteMessage);
+    const notification = {
+      id: remoteMessage.messageId,
+      title: remoteMessage.notification.title,
+      body: remoteMessage.notification.body,
+      data: remoteMessage.data,
+      type: remoteMessage.data.type,
+      time: remoteMessage.sentTime,
+    };
+    dispatch(Globalreducer.actions.setNotification(notification));
   });
 
   messaging()

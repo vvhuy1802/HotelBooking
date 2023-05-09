@@ -126,7 +126,7 @@ const App = () => {
     requestLocation();
     componentDidMount();
     requestUserPermission();
-    NotificationService();
+    NotificationService(dispatch);
   }, []);
 
   return (
@@ -143,6 +143,7 @@ const App = () => {
       ) : (
         <RootNavigation />
       )}
+
     </View>
   );
 };

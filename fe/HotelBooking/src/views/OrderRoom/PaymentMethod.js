@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import CustomHeader from '../../components/CustomHeader';
 import {useTheme} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Globalreducer from '../../../redux/Globalreducer';
 const PaymentMethod = ({navigation}) => {
@@ -33,7 +33,8 @@ const PaymentMethod = ({navigation}) => {
       available: true,
     },
   ];
-  const [selected, setSelected] = useState(data[0]);
+  const [selected, setSelected] = useState();
+  const {payment_method} = useSelector(state => state.Globalreducer);
 
   const handleConfirm = () => {
     dispatch(Globalreducer.actions.setPaymentMethod(selected));
@@ -80,7 +81,11 @@ const PaymentMethod = ({navigation}) => {
                 iconStyle={{borderColor: 'orange'}}
                 innerIconStyle={{borderWidth: 2}}
                 textStyle={{fontFamily: 'JosefinSans-Regular'}}
-                isChecked={selected?.id === item.id}
+                isChecked={
+                  selected?.id
+                    ? selected.id === item.id
+                    : payment_method.id === item.id
+                }
                 disableBuiltInState
                 onPress={() => {
                   selected?.id !== item.id && setSelected(item);

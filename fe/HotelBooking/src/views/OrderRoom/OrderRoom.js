@@ -291,7 +291,7 @@ const OrderRoom = ({navigation, route}) => {
                 marginTop: 10,
               }}>
               <Image
-                source={{uri: payment_method.image}}
+                source={{uri: payment_method?.image}}
                 style={{width: 25, height: 25, borderRadius: 5}}
               />
               <Text
@@ -301,7 +301,7 @@ const OrderRoom = ({navigation, route}) => {
                   color: colors.text,
                   fontWeight: 'bold',
                 }}>
-                {payment_method.name}
+                {payment_method?.name}
               </Text>
             </View>
           </View>

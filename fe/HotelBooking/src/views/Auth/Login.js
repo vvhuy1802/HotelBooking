@@ -17,8 +17,15 @@ import {Icon} from 'react-native-elements';
 import {useTheme} from 'react-native-paper';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {CreateAccount, SignIn} from '../../../middlewares/auth';
-import {setAsyncStorage} from '../../../functions/asyncStorageFunctions';
+import {
+  CreateAccount,
+  SignIn,
+  APIUpdateTokenNotification,
+} from '../../../middlewares/auth';
+import {
+  setAsyncStorage,
+  getAsyncStorage,
+} from '../../../functions/asyncStorageFunctions';
 import Globalreducer from '../../../redux/Globalreducer';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
@@ -35,6 +42,13 @@ const Login = ({navigation}) => {
     GoogleSignin.configure();
   }, []);
 
+  const UpdateToken = async email => {
+    const fcmToken = await getAsyncStorage('fcmToken');
+    await APIUpdateTokenNotification(fcmToken, email).then(res => {
+      console.log('Update token notification: ', res);
+    });
+  };
+
   const handleGoogleLogin = async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -45,20 +59,23 @@ const Login = ({navigation}) => {
           ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
           setAsyncStorage('userData', res.data.token);
           dispatch(Globalreducer.actions.setUserData(res.data));
+          UpdateToken(user.email);
         } else if (res.status == 400) {
           ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
         } else {
-          CreateAccount(user.name, '', user.email, user.id,'google').then(res => {
-            if (res.status == 200) {
-              ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
-              setAsyncStorage('userData', res.data.token);
-              dispatch(Globalreducer.actions.setUserData(res.data));
-            } else if (res.status == 400) {
-              ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
-            } else {
-              ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
-            }
-          });
+          CreateAccount(user.name, '', user.email, user.id, 'google').then(
+            res => {
+              if (res.status == 200) {
+                ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
+                setAsyncStorage('userData', res.data.token);
+                dispatch(Globalreducer.actions.setUserData(res.data));
+              } else if (res.status == 400) {
+                ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
+              } else {
+                ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+              }
+            },
+          );
         }
       });
     } catch (error) {
@@ -76,6 +93,7 @@ const Login = ({navigation}) => {
           ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
           setAsyncStorage('userData', res.data.token);
           dispatch(Globalreducer.actions.setUserData(res.data));
+          UpdateToken(email);
         } else if (res.status == 400) {
           ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
         } else {

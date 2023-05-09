@@ -23,6 +23,7 @@ const initialState = {
       'https://cdn1.iconfinder.com/data/icons/condominium-juristic-management/64/Common_fee-fee-money-condominium-512.png',
     available: true,
   },
+  notification: [],
 };
 export default createSlice({
   name: 'global',
@@ -68,6 +69,20 @@ export default createSlice({
       const status = action.payload.status;
       const index = state.userData.orders.findIndex(order => order._id === _id);
       state.userData.orders[index].status = status;
+    },
+    setNotification: (state, action) => {
+      state.notification.push(action.payload);
+    },
+    removeNotification: (state, action) => {
+      if (action.payload === 'all') {
+        state.notification = [];
+      } else if (action.payload.id !== null) {
+        state.notification = state.notification.filter(
+          item => item.id !== action.payload.id,
+        );
+      } else {
+        state.notification.shift();
+      }
     },
   },
 });

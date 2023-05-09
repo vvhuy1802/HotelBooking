@@ -93,7 +93,7 @@ export default function Booking() {
         }}>
         <View style={{flexDirection: 'row', padding: 10}}>
           <Image
-            source={{uri: filterHotel(item.id_hotel).image}}
+            source={{uri: filterHotel(item.id_hotel).image[0]}}
             style={{width: 100, height: 100, borderRadius: 15}}
           />
           <View style={{marginLeft: 10, width: '100%'}}>
@@ -215,7 +215,7 @@ export default function Booking() {
         }}>
         <View style={{flexDirection: 'row', padding: 10}}>
           <Image
-            source={{uri: filterHotel(item.id_hotel).image}}
+            source={{uri: filterHotel(item.id_hotel).image[0]}}
             style={{width: 100, height: 100, borderRadius: 15}}
           />
           <View style={{marginLeft: 10, width: '100%'}}>
@@ -312,7 +312,7 @@ export default function Booking() {
         }}>
         <View style={{flexDirection: 'row', padding: 10}}>
           <Image
-            source={{uri: filterHotel(item.id_hotel).image}}
+            source={{uri: filterHotel(item.id_hotel).image[0]}}
             style={{width: 100, height: 100, borderRadius: 15}}
           />
           <View style={{marginLeft: 10, width: '100%'}}>
