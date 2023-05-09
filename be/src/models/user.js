@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "order" }],
   password: { type: String },
   token: { type: String },
+  tokenNotification: { type: String, default: null },
 });
 
 module.exports = mongoose.model("user", userSchema);

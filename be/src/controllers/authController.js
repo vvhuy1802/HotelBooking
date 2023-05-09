@@ -163,6 +163,16 @@ const ChangePassword = async (req, res) => {
   }
 };
 
+const UpdateTokenNotification = async (req, res) => {
+  const { tokenNotification } = req.body;
+  const user = await User.findOne({ email: req.body.email });
+  user.tokenNotification = tokenNotification;
+  await user.save();
+  res.status(200).send({
+    message: "Update token notification successfully",
+  });
+};
+
 module.exports = {
   Register,
   Login,
@@ -172,4 +182,5 @@ module.exports = {
   GetSingleUser,
   UpdateProfile,
   ChangePassword,
+  UpdateTokenNotification,
 };

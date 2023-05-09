@@ -12,6 +12,7 @@ const adminSchema = new mongoose.Schema({
   roll: { type: String, default: "adminks" },
   password: { type: String },
   token: { type: String },
+  tokenNotification: { type: String, default: null },
 });
 
 adminSchema.index({ roll: 1 }, { unique: false });

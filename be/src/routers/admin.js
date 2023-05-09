@@ -1,5 +1,6 @@
 const express = require("express");
 const auth = require("../middleware/auth");
+const notification = require("../middleware/notification");
 
 const {
   Register,
@@ -17,6 +18,14 @@ const router = express.Router();
 router.post("/register", Register);
 router.post("/login", Login);
 router.post("/checkLogin", auth, checkLogin);
+router.post(
+  "/notification",
+  (req, res, next) => {
+    console.log("Do something before notification");
+    next();
+  },
+  notification
+);
 
 router.get("/getall", GetAllAdmin);
 router.get("/:id", GetAdminById);
