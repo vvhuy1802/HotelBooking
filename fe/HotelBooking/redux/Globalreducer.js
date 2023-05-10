@@ -25,7 +25,7 @@ const initialState = {
   },
   notification: [],
 };
-export default createSlice({
+export const globalSlice = createSlice({
   name: 'global',
   initialState,
   reducers: {
@@ -74,7 +74,7 @@ export default createSlice({
       state.notification.push(action.payload);
     },
     removeNotification: (state, action) => {
-      if (action.payload === 'all') {
+      if (action.payload.id === 'all') {
         state.notification = [];
       } else if (action.payload.id !== null) {
         state.notification = state.notification.filter(
@@ -86,3 +86,32 @@ export default createSlice({
     },
   },
 });
+
+export const {
+  setUserData,
+  setHotels,
+  setTheme,
+  setUserPosition,
+  setBookingDate,
+  addComment,
+  setHotelData,
+  setPaymentMethod,
+  addOrder,
+  updateUser,
+  updateStatusOrder,
+  setNotification,
+  removeNotification,
+} = globalSlice.actions;
+
+export default globalSlice.reducer;
+
+export const NotificationAction = notify => dispatch => {
+  dispatch(setNotification(notify));
+  setTimeout(() => {
+    dispatch(
+      removeNotification({
+        id: notify.id,
+      }),
+    );
+  }, 5000);
+};

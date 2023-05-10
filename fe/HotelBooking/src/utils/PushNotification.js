@@ -3,7 +3,7 @@ import {
   setAsyncStorage,
   getAsyncStorage,
 } from '../../functions/asyncStorageFunctions';
-import Globalreducer from '../../redux/Globalreducer';
+import Toast from 'react-native-toast-message';
 
 export async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -32,7 +32,7 @@ const getFcmToken = async () => {
   }
 };
 
-export const NotificationService = dispatch => {
+export const NotificationService = () => {
   messaging().onNotificationOpenedApp(remoteMessage => {
     console.log(
       'Notification caused app to open from background state:',
@@ -51,7 +51,25 @@ export const NotificationService = dispatch => {
       type: remoteMessage.data.type,
       time: remoteMessage.sentTime,
     };
-    dispatch(Globalreducer.actions.setNotification(notification));
+
+    Toast.show({
+      type: 'notifyBasic',
+      text1: notification.title,
+      text2: notification.body,
+      visibilityTime: 3000,
+      autoHide: true,
+      topOffset: 10,
+      bottomOffset: 10,
+      onPress: () => {
+        console.log('onPress');
+      },
+      onHide: () => {
+        console.log('onHide');
+      },
+      onShow: () => {
+        console.log('onShow');
+      },
+    });
   });
 
   messaging()

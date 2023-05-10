@@ -18,12 +18,12 @@ import {useTranslation} from 'react-i18next';
 const {width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AddNewOrder} from '../../../middlewares/orders';
-import Globalreducer from '../../../redux/Globalreducer';
+import {addOrder} from '../../../redux/Globalreducer';
 const OrderRoom = ({navigation, route}) => {
   const dataRoom = route.params.room;
   const dataHotel = route.params.hotel;
   const {payment_method, userData, booking_date} = useSelector(
-    state => state.Globalreducer,
+    state => state.global,
   );
   const {colors} = useTheme();
   const {t} = useTranslation();
@@ -91,7 +91,7 @@ const OrderRoom = ({navigation, route}) => {
           _id: dataRoom._id,
           name: dataRoom.name,
         };
-        dispatch(Globalreducer.actions.addOrder(data));
+        dispatch(addOrder(data));
         ToastAndroid.show(t('booking-success'), ToastAndroid.SHORT);
         navigation.navigate('TabNavigator', {screen: 'Booking'});
         setIsBooking(false);

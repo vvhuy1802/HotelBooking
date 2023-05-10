@@ -10,12 +10,18 @@ import {
 import {CheckLogin} from './middlewares/auth';
 import {GetAllHotels} from './middlewares/hotels';
 import {useDispatch} from 'react-redux';
-import Globalreducer from './redux/Globalreducer';
+import {
+  setUserData,
+  setHotels,
+  setUserPosition,
+  setTheme,
+} from './redux/Globalreducer';
 import i18n from './src/i18n/18n';
 import {
   requestUserPermission,
   NotificationService,
 } from './src/utils/PushNotification';
+
 //logbox ignore all
 LogBox.ignoreAllLogs();
 const App = () => {
@@ -28,15 +34,15 @@ const App = () => {
         CheckLogin(token).then(res => {
           if (res.status === 200) {
             console.log('User logged in');
-            dispatch(Globalreducer.actions.setUserData(res.data.data.user));
+            dispatch(setUserData(res.data.data.user));
           } else {
             console.log('Token expired');
-            dispatch(Globalreducer.actions.setUserData(''));
+            dispatch(setUserData(''));
           }
         });
       } else {
         console.log('User not logged in');
-        dispatch(Globalreducer.actions.setUserData(''));
+        dispatch(setUserData(''));
       }
     });
   }, []);
@@ -48,7 +54,7 @@ const App = () => {
         res.data = res.data.filter(
           (item: {isactive: boolean}) => item.isactive === true,
         );
-        dispatch(Globalreducer.actions.setHotels(res.data));
+        dispatch(setHotels(res.data));
         setWait(false);
       }
     });
@@ -71,7 +77,7 @@ const App = () => {
     getAsyncStorage('theme').then(theme => {
       if (theme) {
         console.log('Theme: ' + theme);
-        dispatch(Globalreducer.actions.setTheme(theme));
+        dispatch(setTheme(theme));
       } else {
         console.log('No theme');
         setAsyncStorage('theme', 'light');
@@ -83,7 +89,7 @@ const App = () => {
     Geolocation.getCurrentPosition(
       position => {
         dispatch(
-          Globalreducer.actions.setUserPosition({
+          setUserPosition({
             // latitude: position.coords.latitude,
             // longitude: position.coords.longitude,
             latitude: 10.8702,
@@ -94,7 +100,7 @@ const App = () => {
       error => {
         console.log(error.message);
         dispatch(
-          Globalreducer.actions.setUserPosition({
+          setUserPosition({
             latitude: 10.8702,
             longitude: 106.8028,
           }),
@@ -126,7 +132,7 @@ const App = () => {
     requestLocation();
     componentDidMount();
     requestUserPermission();
-    NotificationService(dispatch);
+    NotificationService();
   }, []);
 
   return (
@@ -143,7 +149,6 @@ const App = () => {
       ) : (
         <RootNavigation />
       )}
-
     </View>
   );
 };

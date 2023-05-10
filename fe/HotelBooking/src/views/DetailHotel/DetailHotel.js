@@ -29,7 +29,7 @@ import Icon3 from 'react-native-vector-icons/Fontisto';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import Globalreducer from '../../../redux/Globalreducer';
+import {addComment, setBookingDate} from '../../../redux/Globalreducer';
 import {AddNewComment} from '../../../middlewares/comments';
 import {UpdateReview} from '../../../middlewares/orders';
 
@@ -54,7 +54,7 @@ const DetailHotel = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [ratecontent, setRatecontent] = useState('');
   const {user_position, hotelData, userData, booking_date} = useSelector(
-    state => state.Globalreducer,
+    state => state.global,
   );
   const image_default =
     'https://img1.ak.crunchyroll.com/i/spire3/d23bea1cbe84833135f94695d900f0651651339079_main.png';
@@ -178,7 +178,7 @@ const DetailHotel = ({navigation}) => {
           if (res.status === 200) {
             ToastAndroid.show('Comment success', ToastAndroid.SHORT);
             dispatch(
-              Globalreducer.actions.addComment({
+              addComment({
                 id: hotelData.id,
                 comment: comment,
                 index: CheckIdRoom().index,
@@ -329,7 +329,7 @@ const DetailHotel = ({navigation}) => {
     setStartTrue(start);
     setEndTrue(end);
     dispatch(
-      Globalreducer.actions.setBookingDate({
+      setBookingDate({
         check_in: start,
         check_out: end,
         total_night: middle.length + 1,

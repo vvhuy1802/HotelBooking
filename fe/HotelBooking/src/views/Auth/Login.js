@@ -26,7 +26,7 @@ import {
   setAsyncStorage,
   getAsyncStorage,
 } from '../../../functions/asyncStorageFunctions';
-import Globalreducer from '../../../redux/Globalreducer';
+import {setUserData} from '../../../redux/Globalreducer';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Login = ({navigation}) => {
@@ -58,7 +58,7 @@ const Login = ({navigation}) => {
         if (res.status == 200) {
           ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
           setAsyncStorage('userData', res.data.token);
-          dispatch(Globalreducer.actions.setUserData(res.data));
+          dispatch(setUserData(res.data));
           UpdateToken(user.email);
         } else if (res.status == 400) {
           ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
@@ -68,7 +68,7 @@ const Login = ({navigation}) => {
               if (res.status == 200) {
                 ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
                 setAsyncStorage('userData', res.data.token);
-                dispatch(Globalreducer.actions.setUserData(res.data));
+                dispatch(setUserData(res.data));
               } else if (res.status == 400) {
                 ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);
               } else {
@@ -92,7 +92,7 @@ const Login = ({navigation}) => {
         if (res.status == 200) {
           ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
           setAsyncStorage('userData', res.data.token);
-          dispatch(Globalreducer.actions.setUserData(res.data));
+          dispatch(setUserData(res.data));
           UpdateToken(email);
         } else if (res.status == 400) {
           ToastAndroid.show('Invalid Credentials', ToastAndroid.SHORT);

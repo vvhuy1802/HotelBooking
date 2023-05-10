@@ -16,7 +16,9 @@ import Icon2 from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import Header from '../../components/Header';
 import {useSelector, useDispatch} from 'react-redux';
-import Globalreducer from '../../../redux/Globalreducer';
+import {
+  updateStatusOrder,  
+} from '../../../redux/Globalreducer';
 import {UpdateStatus} from '../../../middlewares/orders';
 export default function Booking() {
   const {t} = useTranslation();
@@ -25,7 +27,7 @@ export default function Booking() {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const [idroom, setidroom] = useState('');
-  const {userData, hotels} = useSelector(state => state.Globalreducer);
+  const {userData, hotels} = useSelector(state => state.global);
   const navigation = useNavigation();
 
   const Format = prices => {
@@ -56,7 +58,7 @@ export default function Booking() {
     UpdateStatus(idroom, 'Cancelled').then(res => {
       if (res.status === 200) {
         dispatch(
-          Globalreducer.actions.updateStatusOrder({
+          updateStatusOrder({
             _id: idroom,
             status: 'Cancelled',
           }),

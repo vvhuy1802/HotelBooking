@@ -15,7 +15,6 @@ import {Icon} from 'react-native-elements';
 import {useTheme} from 'react-native-paper';
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-import Globalreducer from '../../../redux/Globalreducer';
 import {CreateAccount} from '../../../middlewares/auth';
 export default function SignUpScreen({navigation}) {
   const [getVisible, setVisible] = useState(false);

@@ -1,9 +1,9 @@
 import {configureStore} from '@reduxjs/toolkit';
-import Globalreducer from './Globalreducer';
+import { globalSlice } from './Globalreducer';
 
 const store = configureStore({
   reducer: {
-    Globalreducer: Globalreducer.reducer,
+    global: globalSlice.reducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

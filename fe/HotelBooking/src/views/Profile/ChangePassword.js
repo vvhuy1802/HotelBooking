@@ -26,7 +26,7 @@ const ChangePassword = ({navigation}) => {
   const [errornew, setErrornew] = useState('');
   const [errorconfirm, setErrorconfirm] = useState('');
 
-  const {userData} = useSelector(state => state.Globalreducer);
+  const {userData} = useSelector(state => state.global);
 
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');

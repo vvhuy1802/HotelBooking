@@ -19,7 +19,7 @@ export default function DetailRoom({navigation, route}) {
   const {t} = useTranslation();
   const {colors} = useTheme();
   const dataRoom = route.params.room;
-  const {booking_date} = useSelector(state => state.Globalreducer);
+  const {booking_date} = useSelector(state => state.global);
   const image_default =
     'https://img1.ak.crunchyroll.com/i/spire3/d23bea1cbe84833135f94695d900f0651651339079_main.png';
   const DataDetail = [...dataRoom.utility];

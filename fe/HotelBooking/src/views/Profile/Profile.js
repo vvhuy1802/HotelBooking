@@ -16,7 +16,7 @@ import Icon3 from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
-import Globalreducer from '../../../redux/Globalreducer';
+import {setTheme, setUserData} from '../../../redux/Globalreducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {Switch} from 'react-native-elements';
 import {setAsyncStorage} from '../../../functions/asyncStorageFunctions';
@@ -25,22 +25,22 @@ const Profile = ({navigation}) => {
   const {colors} = useTheme();
   const dispatch = useDispatch();
 
-  const {theme, userData} = useSelector(state => state.Globalreducer);
+  const {theme, userData} = useSelector(state => state.global);
   const [isEnabled, setIsEnabled] = useState(theme === 'dark' ? true : false);
   const toggleSwitch = () => {
     setIsEnabled(previousState => !previousState);
     if (isEnabled) {
-      dispatch(Globalreducer.actions.setTheme('light'));
+      dispatch(setTheme('light'));
       setAsyncStorage('theme', 'light');
     } else {
-      dispatch(Globalreducer.actions.setTheme('dark'));
+      dispatch(setTheme('dark'));
       setAsyncStorage('theme', 'dark');
     }
   };
 
   const signOut = () => {
     setAsyncStorage('userData', '');
-    dispatch(Globalreducer.actions.setUserData(''));
+    dispatch(setUserData(''));
   };
 
   return (

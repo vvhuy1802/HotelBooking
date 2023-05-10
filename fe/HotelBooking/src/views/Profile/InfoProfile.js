@@ -14,13 +14,13 @@ import {
 import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
-import Globalreducer from '../../../redux/Globalreducer';
+import {updateUser} from '../../../redux/Globalreducer';
 import CustomHeader from '../../components/CustomHeader';
 import {APIUpdateProfile} from '../../../middlewares/auth';
 
 const {width, height} = Dimensions.get('screen');
 const InfoProfile = ({navigation}) => {
-  const {userData} = useSelector(state => state.Globalreducer);
+  const {userData} = useSelector(state => state.global);
   const dispatch = useDispatch();
   const {t} = useTranslation();
   const {colors} = useTheme();
@@ -43,11 +43,11 @@ const InfoProfile = ({navigation}) => {
     const phone_number = phone;
     APIUpdateProfile(name, phone_number, email).then(res => {
       if (res.status === 200) {
-        const data ={
+        const data = {
           name: name,
-          phone_number:phone
-        }
-        dispatch(Globalreducer.actions.updateUser(data));
+          phone_number: phone,
+        };
+        dispatch(updateUser(data));
         Keyboard.dismiss();
         ToastAndroid.show('Update success', ToastAndroid.SHORT);
       } else {

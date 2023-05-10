@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next';
 import {
   Animated,
   Dimensions,
-  FlatList,
   Image,
   ImageBackground,
   Keyboard,
@@ -29,14 +28,15 @@ import {
   getAsyncStorage,
   setAsyncStorage,
 } from '../../../functions/asyncStorageFunctions';
-import Globalreducer from '../../../redux/Globalreducer';
+import {setHotelData} from '../../../redux/Globalreducer';
+import Toast from 'react-native-toast-message';
 const {width} = Dimensions.get('screen');
 const cardWidth = width / 1.8;
 export default function HomeScreen({navigation}) {
   const {colors} = useTheme();
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const {hotels} = useSelector(state => state.Globalreducer);
+  const {hotels} = useSelector(state => state.global);
   const ranHotel = [1, 2, 4];
   const image_default =
     'https://img1.ak.crunchyroll.com/i/spire3/d23bea1cbe84833135f94695d900f0651651339079_main.png';
@@ -132,7 +132,7 @@ export default function HomeScreen({navigation}) {
   };
 
   const navigateTo = item => {
-    dispatch(Globalreducer.actions.setHotelData(item));
+    dispatch(setHotelData(item));
     navigation.navigate('DetailHotel');
     setModalVisible(false);
     addItemToSearchHistory(item);
@@ -191,7 +191,7 @@ export default function HomeScreen({navigation}) {
           disabled={activeCardIndex != index}
           activeOpacity={1}
           onPress={() => {
-            dispatch(Globalreducer.actions.setHotelData(hotel));
+            dispatch(setHotelData(hotel));
             navigation.navigate('DetailHotel');
           }}>
           <Animated.View
@@ -472,15 +472,17 @@ export default function HomeScreen({navigation}) {
             </Swiper>
           </View>
 
-          <Text
-            style={{
-              fontWeight: 'bold',
-              color: colors.text,
-              fontSize: 18,
-              paddingHorizontal: 20,
-            }}>
-            {t('top-hotels')}
-          </Text>
+          <View>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                color: colors.text,
+                fontSize: 18,
+                paddingHorizontal: 20,
+              }}>
+              {t('top-hotels')}
+            </Text>
+          </View>
           <Animated.FlatList
             onMomentumScrollEnd={e => {
               setActiveCardIndex(
@@ -575,7 +577,7 @@ export default function HomeScreen({navigation}) {
               }}>
               <Pressable
                 onPress={() => {
-                  dispatch(Globalreducer.actions.setHotelData(hotels[item]));
+                  dispatch(setHotelData(hotels[item]));
                   navigation.navigate('DetailHotel');
                 }}>
                 <ImageBackground
