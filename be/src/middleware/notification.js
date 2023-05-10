@@ -3,7 +3,7 @@ const serverKey = process.env.serverKeyNotification;
 const fcm = new FCM(serverKey);
 
 const sendNotification = (req, res) => {
-  const { token, title, body } = req.body;
+  const { token, title, data, body } = req.body;
   try {
     const message = {
       to: token,
@@ -11,6 +11,7 @@ const sendNotification = (req, res) => {
         title: title,
         body: body,
       },
+      data: data,
     };
     fcm.send(message, function (err, response) {
       if (err) {
