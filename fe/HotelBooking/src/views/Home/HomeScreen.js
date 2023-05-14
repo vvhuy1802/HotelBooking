@@ -24,11 +24,13 @@ import Icon4 from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import Header from '../../components/Header';
+import NotifyIcon from './components/NotifyIcon';
 import {
   getAsyncStorage,
   setAsyncStorage,
 } from '../../../functions/asyncStorageFunctions';
 import {setHotelData} from '../../../redux/Globalreducer';
+import {NewNotifyContext} from '../../contexts/index';
 const {width} = Dimensions.get('screen');
 const cardWidth = width / 1.8;
 export default function HomeScreen({navigation}) {
@@ -171,6 +173,22 @@ export default function HomeScreen({navigation}) {
     };
   };
 
+  const [newNotify, setNewNotify] = useState(false);
+  useEffect(() => {
+    const subscribe = navigation.addListener('focus', () => {
+      const getNotify = async () => {
+        let notify = await getAsyncStorage('notify');
+        const isNew = JSON.parse(notify)?.some(
+          item => item.data.isRead === 'false',
+        );
+        setNewNotify(isNew);
+      };
+      getNotify();
+    });
+
+    return subscribe;
+  }, []);
+
   const Card = ({hotel, index}) => {
     const inputRange = [
       (index - 1) * cardWidth,
@@ -301,30 +319,9 @@ export default function HomeScreen({navigation}) {
                   <Icon4 name="search" size={26} color={colors.text} />
                 </Pressable>
               </Animated.View>
-              <Pressable
-                onPress={() => {
-                  navigation.navigate('NotiPage');
-                }}>
-                <Icon
-                  name="notifications-none"
-                  size={28}
-                  color={colors.text}
-                  style={{
-                    marginLeft: 15,
-                  }}
-                />
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: 5,
-                    right: 5,
-                    backgroundColor: 'red',
-                    width: 8,
-                    height: 8,
-                    borderRadius: 5,
-                  }}
-                />
-              </Pressable>
+              <NewNotifyContext.Provider value={{newNotify}}>
+                <NotifyIcon navigation={navigation} colors={colors} />
+              </NewNotifyContext.Provider>
             </View>
           </View>
         </View>

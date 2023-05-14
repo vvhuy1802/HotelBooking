@@ -7,6 +7,7 @@ import AppStack from './appStack';
 import {useSelector} from 'react-redux';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import {View, Text, Image} from 'react-native';
+import {NotificationProvider} from '../utils/PushNotification';
 
 const formatLongText = text => {
   if (text?.length > 110) {
@@ -57,7 +58,6 @@ const toastConfig = {
         },
         shadowOpacity: 0.3,
         shadowRadius: 2,
-        
       }}>
       <View style={{padding: 10}}>
         <View
@@ -140,14 +140,16 @@ export default function RootNavigation() {
 
   return (
     <PaperProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
-      <StatusBar
-        backgroundColor={theme === 'light' ? '#fff' : '#000'}
-        barStyle={theme === 'light' ? 'dark-content' : 'light-content'}
-      />
-      <NavigationContainer>
-        {userData ? <AppStack /> : <AuthStack />}
-      </NavigationContainer>
-      <Toast config={toastConfig} />
+      <NotificationProvider>
+        <StatusBar
+          backgroundColor={theme === 'light' ? '#fff' : '#000'}
+          barStyle={theme === 'light' ? 'dark-content' : 'light-content'}
+        />
+        <NavigationContainer>
+          {userData ? <AppStack /> : <AuthStack />}
+        </NavigationContainer>
+        <Toast config={toastConfig} />
+      </NotificationProvider>
     </PaperProvider>
   );
 }

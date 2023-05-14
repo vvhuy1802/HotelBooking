@@ -4,6 +4,8 @@ import {
   getAsyncStorage,
 } from '../../functions/asyncStorageFunctions';
 import Toast from 'react-native-toast-message';
+import {useState} from 'react';
+import {NewNotifyFCM} from '../contexts/index';
 
 export async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -98,4 +100,19 @@ export const NotificationService = () => {
         setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
       }
     });
+};
+
+export const NotificationProvider = ({children}) => {
+  const [hasNewNotification, setHasNewNotification] = useState(false);
+
+  messaging().onMessage(async remoteMessage => {
+    setHasNewNotification(true);
+  });
+
+  return (
+    <NewNotifyFCM.Provider
+      value={{hasNewNotification, setHasNewNotification}}>
+      {children}
+    </NewNotifyFCM.Provider>
+  );
 };

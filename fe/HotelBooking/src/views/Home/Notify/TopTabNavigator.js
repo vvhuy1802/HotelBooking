@@ -1,5 +1,5 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {StyleSheet, Text, View, Pressable, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -7,7 +7,11 @@ import Icon2 from 'react-native-vector-icons/Ionicons';
 import {useTheme} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '@react-navigation/native';
-import {setAsyncStorage} from '../../../../functions/asyncStorageFunctions';
+import {
+  setAsyncStorage,
+  getAsyncStorage,
+} from '../../../../functions/asyncStorageFunctions';
+import {ContextNotify} from '../../../contexts';
 
 import All from './Pages/AllPage';
 import Booking from './Pages/BookingPage';
@@ -52,10 +56,28 @@ const Mytab = () => {
   );
 };
 
-export default function TopTabNavigator({navigation}) {
+export default function TopTabNavigator() {
   const [showActionDot, setShowActionDot] = useState(false);
   const {colors} = useTheme();
   const {t} = useTranslation();
+  const {setNotify} = useContext(ContextNotify);
+
+  const handleMarkAllRead = async () => {
+    let notify = await getAsyncStorage('notify');
+    notify = JSON.parse(notify);
+    notify.forEach(item => {
+      item.data.isRead = true;
+    });
+    await setAsyncStorage('notify', JSON.stringify(notify));
+    setNotify(notify);
+    setShowActionDot(false);
+  };
+
+  const handleDeleteAll = async () => {
+    setAsyncStorage('notify', JSON.stringify([]));
+    setNotify([]);
+    setShowActionDot(false);
+  };
 
   const HeaderNotify = () => {
     const navigation = useNavigation();
@@ -109,6 +131,9 @@ export default function TopTabNavigator({navigation}) {
                   zIndex: 999,
                 }}>
                 <Pressable
+                  onPress={() => {
+                    handleMarkAllRead();
+                  }}
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -127,8 +152,7 @@ export default function TopTabNavigator({navigation}) {
                 </Pressable>
                 <Pressable
                   onPress={() => {
-                    setAsyncStorage('notify', JSON.stringify([]));
-                    setShowActionDot(false);
+                    handleDeleteAll();
                   }}
                   style={{
                     flexDirection: 'row',

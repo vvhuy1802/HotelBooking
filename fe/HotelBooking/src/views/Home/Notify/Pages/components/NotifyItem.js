@@ -12,7 +12,7 @@ import moment from 'moment';
 import Icon from 'react-native-vector-icons/Entypo';
 import Icon1 from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
-import {ContextNotify} from '../../ContextNotify';
+import {ContextNotify} from '../../../../../contexts/index';
 import {setAsyncStorage} from '../../../../../../functions/asyncStorageFunctions';
 
 const NotifyItem = ({id}) => {

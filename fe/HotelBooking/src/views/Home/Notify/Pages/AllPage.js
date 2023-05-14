@@ -1,27 +1,25 @@
-import {StyleSheet, Text, View, ScrollView, RefreshControl} from 'react-native';
-import React, {useEffect, useState, useContext} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
+import React, {useContext, useState} from 'react';
 import {getAsyncStorage} from '../../../../../functions/asyncStorageFunctions';
 import NotifyItem from './components/NotifyItem';
-import {ContextNotify} from '../ContextNotify';
+import {ContextNotify} from '../../../../contexts/index';
 
 const AllPage = () => {
-  const [notify, setNotify] = useState([]);
+  const {notify, setNotify} = useContext(ContextNotify);
   const [refreshing, setRefreshing] = useState(false);
-
-  useEffect(() => {
-    const getNotify = async () => {
-      let notify = await getAsyncStorage('notify');
-      setNotify(JSON.parse(notify));
-    };
-    getNotify();
-  }, []);
 
   const handleRefresh = async () => {
     setRefreshing(true);
 
     let notify = await getAsyncStorage('notify');
     setNotify(JSON.parse(notify));
-    console.log('notify', notify);
 
     setRefreshing(false);
   };
@@ -30,11 +28,32 @@ const AllPage = () => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
+      showsVerticalScrollIndicator={false}
       style={{
         flex: 1,
+        backgroundColor: '#ddd',
       }}>
       {notify.length === 0 ? (
-        <Text>Loading...</Text>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 50,
+          }}>
+          <Image
+            source={require('../../../../assets/no_notify.png')}
+            style={{width: 200, height: 200}}
+          />
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: 'bold',
+              color: '#999',
+              marginTop: 20,
+            }}>
+            Không có thông báo nào
+          </Text>
+        </View>
       ) : (
         <View
           style={{
@@ -44,6 +63,7 @@ const AllPage = () => {
             alignSelf: 'center',
             borderRadius: 10,
             marginTop: 10,
+            marginBottom: 10,
           }}>
           {notify
             ?.map((item, index) => {
@@ -55,9 +75,7 @@ const AllPage = () => {
                     borderBottomWidth: index === 0 ? 0 : 1,
                     borderBottomColor: '#ddd',
                   }}>
-                  <ContextNotify.Provider value={{notify, setNotify}}>
-                    <NotifyItem id={item.id || item?.messageId} />
-                  </ContextNotify.Provider>
+                  <NotifyItem id={item.id || item?.messageId} />
                 </View>
               );
             })
