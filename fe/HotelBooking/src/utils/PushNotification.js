@@ -32,6 +32,19 @@ const getFcmToken = async () => {
   }
 };
 
+const PushNotifyToLocalStorage = async remoteMessage => {
+  let notify = await getAsyncStorage('notify');
+  if (notify) {
+    notify = JSON.parse(notify);
+    notify.push(remoteMessage);
+    await setAsyncStorage('notify', JSON.stringify(notify));
+  } else {
+    notify = [];
+    notify.push(remoteMessage);
+    await setAsyncStorage('notify', JSON.stringify(notify));
+  }
+};
+
 export const NotificationService = () => {
   messaging().onNotificationOpenedApp(remoteMessage => {
     console.log(
@@ -70,6 +83,8 @@ export const NotificationService = () => {
         console.log('onShow');
       },
     });
+
+    await PushNotifyToLocalStorage(notification);
   });
 
   messaging()

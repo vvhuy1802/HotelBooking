@@ -133,7 +133,7 @@
     "room-price": "Room price",
     "payment-method": "Payment method",
     "total": "Total",
-    "done":"Done",
+    "done": "Done",
     "discount": "Discount",
     "change-language-success": "Change language success",
     "booking-success": "Booking success",
@@ -188,6 +188,11 @@
     "we-can-not-change-password-of-google-account": "We can not change password of google account",
     "have-sent-email-change-password-to-you-please-check-your-email": "Have sent email change password to you. Please check your email",
     "suggest-for-you": "Suggest for you",
-    "login-successfully": "Login successfully"
+    "login-successfully": "Login successfully",
+    "markAllRead": "Mark all read",
+    "deleteAll": "Delete all",
+    "all": "All",
+    "system": "System",
+    "other": "Other"
   }
 }
