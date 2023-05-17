@@ -12,6 +12,7 @@ import ChangeLanguage from '../views/Profile/ChangeLanguage';
 import Terms from '../views/Profile/Terms';
 import InfoProfile from '../views/Profile/InfoProfile';
 import ChangePassword from '../views/Profile/ChangePassword';
+import NotificationPage from '../views/Home/Notify/index';
 import TabNavigator from './tabNavigator';
 const Stack = createNativeStackNavigator();
 
@@ -105,6 +106,13 @@ export default function AppStack() {
       <Stack.Screen
         name="ChangePassword"
         component={ChangePassword}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="NotiPage"
+        component={NotificationPage}
         options={{
           headerShown: false,
         }}

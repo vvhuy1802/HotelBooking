@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {useTheme} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import Icon6 from 'react-native-vector-icons/FontAwesome';

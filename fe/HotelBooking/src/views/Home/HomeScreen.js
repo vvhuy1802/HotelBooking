@@ -24,12 +24,13 @@ import Icon4 from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import Header from '../../components/Header';
+import NotifyIcon from './components/NotifyIcon';
 import {
   getAsyncStorage,
   setAsyncStorage,
 } from '../../../functions/asyncStorageFunctions';
 import {setHotelData} from '../../../redux/Globalreducer';
-import Toast from 'react-native-toast-message';
+import {NewNotifyContext} from '../../contexts/index';
 const {width} = Dimensions.get('screen');
 const cardWidth = width / 1.8;
 export default function HomeScreen({navigation}) {
@@ -92,43 +93,44 @@ export default function HomeScreen({navigation}) {
   };
 
   const [historySearch, setHistorySearch] = useState([]);
-  const readItemFromStorage = async newValue => {
-    const value = getAsyncStorage('historyHotel');
-    if (value == null) {
-      setAsyncStorage('historyHotel', []);
-      setHistorySearch([]);
-    } else {
+  const readItemFromStorage = async () => {
+    const value = await getAsyncStorage('historyHotel');
+    if (value !== null) {
       setHistorySearch(JSON.parse(value));
     }
   };
 
   const addItemToSearchHistory = async item => {
-    const value = getAsyncStorage('historyHotel');
-    const arr = JSON.parse(value);
-    if (arr) {
-      const index = arr.findIndex(e => e.id === item.id);
-      if (index === -1) {
-        arr.push(item);
-      } else {
-        arr.splice(index, 1);
-        arr.push(item);
+    const value = await getAsyncStorage('historyHotel');
+    if (value === null) {
+      setAsyncStorage('historyHotel', JSON.stringify([item]));
+      setHistorySearch([item]);
+    } else {
+      //clear old data
+      const temp = JSON.parse(value);
+      const index = temp.findIndex(x => x.id === item.id);
+      if (index !== -1) {
+        temp.splice(index, 1);
       }
+      temp.push(item);
+      setAsyncStorage('historyHotel', JSON.stringify(temp));
+      setHistorySearch(temp);
     }
-    setAsyncStorage('historyHotel', arr);
     readItemFromStorage();
   };
 
   const removeItemFromSearchHistory = async item => {
-    const value = getAsyncStorage('historyHotel');
-    const arr = JSON.parse(value);
-    if (arr) {
-      const index = arr.findIndex(e => e.id === item.id);
-      if (index !== -1) {
-        arr.splice(index, 1);
-      }
+    const value = await getAsyncStorage('historyHotel');
+    if (value === null) {
+      setAsyncStorage('historyHotel', JSON.stringify([]));
+      setHistorySearch([]);
+    } else {
+      const temp = JSON.parse(value);
+      const index = temp.findIndex(x => x.id === item.id);
+      temp.splice(index, 1);
+      setAsyncStorage('historyHotel', JSON.stringify(temp));
+      setHistorySearch(temp);
     }
-    await setAsyncStorage('historyHotel', arr);
-    readItemFromStorage();
   };
 
   const navigateTo = item => {
@@ -170,6 +172,22 @@ export default function HomeScreen({navigation}) {
       count: 0,
     };
   };
+
+  const [newNotify, setNewNotify] = useState(false);
+  useEffect(() => {
+    const subscribe = navigation.addListener('focus', () => {
+      const getNotify = async () => {
+        let notify = await getAsyncStorage('notify');
+        const isNew = JSON.parse(notify)?.some(
+          item => item.data.isRead === 'false',
+        );
+        setNewNotify(isNew);
+      };
+      getNotify();
+    });
+
+    return subscribe;
+  }, []);
 
   const Card = ({hotel, index}) => {
     const inputRange = [
@@ -267,45 +285,6 @@ export default function HomeScreen({navigation}) {
       </View>
     );
   };
-
-  // const ExploreCard = ({ place }) => {
-  //   return (
-  //     <Pressable
-  //       onPress={() => {
-  //         navigation.navigate('PlaceHotel', {
-  //           name: place.title,
-  //           data: countHotel(place.index).temp,
-  //         });
-  //       }}
-  //       style={{
-  //         flexDirection: 'row',
-  //         justifyContent: 'space-between',
-  //         padding: 20,
-  //       }}
-  //     >
-  //       <View style={{}}>
-  //         <Image
-  //           style={{ width: 150, height: 150, borderRadius: 10 }}
-  //           source={{
-  //             uri: place.img,
-  //           }}
-  //         />
-  //         <Text
-  //           style={{
-  //             fontSize: 15,
-  //             color: colors.text,
-  //             marginTop: 5,
-  //           }}
-  //         >
-  //           {place.title}
-  //         </Text>
-  //         <Text style={{ color: colors.text }}>
-  //           {t('have')} {countHotel(place.index).count} {t('ho-tel')}
-  //         </Text>
-  //       </View>
-  //     </Pressable>
-  //   );
-  // };
   return (
     <SafeAreaView
       style={{
@@ -327,14 +306,23 @@ export default function HomeScreen({navigation}) {
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Animated.View style={[{}, SearchShow]}>
-              <TouchableOpacity
-                onPress={() => {
-                  ShowModal();
-                }}>
-                <Icon5 name="search" size={32} color="#FF6347" />
-              </TouchableOpacity>
-            </Animated.View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Animated.View style={[{}, SearchShow]}>
+                <Pressable
+                  onPress={() => {
+                    ShowModal();
+                  }}>
+                  <Icon4 name="search" size={26} color={colors.text} />
+                </Pressable>
+              </Animated.View>
+              <NewNotifyContext.Provider value={{newNotify}}>
+                <NotifyIcon navigation={navigation} colors={colors} />
+              </NewNotifyContext.Provider>
+            </View>
           </View>
         </View>
       </View>
@@ -515,47 +503,6 @@ export default function HomeScreen({navigation}) {
             snapToInterval={cardWidth}
           />
         </View>
-
-        {/* <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 20,
-          }}
-        >
-          <Text
-            style={{
-              fontWeight: 'bold',
-              color: colors.text,
-              fontSize: 18,
-            }}
-          >
-            {t('explore-VietNam')}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('ListPlace');
-            }}
-          >
-            <Text
-              style={{
-                fontWeight: 'bold',
-                color: colors.text,
-              }}
-            >
-              {t('more')}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          data={dataExplore}
-          renderItem={({ item }) => (
-            <ExploreCard place={item} navigation={navigation} />
-          )}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        /> */}
         <Text
           style={{
             fontWeight: 'bold',
@@ -724,7 +671,7 @@ export default function HomeScreen({navigation}) {
                 <></>
               ) : (
                 <View>
-                  {historySearch.length > 0 ? (
+                  {historySearch?.length > 0 ? (
                     <Text
                       style={{
                         marginLeft: 20,
@@ -740,7 +687,7 @@ export default function HomeScreen({navigation}) {
                     <></>
                   )}
                   {historySearch
-                    .map((item, index) => (
+                    ?.map((item, index) => (
                       <TouchableOpacity
                         key={index}
                         style={{
@@ -839,7 +786,7 @@ export default function HomeScreen({navigation}) {
                         ]}>
                         <Image
                           source={{
-                            uri: image_default,
+                            uri: item.image[0] || image_default,
                           }}
                           style={{
                             width: 75,

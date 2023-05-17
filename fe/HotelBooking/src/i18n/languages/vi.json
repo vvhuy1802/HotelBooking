@@ -79,7 +79,7 @@
     "terms-and-conditions": "Điều khoản và điều kiện",
     "version": "Phiên bản",
     "contact-us": "Liên hệ với chúng tôi",
-    "different-utilities-depending-on-the-type-of-room":"Tiện ích khác nhau tùy thuộc vào từng loại phòng.",
+    "different-utilities-depending-on-the-type-of-room": "Tiện ích khác nhau tùy thuộc vào từng loại phòng.",
     "nhin-ra-bien": "Nhìn ra biển",
     "bungalow-nguyen-can": "Bungalow nguyên căn",
     "ban-cong": "Ban công",
@@ -142,7 +142,7 @@
     "error": "Lỗi",
     "user-name": "Tên người dùng",
     "update": "Cập nhật",
-    "done":"Xong",
+    "done": "Xong",
     "current-password-not-correct": "Mật khẩu hiện tại không đúng",
     "please-enter-current-password": "Vui lòng nhập mật khẩu hiện tại",
     "password-at-least-6-characters": "Mật khẩu phải có ít nhất 6 ký tự",
@@ -187,6 +187,11 @@
     "we-can-not-change-password-of-google-account": "Chúng tôi không thể thay đổi mật khẩu của tài khoản Google",
     "have-sent-email-change-password-to-you-please-check-your-email": "Chúng tôi đã gửi email thay đổi mật khẩu cho bạn, vui lòng kiểm tra email của bạn",
     "suggest-for-you": "Gợi ý cho bạn",
-    "login-successfully": "Đăng nhập thành công"
+    "login-successfully": "Đăng nhập thành công",
+    "markAllRead": "Đánh dấu tất cả đã đọc",
+    "deleteAll": "Xóa tất cả",
+    "all": "Tất cả",
+    "system": "Hệ thống",
+    "other": "Khác"
   }
 }
