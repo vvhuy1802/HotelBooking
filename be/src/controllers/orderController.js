@@ -127,5 +127,5 @@ module.exports = {
   UpdateOrder,
   DeleteOrder,
   UpdateReview,
-  UpdateStatus
+  UpdateStatus,
 };

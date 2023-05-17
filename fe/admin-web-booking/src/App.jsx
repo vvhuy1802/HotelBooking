@@ -37,6 +37,7 @@ import ListBooking from "./ContainerAdminHotel/Container/ListBooking/ListBooking
 import { RoomInputs } from "./ContainerAdminHotel/Components/Input/DataInput";
 import AddNewRoom from "./ContainerAdminHotel/Container/ListRoom/AddNewRoom/AddNewRoom";
 import UpdateRoom from "./ContainerAdminHotel/Container/ListRoom/UpdateRoom/UpdateRoom";
+import BookingDetail from "./ContainerAdminHotel/Container/ListBooking/BookingDetail/BookingDetail";
 
 function App() {
   const dispatch = useDispatch();
@@ -107,8 +108,9 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
+    const currentpath = location.pathname;
     if (userInfo.roll === "adminapp") {
-      const currentpath = location.pathname;
+  
       if (currentpath === "/") {
         dispatch(setStateSidebar("Dashboard"));
       } else if (currentpath.split("/")[1] === "user") {
@@ -119,6 +121,16 @@ function App() {
         dispatch(setStateSidebar("Hotels"));
       } else if (currentpath.split("/")[1] === "booking")
         dispatch(setStateSidebar("Bookings"));
+    }
+    else {
+     
+      if (currentpath === "/") {
+        dispatch(setStateSidebar("Dashboard"));
+      } else if (currentpath.split("/")[1] === "listroom") {
+        dispatch(setStateSidebar("rooms"));
+      } else if (currentpath.split("/")[1] === "listbooking") {
+        dispatch(setStateSidebar("Bookings"));
+      }
     }
   }, [location.pathname, userInfo.roll, dispatch]);
 
@@ -288,6 +300,16 @@ function App() {
                       index
                       element={
                         userInfo ? <ListBooking /> : <Navigate to="/login" />
+                      }
+                    />
+                    <Route
+                      path=":bookingId"
+                      element={
+                        userInfo ? (
+                          <BookingDetail/>
+                        ) : (
+                          <Navigate to="/login" />
+                        )
                       }
                     />
                   </Route>
