@@ -51,7 +51,16 @@ const GetOrderByIdHotel = async (req, res) => {
   }
 };
 
-const GetOrderByIdUser = async (req, res) => {};
+const GetOrderByIdUser = async (req, res) => {
+  try {
+    const orders = await Order.find({ id_user: req.params.id })
+      .populate("id_user")
+      .populate("id_room");
+    res.status(200).json({ success: true, data: orders });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 const GetOrderById = async (req, res) => {};
 
@@ -127,5 +136,5 @@ module.exports = {
   UpdateOrder,
   DeleteOrder,
   UpdateReview,
-  UpdateStatus
+  UpdateStatus,
 };
