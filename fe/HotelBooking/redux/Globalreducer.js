@@ -1,10 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {Alert} from 'react-native';
 const today = new Date().toISOString().split('T')[0];
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 const initialState = {
   userData: null,
   hotels: [],
+  booking: [],
   theme: 'light',
   user_position: {
     latitude: 0,
@@ -35,6 +37,9 @@ export const globalSlice = createSlice({
     setHotels: (state, action) => {
       state.hotels = action.payload;
     },
+    setBooking: (state, action) => {
+      state.booking = action.payload;
+    },
     setTheme: (state, action) => {
       state.theme = action.payload;
     },
@@ -48,8 +53,6 @@ export const globalSlice = createSlice({
     addComment: (state, action) => {
       let hotel = state.hotels.filter(hotel => hotel.id === action.payload.id);
       hotel[0].comments.push(action.payload.comment);
-      state.hotelData.comments.push(action.payload.comment);
-      state.userData.orders[action.payload.index].reviewed = true;
     },
     setHotelData: (state, action) => {
       state.hotelData = action.payload;

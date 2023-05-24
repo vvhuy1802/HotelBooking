@@ -1,26 +1,24 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const windowWidth = Dimensions.get('window').width;
-const CustomHeader = ({ title }) => {
+const CustomHeader = ({title}) => {
   const navigation = useNavigation();
-  const { t } = useTranslation();
-  const { colors } = useTheme();
+  const {t} = useTranslation();
+  const {colors} = useTheme();
   return (
-    <View style={[styles.header, { backgroundColor: colors.box }]}>
+    <View style={[styles.header, {backgroundColor: colors.box}]}>
       <Icon
         name="arrow-back-ios"
         size={25}
         color={colors.text}
         onPress={() => navigation.goBack()}
       />
-      <Text style={[styles.headerText, { color: colors.text }]}>
-        {t(title)}
-      </Text>
-      <Icon name="arrow-back-ios" size={0} color={colors.text} />
+      <Text style={[styles.headerText, {color: colors.text}]}>{t(title)}</Text>
+      <View />
     </View>
   );
 };

@@ -13,6 +13,8 @@ import Terms from '../views/Profile/Terms';
 import InfoProfile from '../views/Profile/InfoProfile';
 import ChangePassword from '../views/Profile/ChangePassword';
 import NotificationPage from '../views/Home/Notify/index';
+import DetailNotify from '../views/Home/Notify/Pages/DetailNotify';
+import DetailBooking from '../views/Booking/DetailBooking';
 import TabNavigator from './tabNavigator';
 const Stack = createNativeStackNavigator();
 
@@ -113,6 +115,20 @@ export default function AppStack() {
       <Stack.Screen
         name="NotiPage"
         component={NotificationPage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="DetailNotify"
+        component={DetailNotify}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="DetailBooking"
+        component={DetailBooking}
         options={{
           headerShown: false,
         }}
