@@ -7,21 +7,30 @@ import DataTable from "../../Components/DataTable/DataTable";
 const ListBooking = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const {userInfo}=useSelector(state=>state.global)
+  const { userInfo } = useSelector((state) => state.global);
+  const [reload, setReload] = useState(false);
   const initFetch = async () => {
     setIsLoading(true);
     const res = await GetAllOrders();
     if (res.status === 200) {
-      const data = res.data.data.filter(
+      const data = await res.data.data.filter(
         (item) => item.id_hotel === userInfo.idHotel
       );
       setData(data);
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     initFetch();
   }, []);
+
+  useEffect(() => {
+    if (reload) {
+      initFetch();
+      setReload(false);
+    }
+  }, [reload]);
   return (
     <>
       {isLoading ? (
@@ -29,7 +38,7 @@ const ListBooking = () => {
       ) : (
         <div className="list">
           <div className="listContainer">
-            <DataTable data={data} />
+            <DataTable data={data} setReload={setReload} />
           </div>
         </div>
       )}

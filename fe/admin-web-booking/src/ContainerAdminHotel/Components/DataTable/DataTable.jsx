@@ -6,7 +6,7 @@ import avatar from "../../../assets/avatar.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { DeleteRoomInHotel } from "./apiDataTable";
+import { DeleteRoomInHotel, updateStatusInOrder } from "./apiDataTable";
 
 const DataTable = (props) => {
   const { data, setReload } = props;
@@ -22,11 +22,10 @@ const DataTable = (props) => {
         path: "/listroom/new",
         pathEdit: "/listroom/edit/:roomId",
       };
-      break;
     case "Bookings":
       dataTitle = {
         title: "List Booking",
-        path: "/listbooking/new",
+        path: "/listbooking/:bookingId",
       };
       break;
     default:
@@ -82,7 +81,7 @@ const DataTable = (props) => {
         width: 100,
         renderCell: (params) => {
           const handleView = () => {
-            navigate(`/listroom/${params.row.id}`);
+            navigate(`/listbooking/${params.row.id}`);
           };
           return (
             <div className="action">
@@ -117,7 +116,7 @@ const DataTable = (props) => {
         customer: item.id_user.name,
         room_name: item.id_room.name,
         cost: item.total,
-        image: item.image,
+        image: item.id_room.image[0],
         check_in: item.check_in,
         check_out: item.check_out,
         payment_method: paymentAdapter(item.payment_method),
@@ -217,25 +216,39 @@ const DataTable = (props) => {
   const deleteRoom = async () => {
     for (let i = 0; i < selectionModel.length; i++) {
       const res = await DeleteRoomInHotel(selectionModel[i]);
-      setReload(true);
     }
+    setReload(true);
   };
+
+  const ConfirmBooking = async () => {
+    for (let i = 0; i < selectionModel.length; i++) {
+      const res = await updateStatusInOrder(selectionModel[i],"Completed");
+    }
+    setReload(true);
+  }
+
+  const CancelBooking = async () => {
+    for (let i = 0; i < selectionModel.length; i++) {
+      const res = await updateStatusInOrder(selectionModel[i],"Cancelled");
+    }
+    setReload(true);
+  }
 
   return (
     <div className="datatable">
       <div className="datatableTitle">
         {dataTitle.title}
-        {stateSidebar === "rooms"&&
-        <div style={{}}>
-          <Link
-            to={dataTitle.path}
-            style={{ textDecoration: "none" }}
-            className="link"
-          >
-            Add new
-          </Link>
-        </div>
-        }
+        {stateSidebar === "rooms" && (
+          <div style={{}}>
+            <Link
+              to={dataTitle.path}
+              style={{ textDecoration: "none" }}
+              className="link"
+            >
+              Add new
+            </Link>
+          </div>
+        )}
       </div>
       {data.length === 0 ? (
         <Box
@@ -273,16 +286,25 @@ const DataTable = (props) => {
           disableColumnMenu
           disableColumnSelector
           onRowSelectionModelChange={(e) => {
-            console.log(e);
             setSelectionModel(e);
           }}
         />
       )}
-      {selectionModel?.length > 0 && (
+      {selectionModel?.length > 0 && stateSidebar==="rooms" &&
         <div onClick={deleteRoom} className="delete">
           Delete
         </div>
-      )}
+      }
+      {selectionModel?.length > 0 && stateSidebar==="Bookings"&&data.status==="Pending" &&
+        <div className="statusOrder">
+        <div onClick={ConfirmBooking} className="confirm">
+          Confirm
+        </div>
+        <div onClick={CancelBooking} className="cancel">
+          Cancel
+        </div>
+        </div>
+      }
     </div>
   );
 };
