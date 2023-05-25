@@ -429,7 +429,7 @@ export default function HomeScreen({navigation}) {
                 }}
                 style={{
                   height: 170,
-                  width: 350,
+                  width: '90%',
                   borderRadius: 10,
                   resizeMode: 'stretch',
                 }}
@@ -440,7 +440,7 @@ export default function HomeScreen({navigation}) {
                 }}
                 style={{
                   height: 170,
-                  width: 350,
+                  width: '90%',
                   borderRadius: 10,
                   resizeMode: 'stretch',
                 }}
@@ -452,7 +452,7 @@ export default function HomeScreen({navigation}) {
                 }}
                 style={{
                   height: 170,
-                  width: 350,
+                  width: '90%',
                   borderRadius: 10,
                   resizeMode: 'stretch',
                 }}
