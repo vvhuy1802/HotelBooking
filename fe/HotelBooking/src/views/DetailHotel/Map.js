@@ -17,8 +17,8 @@ const Map = ({route}) => {
         initialRegion={{
           latitude: hotel.position[0],
           longitude: hotel.position[1],
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.0015,
+          latitudeDelta: 0.0115,
+          longitudeDelta: 0.0121,
         }}>
         <Marker
           coordinate={{

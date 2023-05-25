@@ -213,7 +213,7 @@ export default function TopTabNavigator() {
               backgroundColor: colors.box,
             }}>
             <Lottie
-              source={require('../../../assets/animations/edupia-loading.json')}
+              source={require('../../../assets/animations/92803-loading.json')}
               autoPlay
               loop
             />

@@ -15,8 +15,14 @@ export default function NotificationPage() {
       let notify = await getAsyncStorage('notify');
       //filter notify by user
       notify = JSON.parse(notify);
-      notify = await notify.filter(item => item.data?.id_user === userData._id);
-      setNotify(notify);
+      if (notify) {
+        notify = await notify.filter(
+          item => item.data?.id_user === userData._id,
+        );
+        setNotify(notify);
+      } else {
+        setNotify([]);
+      }
       setLoading(false);
     };
     getNotify();

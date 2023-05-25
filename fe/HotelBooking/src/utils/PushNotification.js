@@ -73,7 +73,7 @@ export const NotificationService = navigation => {
       type: 'notifyBasic',
       text1: notification.title,
       text2: notification.body,
-      visibilityTime: 300000,
+      visibilityTime: 3000,
       autoHide: true,
       topOffset: 10,
       bottomOffset: 10,

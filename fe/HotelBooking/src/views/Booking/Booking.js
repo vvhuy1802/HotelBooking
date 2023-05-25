@@ -53,6 +53,20 @@ export default function Booking() {
     return name;
   };
 
+  const filterStatus = item => {
+    if (item?.status === 'Pending') {
+      if (item?.paymented === false) {
+        return t('pending');
+      }
+      return t('ongoing');
+    } else if (item?.status === 'Completed') {
+      return t('completed');
+    } else if (item?.status === 'Cancelled') {
+      return t('cancelled');
+    }
+    return t('unknown');
+  };
+
   const FormatDayMonthYear = date => {
     const arr = date.split('-');
     const day = arr[2];
@@ -155,7 +169,7 @@ export default function Booking() {
                     fontSize: 13,
                     color: colors.primary,
                   }}>
-                  {t('ongoing')}
+                  {filterStatus(item)}
                 </Text>
               </View>
             </View>
@@ -654,7 +668,7 @@ export default function Booking() {
             backgroundColor: 'white',
           }}>
           <Lottie
-            source={require('../../assets/animations/edupia-loading.json')}
+            source={require('../../assets/animations/92803-loading.json')}
             autoPlay
             loop
           />

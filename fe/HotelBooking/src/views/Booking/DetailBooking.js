@@ -151,11 +151,12 @@ const DetailBooking = ({navigate, route}) => {
   };
 
   const starTotal = () => {
+    if (hotel.comments.length === 0) return 5;
     let star = 0;
     hotel.comments.forEach(comment => {
       star += comment.rating;
     });
-    return star / hotel.comments.length;
+    return (star / hotel.comments.length).toFixed(1);
   };
 
   const CancelBooking = async idroom => {
@@ -372,15 +373,15 @@ const DetailBooking = ({navigate, route}) => {
                   }}
                 />
               </View>
-              <Pressable
+              <TouchableOpacity
                 onPress={() => {
-                  console.log('open');
+                  navigation.navigate('Map', hotel);
                 }}>
                 <Text
                   style={{color: colors.primary, fontSize: 14, marginTop: 5}}>
                   Xem đường đi
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

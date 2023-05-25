@@ -143,7 +143,7 @@ const App = () => {
         <View
           style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
           <Lottie
-            source={require('./src/assets/animations/loading-circle.json')}
+            source={require('./src/assets/animations/140846-vertical-animation.json')}
             autoPlay
             loop
           />
