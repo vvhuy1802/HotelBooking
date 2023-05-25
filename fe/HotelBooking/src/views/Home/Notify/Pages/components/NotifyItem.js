@@ -63,7 +63,13 @@ const NotifyItem = ({id, navigation}) => {
   const handleOpenNotify = id => {
     const thisNotify = notify.find(item => item.id === id);
     handleMarkAsRead(id);
-    navigation.navigate('DetailNotify', {dataNotify: thisNotify});
+    if (thisNotify.data.type === 'booking') {
+      navigation.navigate('DetailBooking', {
+        dataNotify: thisNotify,
+        id_booking: thisNotify.data.id_booking,
+        id_hotel: thisNotify.data.id_hotel,
+      });
+    }
   };
 
   return (

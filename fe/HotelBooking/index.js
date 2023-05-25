@@ -17,10 +17,22 @@ const toastConfig = {
   notifyBasic: ({text1, text2, props}) => (
     <Pressable
       onPress={() => {
-        props.navigation.navigate('DetailNotify', {
-          dataNotify: props.data,
-        }),
-          Toast.hide();
+        if (props?.data?.data?.type === 'booking') {
+          props.navigation.navigate('DetailBooking', {
+            id_booking: props.data.data.id_booking,
+            id_hotel: props.data.data.id_hotel,
+            dataNotify: props.data,
+          });
+        } else if (props?.data?.type === 'system') {
+          props.navigation.navigate('DetailNotify', {
+            dataNotify: props.data,
+          });
+        } else if (props?.data?.type === 'other') {
+          props.navigation.navigate('DetailNotify', {
+            dataNotify: props.data,
+          });
+        }
+        Toast.hide();
       }}
       style={{
         width: '95%',

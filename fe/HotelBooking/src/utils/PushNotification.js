@@ -79,7 +79,7 @@ export const NotificationService = navigation => {
       bottomOffset: 10,
       props: {
         navigation: navigation,
-        data: notification.data,
+        data: notification,
       },
     });
 

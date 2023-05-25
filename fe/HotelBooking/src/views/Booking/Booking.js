@@ -105,6 +105,8 @@ export default function Booking() {
           navigation.navigate('DetailBooking', {
             item: item,
             hotel: filterHotel(item.id_hotel),
+            id_booking: item._id,
+            id_hotel: item.id_hotel,
           });
         }}
         style={{
