@@ -8,6 +8,7 @@ import {
   ImageBackground,
   ToastAndroid,
   TouchableOpacity,
+  NativeModules
 } from 'react-native';
 import React from 'react';
 import CustomHeader from '../../components/CustomHeader';
@@ -19,6 +20,7 @@ const {width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AddNewOrder} from '../../../middlewares/orders';
 import {addOrder} from '../../../redux/Globalreducer';
+import CryptoJS from 'crypto-js';
 const OrderRoom = ({navigation, route}) => {
   const dataRoom = route.params.room;
   const dataHotel = route.params.hotel;
@@ -73,8 +75,67 @@ const OrderRoom = ({navigation, route}) => {
   const FormatPrice = price => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + 'đ';
   };
+
+  function getCurrentDateYYMMDD() {
+    var todayDate = new Date().toISOString().slice(2, 10);
+    return todayDate.split('-').join('');
+  }
+  const [token, setToken] = React.useState('')
+  
+  // zalopay
+  const createOrder=async(money)=> {
+    let apptransid = getCurrentDateYYMMDD() + '_' + new Date().getTime()
+  
+    let appid = 554
+    let amount = parseInt(money)
+    let appuser = "ZaloPayDemo"
+    let apptime = (new Date).getTime()
+    let embeddata = "{}"
+    let item = "[]"
+    let description = "Merchant description for order #" + apptransid
+    let hmacInput = appid + "|" + apptransid + "|" + appuser + "|" + amount + "|" + apptime + "|" + embeddata + "|" + item
+    let mac = CryptoJS.HmacSHA256(hmacInput, "8NdU5pG5R2spGHGhyO99HN1OhD8IQJBn")
+    var order = {
+      'app_id': appid,
+      'app_user': appuser,
+      'app_time': apptime,
+      'amount': amount,
+      'app_trans_id': apptransid,
+      'embed_data': embeddata,
+      'item': item,
+      'description': description,
+      'mac': mac
+    }
+  
+    let formBody = []
+    for (let i in order) {
+      var encodedKey = encodeURIComponent(i);
+      var encodedValue = encodeURIComponent(order[i]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    await fetch('https://sb-openapi.zalopay.vn/v2/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: formBody
+    }).then(response => response.json())
+      .then(resJson => {
+        var payZP = NativeModules.PayZaloBridge;
+        payZP.payOrder(resJson.zp_trans_token);
+      })
+      .catch((error) => {
+        console.log("error ", error)
+      })
+  }
+
   const handleBooking = () => {
     setIsBooking(true);
+    if(payment_method.id==="payment-zalopay"){
+      console.log("zalopay")
+      createOrder(totalOrder())
+    }
     const dataOrder = {
       id_user: userData._id,
       id_hotel: dataHotel.id,

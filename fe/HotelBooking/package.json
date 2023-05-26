@@ -22,6 +22,7 @@
     "@reduxjs/toolkit": "^1.9.2",
     "@sindresorhus/slugify": "^2.2.0",
     "bcryptjs": "^2.4.3",
+    "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
     "i18next": "^22.4.10",
     "lottie-react-native": "^5.1.5",

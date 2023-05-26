@@ -1,6 +1,7 @@
 import slugify from '@sindresorhus/slugify';
 import React, {useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import Lottie from 'lottie-react-native';
 import {
   Alert,
   Animated,
@@ -32,6 +33,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {addComment, setBookingDate} from '../../../redux/Globalreducer';
 import {AddNewComment} from '../../../middlewares/comments';
 import {UpdateReview} from '../../../middlewares/orders';
+import { GetHotelByID } from './apidetailhotel';
 
 const width = Dimensions.get('screen').width;
 const WINDOW_HEIGHT = Dimensions.get('screen').height;
@@ -40,7 +42,8 @@ const SHEET_MIN_HEIGHT = WINDOW_HEIGHT * 0.1;
 const MAX_UPWARD_TRANSLATE_Y = -SHEET_MIN_HEIGHT - SHEET_MAX_HEIGHT; // negative number
 const MAX_DOWNWARD_TRANSLATE_Y = 0;
 const DRAG_THRESHOLD = 50;
-const DetailHotel = ({navigation}) => {
+const DetailHotel = ({navigation,route}) => {
+  const _id = route.params.id;
   const {t} = useTranslation();
   const {colors} = useTheme();
   const star = [1, 2, 3, 4, 5];
@@ -51,11 +54,29 @@ const DetailHotel = ({navigation}) => {
   const LATITUDE_DELTA = 0.009;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   const [starhotel, setStarhotel] = useState(0);
+  const [isloading, setIsloading] = useState(true);
+  const [hotelData, setHotelData] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const [ratecontent, setRatecontent] = useState('');
-  const {user_position, hotelData, userData, booking_date} = useSelector(
+  const {user_position, userData, booking_date} = useSelector(
     state => state.global,
   );
+
+
+  const fetchData = async () => {
+    const response = await GetHotelByID(_id);
+    if (response.status === 200) {
+      const data=response.data;
+      setHotelData(data);
+      setIsloading(false);
+    }
+  }
+
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const image_default =
     'https://img1.ak.crunchyroll.com/i/spire3/d23bea1cbe84833135f94695d900f0651651339079_main.png';
 
@@ -338,7 +359,15 @@ const DetailHotel = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{backgroundColor: colors.bg}}>
+    <SafeAreaView style={{flex:1,backgroundColor: colors.bg}}>
+      {isloading ? <>
+          <Lottie
+            style={{}}
+            source={require('../../assets/animations/loading-circle.json')}
+            autoPlay
+            loop
+          />
+        </>:<>
       <AnimatedView
         style={[
           styles.HeaderBack,
@@ -551,7 +580,7 @@ const DetailHotel = ({navigation}) => {
                   height: 150,
                   alignSelf: 'center',
                 }}>
-                <Image style={styles.IMGRecent} source={{uri: image_default}} />
+                <Image style={styles.IMGRecent} source={{uri: items.image[0]}} />
               </View>
               <View>
                 <View style={{paddingHorizontal: 15, paddingVertical: 5}}>
@@ -1245,6 +1274,7 @@ const DetailHotel = ({navigation}) => {
           </Pressable>
         </KeyboardAvoidingView>
       </Modal>
+      </>}
     </SafeAreaView>
   );
 };

@@ -55,7 +55,15 @@ const GetAllHotel = async (req, res) => {
 };
 
 const GetByID = async (req, res) => {
-  const hotel = await Hotel.findById(req.params.id);
+  let hotel = await Hotel.findById(req.params.id).populate("rooms").populate("comments");
+  hotel = await Comments.populate(hotel, {
+    path: "comments.id_user",
+    select: "name",
+  });
+  hotel = await Comments.populate(hotel, {
+    path: "comments.id_room",
+    select: "name",
+  });
   res.status(200).send(hotel);
 };
 
