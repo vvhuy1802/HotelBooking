@@ -1,103 +1,14 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const os = require("os");
-const fs = require("fs");
+const socket = require("socket.io");
 require("dotenv").config();
 const config = process.env;
 
-const router = require("./src/routers/index");
-
-//connect to db
 const db = require("./src/config/db");
 db.connect();
 
-const port = 6996;
-let ipv4 = "";
-
-// Get the network interfaces
-const interfaces = os.networkInterfaces();
-
-// Iterate over the network interfaces
-Object.keys(interfaces).forEach(function (interface) {
-  // Get the IPv4 address of the interface
-  const addresses = interfaces[interface].filter(function (address) {
-    return address.family === "IPv4" && !address.internal;
-  });
-
-  if (addresses.length > 0) {
-    console.log(interface + ": " + addresses[0].address);
-    ipv4 = addresses[0].address;
-  }
-});
-
-const UpdateAPI_URL = (path) => {
-  fs.readFile(path, "utf8", function (error, data) {
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    const lines = data.split("\n");
-    let found = false;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line.startsWith("export const LOCAL_API_URL =")) {
-        lines[i] = "export const LOCAL_API_URL ='http://" + ipv4 + `:${port}'`;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      lines.push("export const LOCAL_API_URL ='http://" + ipv4 + `:${port}'`);
-    }
-
-    fs.writeFile(path, lines.join("\n"), function (error) {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      console.log(`IPv4 at ${path} updated!`);
-    });
-  });
-};
-
-if (config.IPV4_ADDRESS !== ipv4) {
-  fs.readFile(".env", "utf8", function (error, data) {
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    const lines = data.split("\n");
-    let found = false;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line.startsWith("IPV4_ADDRESS=")) {
-        lines[i] = "IPV4_ADDRESS=" + ipv4;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      lines.push("IPV4_ADDRESS=" + ipv4);
-    }
-
-    fs.writeFile(".env", lines.join("\n"), function (error) {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      console.log("IPv4 at .env updated!");
-    });
-  });
-
-  UpdateAPI_URL("../fe/HotelBooking/api.js");
-  UpdateAPI_URL("../fe/admin-web-booking/src/api.js");
-}
-
 app.use(express.urlencoded({ extended: true }));
-
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -106,14 +17,45 @@ app.use(
   })
 );
 app.use(express.json());
-
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   next();
 });
 
-router(app);
+async function StartApp() {
+  const router = require("./src/routers/index");
+  router(app);
 
-app.listen(port, ipv4, () => {
-  console.log(`App listening at http://${ipv4}:${port}`);
-});
+  //get ipv4 and update at be and fe
+  const api = require("./src/config/api");
+  const ipv4 = await api.UpdateAPI_URL();
+
+  const server = app.listen(config.PORT, ipv4, () => {
+    console.log(`Server started at http://${ipv4}:${config.PORT}`);
+  });
+
+  const io = socket(server, {
+    cors: {
+      origin: "http://localhost:3000",
+      methods: "GET,POST,PUT,DELETE",
+      credentials: true,
+    },
+  });
+
+  global.onlineUsers = new Map();
+  io.on("connection", (socket) => {
+    global.chatSocket = socket;
+    socket.on("add-user", (userId) => {
+      onlineUsers.set(userId, socket.id);
+    });
+
+    socket.on("send-msg", (data) => {
+      const sendUserSocket = onlineUsers.get(data.to);
+      if (sendUserSocket) {
+        socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+      }
+    });
+  });
+}
+
+StartApp();
