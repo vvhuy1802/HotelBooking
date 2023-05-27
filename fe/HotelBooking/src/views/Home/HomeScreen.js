@@ -77,7 +77,9 @@ export default function HomeScreen({navigation}) {
     const subscription = payZaloBridgeEmitter.addListener(
       'EventPayZalo',
       (data) => {
-        if (data.returnCode == 1) {
+        console.log(data)
+        console.log("EventPayZalo")
+        if (data.returnCode === "1") {
           console.log('Pay success!');
         } else {
           alert('Pay errror! ' + data.returnCode);
@@ -97,8 +99,8 @@ function getCurrentDateYYMMDD() {
 
 const createOrder=async(money)=> {
   let apptransid = getCurrentDateYYMMDD() + '_' + new Date().getTime()
-
-  let appid = 554
+  console.log(apptransid)
+  let appid = 2554
   let amount = parseInt(money)
   let appuser = "ZaloPayDemo"
   let apptime = (new Date).getTime()
@@ -106,7 +108,7 @@ const createOrder=async(money)=> {
   let item = "[]"
   let description = "Merchant description for order #" + apptransid
   let hmacInput = appid + "|" + apptransid + "|" + appuser + "|" + amount + "|" + apptime + "|" + embeddata + "|" + item
-  let mac = CryptoJS.HmacSHA256(hmacInput, "8NdU5pG5R2spGHGhyO99HN1OhD8IQJBn")
+  let mac = CryptoJS.HmacSHA256(hmacInput, "sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn")
   var order = {
     'app_id': appid,
     'app_user': appuser,
@@ -118,6 +120,8 @@ const createOrder=async(money)=> {
     'description': description,
     'mac': mac
   }
+
+  console.log(order)
 
   let formBody = []
   for (let i in order) {
@@ -134,6 +138,7 @@ const createOrder=async(money)=> {
     body: formBody
   }).then(response => response.json())
     .then(resJson => {
+      console.log(resJson)
       setToken(resJson.zp_trans_token)
       setReturnCode(resJson.return_code)
     })
@@ -145,7 +150,6 @@ const createOrder=async(money)=> {
 function payOrder() {
   var payZP = NativeModules.PayZaloBridge;
   payZP.payOrder(token);
-
 }
 
 
