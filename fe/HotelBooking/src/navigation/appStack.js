@@ -2,6 +2,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import DetailHotel from '../views/DetailHotel/DetailHotel';
 import Map from '../views/DetailHotel/Map';
+import Chat from '../components/Chat/Chat';
 import AllComments from '../views/DetailHotel/AllComments';
 import DetailRoom from '../views/DetalRoom/DetailRoom';
 import ImageRoom from '../views/DetalRoom/ImageRoom';
@@ -129,6 +130,13 @@ export default function AppStack() {
       <Stack.Screen
         name="DetailBooking"
         component={DetailBooking}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Chat"
+        component={Chat}
         options={{
           headerShown: false,
         }}

@@ -121,6 +121,25 @@ const AllComments = ({navigation, route}) => {
           }}
         />
       </View>
+      {dataComment.length === 0 && (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.bg,
+          }}>
+          <Image
+            source={require('../../assets/empty.png')}
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 25,
+              alignSelf: 'center',
+            }}
+          />
+        </View>
+      )}
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{

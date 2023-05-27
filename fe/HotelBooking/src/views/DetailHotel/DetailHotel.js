@@ -28,7 +28,7 @@ import {setBookingDate} from '../../../redux/Globalreducer';
 const width = Dimensions.get('screen').width;
 const WINDOW_HEIGHT = Dimensions.get('screen').height;
 const SHEET_MAX_HEIGHT = WINDOW_HEIGHT * 0.8;
-const SHEET_MIN_HEIGHT = WINDOW_HEIGHT * 0.1;
+const SHEET_MIN_HEIGHT = WINDOW_HEIGHT * 0.09;
 const MAX_UPWARD_TRANSLATE_Y = -SHEET_MIN_HEIGHT - SHEET_MAX_HEIGHT; // negative number
 const MAX_DOWNWARD_TRANSLATE_Y = 0;
 const DRAG_THRESHOLD = 50;
@@ -351,27 +351,34 @@ const DetailHotel = ({navigation}) => {
                 alignItems: 'center',
                 paddingVertical: 10,
               }}>
-              <Icon2
-                name="md-location-sharp"
-                size={25}
-                color="orange"
-                style={{}}
-              />
+              <Icon2 name="md-location-sharp" size={25} color="orange" />
               <View
                 style={{
-                  paddingHorizontal: 2,
                   paddingRight: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}>
-                <Text style={{color: colors.text, fontSize: 15}}>
+                <Text style={{color: colors.text, fontSize: 14}}>
                   <Text style={{color: 'orange'}}>
                     ~{calculateDistance()} km
                   </Text>{' '}
-                  | {hotelData.address}
+                  | {hotelData.address} |{' '}
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('Map', hotelData);
+                    }}>
+                    <Text
+                      style={{
+                        color: colors.primary,
+                      }}>
+                      {t('viewmap')} {'>'}
+                    </Text>
+                  </TouchableOpacity>
                 </Text>
               </View>
             </View>
           </View>
-          <View
+          {/* <View
             style={{
               marginTop: 10,
             }}>
@@ -430,7 +437,7 @@ const DetailHotel = ({navigation}) => {
                 />
               </MapView>
             </View>
-          </View>
+          </View> */}
           <Text
             style={{
               fontSize: 20,
@@ -606,103 +613,121 @@ const DetailHotel = ({navigation}) => {
                 </Text>
               </TouchableOpacity>
             </View>
-            {hotelData.comments
-              .map(
-                (item1, index) =>
-                  hotelData.comments.length - index <= 3 && (
-                    <View
-                      key={index}
-                      style={{
-                        marginTop: 10,
-                        width: '100%',
-                        backgroundColor: colors.box,
-                        borderRadius: 10,
-                        elevation: 5,
-                        shadowColor: 'black',
-                        alignSelf: 'center',
-                        borderWidth: 1,
-                        borderColor: '#eeeeee',
-                        paddingVertical: 10,
-                      }}>
+            {hotelData.comments.length > 0 ? (
+              hotelData.comments
+                .map(
+                  (item1, index) =>
+                    hotelData.comments.length - index <= 3 && (
                       <View
+                        key={index}
                         style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          paddingHorizontal: 10,
+                          marginTop: 10,
+                          width: '100%',
+                          backgroundColor: colors.box,
+                          borderRadius: 10,
+                          elevation: 5,
+                          shadowColor: 'black',
+                          alignSelf: 'center',
+                          borderWidth: 1,
+                          borderColor: '#eeeeee',
+                          paddingVertical: 10,
                         }}>
                         <View
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
-                          <Image
-                            source={require('../../assets/avatars.jpg')}
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            paddingHorizontal: 10,
+                          }}>
+                          <View
                             style={{
-                              width: 50,
-                              height: 50,
-                              borderRadius: 25,
-                            }}
-                          />
-                          <View style={{marginLeft: 10}}>
-                            <View
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}>
+                            <Image
+                              source={require('../../assets/avatars.jpg')}
                               style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
+                                width: 50,
+                                height: 50,
+                                borderRadius: 25,
+                              }}
+                            />
+                            <View style={{marginLeft: 10}}>
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <Text
+                                  style={{
+                                    fontWeight: '700',
+                                    fontSize: 16,
+                                    color: colors.text,
+                                  }}>
+                                  {item1.id_user.name}
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: 13,
+                                    fontWeight: '400',
+                                    marginLeft: 10,
+                                  }}>
+                                  {FormatTimeStamp(item1.time_stamp)}
+                                </Text>
+                              </View>
                               <Text
                                 style={{
-                                  fontWeight: '700',
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   color: colors.text,
+                                  fontWeight: 'bold',
                                 }}>
-                                {item1.id_user.name}
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 13,
-                                  fontWeight: '400',
-                                  marginLeft: 10,
-                                }}>
-                                {FormatTimeStamp(item1.time_stamp)}
+                                {FormatRoomNameInComment(item1.id_room?.name)}
                               </Text>
                             </View>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                color: colors.text,
-                                fontWeight: 'bold',
-                              }}>
-                              {FormatRoomNameInComment(item1.id_room?.name)}
+                          </View>
+                          <View
+                            style={{
+                              backgroundColor: colors.primary,
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderRadius: 15,
+                              flexDirection: 'row',
+                              paddingHorizontal: 10,
+                              paddingVertical: 5,
+                            }}>
+                            <Icon5 name="star" size={15} color={'yellow'} />
+                            <Text style={{color: 'white', marginLeft: 5}}>
+                              {item1.rating}
                             </Text>
                           </View>
                         </View>
-                        <View
+                        <Text
                           style={{
-                            backgroundColor: colors.primary,
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            borderRadius: 15,
-                            flexDirection: 'row',
-                            paddingHorizontal: 10,
-                            paddingVertical: 5,
+                            paddingHorizontal: 20,
+                            fontWeight: '400',
+                            fontSize: 14,
+                            color: colors.text,
                           }}>
-                          <Icon5 name="star" size={15} color={'yellow'} />
-                          <Text style={{color: 'white', marginLeft: 5}}>
-                            {item1.rating}
-                          </Text>
-                        </View>
+                          {item1.content}
+                        </Text>
                       </View>
-                      <Text
-                        style={{
-                          paddingHorizontal: 20,
-                          fontWeight: '400',
-                          fontSize: 14,
-                          color: colors.text,
-                        }}>
-                        {item1.content}
-                      </Text>
-                    </View>
-                  ),
-              )
-              .reverse()}
+                    ),
+                )
+                .reverse()
+            ) : (
+              <>
+                <Image
+                  source={require('../../assets/empty.png')}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 25,
+                    marginTop: 10,
+                    alignSelf: 'center',
+                  }}
+                />
+              </>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -853,7 +878,7 @@ const DetailHotel = ({navigation}) => {
                 style={{fontSize: 15, fontWeight: 'bold', color: colors.text}}>
                 {t('time-booking')}
               </Text>
-              <View style={{flexDirection: 'row', marginTop: 10}}>
+              <View style={{flexDirection: 'row', marginTop: 5}}>
                 <Text
                   style={{
                     color: colors.text,
@@ -887,6 +912,28 @@ const DetailHotel = ({navigation}) => {
           </View>
         </View>
       </Pressable>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Chat');
+        }}
+        style={{
+          position: 'absolute',
+          bottom: 90,
+          width: 50,
+          height: 50,
+          justifyContent: 'center',
+          alignItems: 'center',
+          right: 10,
+          zIndex: 1,
+          backgroundColor: colors.box,
+          borderRadius: 25,
+          elevation: 10,
+        }}>
+        <Image
+          source={require('../../assets/message.png')}
+          style={{width: 30, height: 30}}
+        />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
