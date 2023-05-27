@@ -39,7 +39,7 @@ export default function HomeScreen({navigation}) {
   const {colors} = useTheme();
   const {t} = useTranslation();
   const dispatch = useDispatch();
-  const {hotels} = useSelector(state => state.global);
+  const {hotels, userData} = useSelector(state => state.global);
   const ranHotel = [1, 2, 4];
   const image_default =
     'https://img1.ak.crunchyroll.com/i/spire3/d23bea1cbe84833135f94695d900f0651651339079_main.png';
@@ -262,7 +262,7 @@ function payOrder() {
       const getNotify = async () => {
         let notify = await getAsyncStorage('notify');
         const isNew = JSON.parse(notify)?.some(
-          item => item.data.isRead === 'false',
+          item => item.data?.id_user === userData._id && item.isRead === false,
         );
         setNewNotify(isNew);
       };
@@ -512,7 +512,7 @@ function payOrder() {
                 }}
                 style={{
                   height: 170,
-                  width: 350,
+                  width: '90%',
                   borderRadius: 10,
                   resizeMode: 'stretch',
                 }}
@@ -523,7 +523,7 @@ function payOrder() {
                 }}
                 style={{
                   height: 170,
-                  width: 350,
+                  width: '90%',
                   borderRadius: 10,
                   resizeMode: 'stretch',
                 }}
@@ -535,7 +535,7 @@ function payOrder() {
                 }}
                 style={{
                   height: 170,
-                  width: 350,
+                  width: '90%',
                   borderRadius: 10,
                   resizeMode: 'stretch',
                 }}

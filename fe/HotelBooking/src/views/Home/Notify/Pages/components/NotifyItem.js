@@ -14,14 +14,16 @@ import Icon1 from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import {ContextNotify} from '../../../../../contexts/index';
 import {setAsyncStorage} from '../../../../../../functions/asyncStorageFunctions';
+import {useTheme} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
 
-const NotifyItem = ({id}) => {
+const NotifyItem = ({id, navigation}) => {
+  const {colors} = useTheme();
+  const {t} = useTranslation();
   const [isShow, setIsShow] = useState(false);
   const {notify, setNotify} = useContext(ContextNotify);
 
-  const {title, body, time, sentTime, data, notification} = notify.find(
-    item => item.id === id || item.messageId === id,
-  );
+  const {title, body, time, data, isRead} = notify.find(item => item.id === id);
 
   const formatTime = time => {
     const momentObj = moment(time);
@@ -41,20 +43,16 @@ const NotifyItem = ({id}) => {
   };
 
   const handleMarkAsRead = id => {
-    const index = notify.findIndex(
-      item => item.id === id || item.messageId === id,
-    );
+    const index = notify.findIndex(item => item.id === id);
     const newNotify = [...notify];
-    newNotify[index].data.isRead = 'true';
+    newNotify[index].isRead = true;
     setNotify(newNotify);
     setAsyncStorage('notify', JSON.stringify(newNotify));
     setIsShow(false);
   };
 
   const handleDeleteNotify = id => {
-    const index = notify.findIndex(
-      item => item.id === id || item.messageId === id,
-    );
+    const index = notify.findIndex(item => item.id === id);
     const newNotify = [...notify];
     newNotify.splice(index, 1);
     setNotify(newNotify);
@@ -62,8 +60,23 @@ const NotifyItem = ({id}) => {
     setIsShow(false);
   };
 
+  const handleOpenNotify = id => {
+    const thisNotify = notify.find(item => item.id === id);
+    handleMarkAsRead(id);
+    if (thisNotify.data.type === 'booking') {
+      navigation.navigate('DetailBooking', {
+        dataNotify: thisNotify,
+        id_booking: thisNotify.data.id_booking,
+        id_hotel: thisNotify.data.id_hotel,
+      });
+    }
+  };
+
   return (
-    <View
+    <Pressable
+      onPress={() => {
+        handleOpenNotify(id);
+      }}
       style={{
         flexDirection: 'row',
         padding: 10,
@@ -78,13 +91,13 @@ const NotifyItem = ({id}) => {
             marginTop: 2,
           }}
         />
-        {data.isRead === 'false' && (
+        {isRead === false && (
           <View
             style={{
               width: 12,
               height: 12,
               borderRadius: 25,
-              backgroundColor: 'white',
+              backgroundColor: colors.box,
               position: 'absolute',
               right: -2,
               top: -2,
@@ -118,15 +131,15 @@ const NotifyItem = ({id}) => {
             style={{
               fontWeight: 'bold',
               fontSize: 16,
-              color: '#000',
+              color: colors.text,
             }}>
-            {title || notification.title}
+            {title}
           </Text>
           <TouchableOpacity
             onPress={() => {
               setIsShow(true);
             }}>
-            <Icon name="dots-three-horizontal" size={20} color="#000" />
+            <Icon name="dots-three-horizontal" size={20} color={colors.text} />
           </TouchableOpacity>
           <Modal
             animationType="fade"
@@ -146,7 +159,7 @@ const NotifyItem = ({id}) => {
               }}>
               <View
                 style={{
-                  backgroundColor: 'white',
+                  backgroundColor: colors.box,
                   width: '100%',
                   borderTopLeftRadius: 10,
                   borderTopRightRadius: 10,
@@ -170,15 +183,15 @@ const NotifyItem = ({id}) => {
                       borderBottomWidth: 1,
                       borderBottomColor: '#ddd',
                     }}>
-                    <Icon1 name="check" size={20} color="#000" />
+                    <Icon1 name="check" size={20} color={colors.text} />
                     <Text
                       style={{
                         fontSize: 16,
                         fontWeight: 'bold',
-                        color: '#000',
+                        color: colors.text,
                         marginLeft: 10,
                       }}>
-                      Đánh dấu đã đọc
+                      {t('markasread')}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -192,15 +205,19 @@ const NotifyItem = ({id}) => {
                       borderBottomWidth: 1,
                       borderBottomColor: '#ddd',
                     }}>
-                    <Icon2 name="delete-outline" size={20} color="#000" />
+                    <Icon2
+                      name="delete-outline"
+                      size={20}
+                      color={colors.text}
+                    />
                     <Text
                       style={{
                         fontSize: 16,
                         fontWeight: 'bold',
-                        color: '#000',
+                        color: colors.text,
                         marginLeft: 10,
                       }}>
-                      Xóa thông báo
+                      {t('deletenotify')}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -212,15 +229,15 @@ const NotifyItem = ({id}) => {
                       alignItems: 'center',
                       paddingVertical: 10,
                     }}>
-                    <Icon2 name="clear" size={20} color="#000" />
+                    <Icon2 name="clear" size={20} color={colors.text} />
                     <Text
                       style={{
                         fontSize: 16,
                         fontWeight: 'bold',
-                        color: '#000',
+                        color: colors.text,
                         marginLeft: 10,
                       }}>
-                      Hủy
+                      {t('cancel')}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -231,23 +248,23 @@ const NotifyItem = ({id}) => {
         <Text
           style={{
             fontSize: 14,
-            color: '#000',
+            color: colors.text,
             textAlign: 'justify',
             marginTop: 5,
           }}>
-          {body || notification.body}
+          {body}
         </Text>
         <Text
           style={{
             fontSize: 12,
-            color: '#000',
+            color: colors.text,
             textAlign: 'right',
             marginTop: 5,
           }}>
-          {formatTime(time || sentTime)}
+          {formatTime(time)}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

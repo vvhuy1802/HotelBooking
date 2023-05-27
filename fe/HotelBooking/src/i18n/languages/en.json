@@ -193,6 +193,12 @@
     "deleteAll": "Delete all",
     "all": "All",
     "system": "System",
-    "other": "Other"
+    "other": "Other",
+    "no-notification": "No notification",
+    "markasread": "Mark as read",
+    "deletenotify": "Delete notify",
+    "pending": "Pending",
+    "at": "at",
+    "address-of-accommodation": "Address of accommodation"
   }
 }

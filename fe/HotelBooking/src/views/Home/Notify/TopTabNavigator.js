@@ -7,6 +7,7 @@ import Icon2 from 'react-native-vector-icons/Ionicons';
 import {useTheme} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '@react-navigation/native';
+import Lottie from 'lottie-react-native';
 import {
   setAsyncStorage,
   getAsyncStorage,
@@ -23,12 +24,15 @@ const {width, height} = Dimensions.get('window');
 
 const Mytab = () => {
   const {t} = useTranslation();
+  const {colors} = useTheme();
   return (
     <Tab.Navigator
       initialRouteName="Notifications"
       screenOptions={{
-        tabBarActiveTintColor: 'black',
+        tabBarActiveTintColor: colors.text,
         tabBarLabelStyle: {fontSize: 12},
+        tabBarStyle: {backgroundColor: colors.box},
+        tabBarIndicatorStyle: {backgroundColor: colors.primary},
       }}>
       <Tab.Screen
         name="all"
@@ -60,21 +64,27 @@ export default function TopTabNavigator() {
   const [showActionDot, setShowActionDot] = useState(false);
   const {colors} = useTheme();
   const {t} = useTranslation();
-  const {setNotify} = useContext(ContextNotify);
+  const {setNotify, loading, userData} = useContext(ContextNotify);
 
-  const handleMarkAllRead = async () => {
+  const handleMarkAllRead = async id_user => {
     let notify = await getAsyncStorage('notify');
     notify = JSON.parse(notify);
     notify.forEach(item => {
-      item.data.isRead = true;
+      if (item.data?.id_user === id_user) {
+        item.isRead = true;
+      }
     });
     await setAsyncStorage('notify', JSON.stringify(notify));
+    notify = await notify.filter(item => item.data?.id_user === id_user);
     setNotify(notify);
     setShowActionDot(false);
   };
 
-  const handleDeleteAll = async () => {
-    setAsyncStorage('notify', JSON.stringify([]));
+  const handleDeleteAll = async id_user => {
+    let notify = await getAsyncStorage('notify');
+    notify = JSON.parse(notify);
+    notify = await notify.filter(item => item.data?.id_user !== id_user);
+    await setAsyncStorage('notify', JSON.stringify(notify));
     setNotify([]);
     setShowActionDot(false);
   };
@@ -125,14 +135,14 @@ export default function TopTabNavigator() {
                   position: 'absolute',
                   top: 35,
                   right: 30,
-                  backgroundColor: 'white',
+                  backgroundColor: colors.bg,
                   elevation: 5,
                   borderRadius: 10,
                   zIndex: 999,
                 }}>
                 <Pressable
                   onPress={() => {
-                    handleMarkAllRead();
+                    handleMarkAllRead(userData._id);
                   }}
                   style={{
                     flexDirection: 'row',
@@ -152,7 +162,7 @@ export default function TopTabNavigator() {
                 </Pressable>
                 <Pressable
                   onPress={() => {
-                    handleDeleteAll();
+                    handleDeleteAll(userData._id);
                   }}
                   style={{
                     flexDirection: 'row',
@@ -191,7 +201,26 @@ export default function TopTabNavigator() {
           flex: 1,
           marginTop: 60,
         }}>
-        <Mytab />
+        {loading ? (
+          <View
+            style={{
+              position: 'absolute',
+              opacity: 0.7,
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+              width: '100%',
+              backgroundColor: colors.box,
+            }}>
+            <Lottie
+              source={require('../../../assets/animations/92803-loading.json')}
+              autoPlay
+              loop
+            />
+          </View>
+        ) : (
+          <Mytab />
+        )}
       </View>
     </View>
   );

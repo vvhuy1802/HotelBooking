@@ -1,13 +1,12 @@
 const mongoose = require("mongoose");
-// 7D8SsMgQbeLCDCms
 mongoose.set("strictQuery", true);
-const MONGODB_URI =
-  "mongodb+srv://vuhuy:7D8SsMgQbeLCDCms@hotel-booking.gujng51.mongodb.net/hotel_booking?retryWrites=true&w=majority";
+const config = process.env;
+
 async function connect() {
   var checkIndex = false;
   try {
     await mongoose
-      .connect(MONGODB_URI, {
+      .connect(config.MONGODB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       })
@@ -23,7 +22,7 @@ async function connect() {
       const collection = mongoose.connection.collection("admins");
       collection.dropIndex("adminks", function (err, result) {
         if (err) {
-          console.log("Error in dropping index!");
+          // console.log("Error in dropping index!");
         } else {
           console.log("Index dropped successfully!");
         }

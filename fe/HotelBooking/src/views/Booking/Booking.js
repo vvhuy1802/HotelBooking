@@ -16,10 +16,10 @@ import Icon2 from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import Header from '../../components/Header';
 import {useSelector, useDispatch} from 'react-redux';
-import {
-  updateStatusOrder,  
-} from '../../../redux/Globalreducer';
-import {UpdateStatus} from '../../../middlewares/orders';
+import {updateStatusOrder} from '../../../redux/Globalreducer';
+import {UpdateStatus, GetOrders} from '../../../middlewares/orders';
+import Lottie from 'lottie-react-native';
+
 export default function Booking() {
   const {t} = useTranslation();
   const {colors} = useTheme();
@@ -29,6 +29,18 @@ export default function Booking() {
   const [idroom, setidroom] = useState('');
   const {userData, hotels} = useSelector(state => state.global);
   const navigation = useNavigation();
+  const [loading, setloading] = useState(false);
+  const [dataBooking, setdataBooking] = useState([]);
+
+  useEffect(() => {
+    setloading(true);
+    GetOrders(userData._id).then(res => {
+      if (res.status === 200) {
+        setdataBooking(res.data.data);
+      }
+      setloading(false);
+    });
+  }, [userData]);
 
   const Format = prices => {
     return prices.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
@@ -39,6 +51,20 @@ export default function Booking() {
       return name.substring(0, 55) + '...';
     }
     return name;
+  };
+
+  const filterStatus = item => {
+    if (item?.status === 'Pending') {
+      if (item?.paymented === false) {
+        return t('pending');
+      }
+      return t('ongoing');
+    } else if (item?.status === 'Completed') {
+      return t('completed');
+    } else if (item?.status === 'Cancelled') {
+      return t('cancelled');
+    }
+    return t('unknown');
   };
 
   const FormatDayMonthYear = date => {
@@ -71,12 +97,17 @@ export default function Booking() {
     });
   };
 
-  const CardBooking = ({item, user, index}) => {
+  const CardBooking = ({item, index}) => {
     return (
       <TouchableOpacity
         key={index}
         onPress={() => {
-          console.log(item);
+          navigation.navigate('DetailBooking', {
+            item: item,
+            hotel: filterHotel(item.id_hotel),
+            id_booking: item._id,
+            id_hotel: item.id_hotel,
+          });
         }}
         style={{
           backgroundColor: colors.box,
@@ -96,7 +127,7 @@ export default function Booking() {
         <View style={{flexDirection: 'row', padding: 10}}>
           <Image
             source={{uri: filterHotel(item.id_hotel).image[0]}}
-            style={{width: 100, height: 100, borderRadius: 15}}
+            style={{width: 100, height: 100, borderRadius: 10}}
           />
           <View style={{marginLeft: 10, width: '100%'}}>
             <Text
@@ -140,7 +171,7 @@ export default function Booking() {
                     fontSize: 13,
                     color: colors.primary,
                   }}>
-                  {t('ongoing')}
+                  {filterStatus(item)}
                 </Text>
               </View>
             </View>
@@ -198,7 +229,13 @@ export default function Booking() {
 
   const CardCompleted = ({item, index}) => {
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('DetailBooking', {
+            item: item,
+            hotel: filterHotel(item.id_hotel),
+          });
+        }}
         key={index}
         style={{
           backgroundColor: colors.box,
@@ -289,13 +326,19 @@ export default function Booking() {
             {t('great-you-have-completed-your-booking')}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
   const CardCancelled = ({item, index}) => {
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('DetailBooking', {
+            item: item,
+            hotel: filterHotel(item.id_hotel),
+          });
+        }}
         key={index}
         style={{
           backgroundColor: colors.box,
@@ -386,7 +429,7 @@ export default function Booking() {
             {t('sorry-your-booking-has-been-cancelled')}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
   return (
@@ -398,7 +441,7 @@ export default function Booking() {
             flexDirection: 'row',
             justifyContent: 'space-between',
             paddingBottom: 10,
-            paddingHorizontal:10,
+            paddingHorizontal: 10,
           }}>
           <TouchableOpacity
             style={
@@ -522,12 +565,12 @@ export default function Booking() {
         </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {userData.orders.map((item, index) =>
+        {dataBooking?.map((item, index) =>
           item.status === 'Pending' && button === 1 ? (
             <View key={index} style={{paddingVertical: 5}}>
-              <CardBooking item={item} user={userData} index={index} />
+              <CardBooking item={item} index={index} />
             </View>
-          ) : item.status === 'Complated' && button === 2 ? (
+          ) : item.status === 'Completed' && button === 2 ? (
             <View key={index} style={{paddingVertical: 5}}>
               <CardCompleted item={item} index={index} />
             </View>
@@ -547,16 +590,13 @@ export default function Booking() {
         }}>
         <Pressable
           style={{
-            justifyContent: 'flex-end',
             flex: 1,
+            justifyContent: 'center',
             backgroundColor: 'rgba(0,0,0,0.5)',
           }}
           onPress={() => setModalVisible(!modalVisible)}>
           <View
             style={{
-              height: '38%',
-              borderTopLeftRadius: 30,
-              borderTopRightRadius: 30,
               backgroundColor: colors.box,
               elevation: 15,
               shadowColor: '#000',
@@ -567,67 +607,27 @@ export default function Booking() {
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               alignSelf: 'center',
-              width: '100%',
-              alignItems: 'center',
+              padding: 15,
+              borderRadius: 10,
+              width: '80%',
             }}>
-            <TouchableOpacity
-              style={{
-                width: '20%',
-                borderRadius: 20,
-                backgroundColor: '#fff',
-                height: 5,
-                top: 10,
-              }}
-            />
             <Text
               style={{
-                color: '#fa665b',
+                color: colors.text,
                 fontSize: 20,
                 fontWeight: '700',
-                marginVertical: 20,
               }}>
               {t('Cancel-booking')}
             </Text>
-            <TouchableOpacity
-              style={{width: '90%', height: 2, backgroundColor: '#fff'}}
-            />
-            <Text
-              style={{
-                marginVertical: 10,
-                fontSize: 18,
-                fontWeight: '600',
-                color: colors.text,
-                textAlign: 'center',
-              }}>
+            <Text style={{color: colors.text}}>
               {t('are-you-sure-you-want-to-cancel-your-hotel-booking')}
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: '500',
-                textAlign: 'center',
-                color: colors.icon,
-              }}>
-              {t(
-                'only-80%-of-the-money-you-can-refund-from-payment-according-to-our-policy',
-              )}
             </Text>
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 30,
-                width: '85%',
+                justifyContent: 'flex-end',
               }}>
               <TouchableOpacity
-                style={{
-                  backgroundColor: colors.blurprimary,
-                  width: 140,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 50,
-                  borderRadius: 15,
-                }}
                 onPress={() => {
                   setModalVisible(!modalVisible);
                 }}>
@@ -636,19 +636,12 @@ export default function Booking() {
                     fontSize: 16,
                     fontWeight: '500',
                     color: colors.primary,
+                    marginRight: 10,
                   }}>
                   {t('cancel')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{
-                  backgroundColor: colors.primary,
-                  width: 140,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 50,
-                  borderRadius: 15,
-                }}
                 onPress={() => {
                   CancelBooking(idroom);
                 }}>
@@ -656,15 +649,33 @@ export default function Booking() {
                   style={{
                     fontSize: 16,
                     fontWeight: '500',
-                    color: 'white',
+                    color: 'red',
                   }}>
-                  {t('yes-continue')}
+                  {t('confirm')}
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         </Pressable>
       </Modal>
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            opacity: 0.7,
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            width: '100%',
+            backgroundColor: 'white',
+          }}>
+          <Lottie
+            source={require('../../assets/animations/92803-loading.json')}
+            autoPlay
+            loop
+          />
+        </View>
+      )}
     </View>
   );
 }

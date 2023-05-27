@@ -9,7 +9,7 @@ import {
 } from './functions/asyncStorageFunctions';
 import {CheckLogin} from './middlewares/auth';
 import {GetAllHotels} from './middlewares/hotels';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   setUserData,
   setHotels,
@@ -21,11 +21,13 @@ import {
   requestUserPermission,
   NotificationService,
 } from './src/utils/PushNotification';
+import {useNavigation} from '@react-navigation/native';
 
 //logbox ignore all
 LogBox.ignoreAllLogs();
 const App = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [wait, setWait] = useState(true);
 
   useEffect(() => {
@@ -132,7 +134,7 @@ const App = () => {
     requestLocation();
     componentDidMount();
     requestUserPermission();
-    NotificationService();
+    NotificationService(navigation);
   }, []);
 
   return (
@@ -141,7 +143,7 @@ const App = () => {
         <View
           style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
           <Lottie
-            source={require('./src/assets/animations/loading-circle.json')}
+            source={require('./src/assets/animations/140846-vertical-animation.json')}
             autoPlay
             loop
           />

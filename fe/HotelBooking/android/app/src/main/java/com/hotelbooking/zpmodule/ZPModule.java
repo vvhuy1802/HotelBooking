@@ -1,4 +1,4 @@
-package com.demoapptoapp.zpmodule;
+package com.hotelbooking.zpmodule;
 
 import android.app.Activity;
 import android.content.Intent;

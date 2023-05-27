@@ -34,7 +34,7 @@ const getFcmToken = async () => {
   }
 };
 
-const PushNotifyToLocalStorage = async remoteMessage => {
+export const PushNotifyToLocalStorage = async remoteMessage => {
   let notify = await getAsyncStorage('notify');
   if (notify) {
     notify = JSON.parse(notify);
@@ -47,7 +47,7 @@ const PushNotifyToLocalStorage = async remoteMessage => {
   }
 };
 
-export const NotificationService = () => {
+export const NotificationService = navigation => {
   messaging().onNotificationOpenedApp(remoteMessage => {
     console.log(
       'Notification caused app to open from background state:',
@@ -65,6 +65,8 @@ export const NotificationService = () => {
       data: remoteMessage.data,
       type: remoteMessage.data.type,
       time: remoteMessage.sentTime,
+      isRead: false,
+      id_user: remoteMessage.data.id_user,
     };
 
     Toast.show({
@@ -75,14 +77,9 @@ export const NotificationService = () => {
       autoHide: true,
       topOffset: 10,
       bottomOffset: 10,
-      onPress: () => {
-        console.log('onPress');
-      },
-      onHide: () => {
-        console.log('onHide');
-      },
-      onShow: () => {
-        console.log('onShow');
+      props: {
+        navigation: navigation,
+        data: notification,
       },
     });
 
@@ -110,8 +107,7 @@ export const NotificationProvider = ({children}) => {
   });
 
   return (
-    <NewNotifyFCM.Provider
-      value={{hasNewNotification, setHasNewNotification}}>
+    <NewNotifyFCM.Provider value={{hasNewNotification, setHasNewNotification}}>
       {children}
     </NewNotifyFCM.Provider>
   );

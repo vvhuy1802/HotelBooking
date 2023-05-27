@@ -3,12 +3,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import Lottie from 'lottie-react-native';
 import {
-  Alert,
   Animated,
   Dimensions,
   Image,
-  KeyboardAvoidingView,
-  Modal,
   PanResponder,
   Platform,
   Pressable,
@@ -16,24 +13,19 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
-  ToastAndroid,
 } from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {useTheme} from 'react-native-paper';
 import Icon5 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/FontAwesome5';
-import Icon3 from 'react-native-vector-icons/Fontisto';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {addComment, setBookingDate} from '../../../redux/Globalreducer';
-import {AddNewComment} from '../../../middlewares/comments';
-import {UpdateReview} from '../../../middlewares/orders';
 import { GetHotelByID } from './apidetailhotel';
+import {setBookingDate} from '../../../redux/Globalreducer';
 
 const width = Dimensions.get('screen').width;
 const WINDOW_HEIGHT = Dimensions.get('screen').height;
@@ -46,19 +38,15 @@ const DetailHotel = ({navigation,route}) => {
   const _id = route.params.id;
   const {t} = useTranslation();
   const {colors} = useTheme();
-  const star = [1, 2, 3, 4, 5];
   const dispatch = useDispatch();
   const mapRef = useRef(null);
   const {height} = Dimensions.get('window');
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.009;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-  const [starhotel, setStarhotel] = useState(0);
   const [isloading, setIsloading] = useState(true);
   const [hotelData, setHotelData] = useState({});
-  const [modalVisible, setModalVisible] = useState(false);
-  const [ratecontent, setRatecontent] = useState('');
-  const {user_position, userData, booking_date} = useSelector(
+  const {user_position, booking_date} = useSelector(
     state => state.global,
   );
 
@@ -140,89 +128,6 @@ const DetailHotel = ({navigation,route}) => {
       return day.split('-')[2] + '/' + day.split('-')[1];
     }
     return '';
-  };
-
-  const FormatAddress = address => {
-    if (address.length > 45) {
-      return address.slice(0, 45) + '...';
-    }
-    return address;
-  };
-
-  const CheckIdRoom = () => {
-    var id_room = '1';
-    var id_order = '';
-    var name_room = '';
-    var index = 0;
-    userData.orders.forEach((order, index) => {
-      if (order.id_hotel === hotelData.id) {
-        if (order.reviewed === false) {
-          id_room = order.id_room._id;
-          name_room = order.id_room.name;
-          id_order = order._id;
-          index = index;
-        }
-      }
-    });
-    return {
-      id_room: id_room,
-      id_order: id_order,
-      index: index,
-      name_room: name_room,
-    };
-  };
-
-  const handleRating = async () => {
-    if (ratecontent === '' || starhotel === 0) {
-      ToastAndroid.show('Please fill all fields', ToastAndroid.SHORT);
-    } else {
-      if (CheckIdRoom().id_room !== '1') {
-        const comment = {
-          content: ratecontent,
-          rating: starhotel,
-          id_user: {
-            name: userData.name,
-          },
-          id_room: {
-            _id: CheckIdRoom().id_room,
-            name: CheckIdRoom().name_room,
-          },
-          time_stamp: new Date(),
-        };
-        AddNewComment(
-          userData._id,
-          hotelData.id,
-          CheckIdRoom().id_room,
-          ratecontent,
-          starhotel,
-        ).then(res => {
-          if (res.status === 200) {
-            ToastAndroid.show('Comment success', ToastAndroid.SHORT);
-            dispatch(
-              addComment({
-                id: hotelData.id,
-                comment: comment,
-                index: CheckIdRoom().index,
-              }),
-            );
-          } else {
-            ToastAndroid.show(
-              'You have not booked this hotel yet',
-              ToastAndroid.SHORT,
-            );
-          }
-        });
-        UpdateReview(CheckIdRoom().id_order);
-      } else {
-        ToastAndroid.show(
-          'You have not booked this hotel yet',
-          ToastAndroid.SHORT,
-        );
-      }
-      setRatecontent('');
-      setStarhotel(0);
-      setModalVisible(false);
-    }
   };
 
   const AnimatedView = Animated.createAnimatedComponent(View);
@@ -1011,269 +916,6 @@ const DetailHotel = ({navigation,route}) => {
           </View>
         </View>
       </Pressable>
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          alignSelf: 'flex-end',
-          borderWidth: 1,
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: colors.box,
-          zIndex: 2,
-          right: 5,
-          bottom: '20%',
-          borderColor: 'white',
-          shadowColor: 'black',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 5,
-        }}
-        onPress={() => {
-          setModalVisible(true);
-        }}>
-        <Icon3 name="commenting" size={25} color={colors.primary} />
-      </TouchableOpacity>
-      <Modal
-        animationType="fade"
-        transparent
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <KeyboardAvoidingView
-          style={{flex: 1}}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <Pressable
-            style={{
-              justifyContent: 'flex-end',
-              flex: 1,
-              backgroundColor: 'rgba(0,0,0,0.5)',
-            }}
-            onPress={() => {
-              setModalVisible(false);
-            }}>
-            <View
-              style={{
-                height: '70%',
-                backgroundColor: colors.box,
-                borderTopLeftRadius: 30,
-                borderTopRightRadius: 30,
-                alignItems: 'center',
-                paddingTop: 5,
-              }}>
-              <View
-                style={{
-                  width: '15%',
-                  borderRadius: 20,
-                  backgroundColor: colors.icon,
-                  height: 5,
-                  marginTop: 5,
-                }}
-              />
-              <Text
-                style={{
-                  marginVertical: 10,
-                  fontSize: 21,
-                  fontWeight: 'bold',
-                  color: colors.text,
-                }}>
-                {t('rate-this-hotel')}
-              </Text>
-              <View
-                style={{
-                  width: '90%',
-                  borderRadius: 20,
-                  backgroundColor: '#eeeeee',
-                  height: 1,
-                }}
-              />
-              <View style={{padding: 20, width: '100%'}}>
-                <View
-                  style={{
-                    height: 100,
-                    backgroundColor: colors.special,
-                    borderRadius: 15,
-                    elevation: 5,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: 10,
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      width: '100%',
-                      height: 100,
-                      alignItems: 'center',
-                    }}>
-                    <Image
-                      style={{
-                        width: 80,
-                        height: 80,
-                        borderRadius: 10,
-                      }}
-                      source={{
-                        uri: image_default,
-                      }}
-                    />
-                    <View
-                      style={{
-                        marginLeft: 15,
-                        height: 80,
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 17,
-                          fontWeight: 'bold',
-                          color: colors.text,
-                        }}>
-                        {hotelData.name}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          width: 200,
-                          color: colors.icon,
-                        }}>
-                        {FormatAddress(hotelData.address)}
-                      </Text>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}>
-                        <Icon5 name="star" size={15} color={'orange'} />
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            color: colors.primary,
-                            marginLeft: 5,
-                            fontWeight: 'bold',
-                          }}>
-                          {TotalStar()}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            color: colors.icon,
-                            marginLeft: 10,
-                          }}>
-                          {'('}
-                          {hotelData.comments.length} {t('review')}
-                          {')'}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </View>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                  color: colors.text,
-                }}>
-                {t('please-give-your-rate-&-review')}
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: 10,
-                  justifyContent: 'space-between',
-                  width: '55%',
-                  marginVertical: 5,
-                }}>
-                {star.map((item, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => {
-                      setStarhotel(item);
-                    }}
-                    style={{
-                      elevation: 15,
-                    }}>
-                    <Icon5
-                      name="star"
-                      size={30}
-                      color={index + 1 <= starhotel ? 'orange' : 'grey'}
-                    />
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <TextInput
-                style={{
-                  width: '90%',
-                  borderWidth: 1,
-                  borderColor: '#f3f6f4',
-                  height: 80,
-                  textAlignVertical: 'top',
-                  backgroundColor: colors.special,
-                  borderRadius: 15,
-                  marginVertical: 10,
-                  padding: 10,
-                  color: colors.text,
-                }}
-                multiline={true}
-                onChangeText={text => setRatecontent(text)}
-                value={ratecontent}
-              />
-              <TouchableOpacity
-                style={{
-                  width: '90%',
-                  height: 50,
-                  backgroundColor: colors.primary,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 15,
-                  marginTop: 10,
-                }}
-                onPress={() => {
-                  handleRating();
-                }}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontSize: 16,
-                    fontWeight: '700',
-                  }}>
-                  {t('rate-now')}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  width: '90%',
-                  height: 50,
-                  backgroundColor: colors.primary,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 15,
-                  marginTop: 20,
-                }}
-                onPress={() => {
-                  setModalVisible(false);
-                  setRatecontent('');
-                  setStarhotel(0);
-                }}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontSize: 16,
-                    fontWeight: '700',
-                  }}>
-                  {t('later')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        </KeyboardAvoidingView>
-      </Modal>
       </>}
     </SafeAreaView>
   );

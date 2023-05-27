@@ -7,19 +7,26 @@ import {
   RefreshControl,
 } from 'react-native';
 import React, {useContext, useState} from 'react';
+import {useTheme} from 'react-native-paper';
+import {useTranslation} from 'react-i18next';
+
 import {getAsyncStorage} from '../../../../../functions/asyncStorageFunctions';
 import NotifyItem from './components/NotifyItem';
 import {ContextNotify} from '../../../../contexts/index';
 
-const AllPage = () => {
-  const {notify, setNotify} = useContext(ContextNotify);
+const AllPage = ({navigation}) => {
+  const {notify, setNotify, userData} = useContext(ContextNotify);
   const [refreshing, setRefreshing] = useState(false);
+  const {colors} = useTheme();
+  const {t} = useTranslation();
 
   const handleRefresh = async () => {
     setRefreshing(true);
 
     let notify = await getAsyncStorage('notify');
-    setNotify(JSON.parse(notify));
+    notify = JSON.parse(notify);
+    notify = await notify.filter(item => item.data?.id_user === userData._id);
+    setNotify(notify);
 
     setRefreshing(false);
   };
@@ -31,7 +38,7 @@ const AllPage = () => {
       showsVerticalScrollIndicator={false}
       style={{
         flex: 1,
-        backgroundColor: '#ddd',
+        backgroundColor: colors.special,
       }}>
       {notify.length === 0 ? (
         <View
@@ -48,22 +55,23 @@ const AllPage = () => {
             style={{
               fontSize: 15,
               fontWeight: 'bold',
-              color: '#999',
+              color: colors.icon,
               marginTop: 20,
             }}>
-            Không có thông báo nào
+            {t('no-notification')}
           </Text>
         </View>
       ) : (
         <View
           style={{
             padding: 10,
-            backgroundColor: 'white',
+            backgroundColor: colors.box,
             width: '95%',
             alignSelf: 'center',
             borderRadius: 10,
             marginTop: 10,
             marginBottom: 10,
+            elevation: 5,
           }}>
           {notify
             ?.map((item, index) => {
@@ -71,11 +79,11 @@ const AllPage = () => {
                 <View
                   key={index + item.id}
                   style={{
-                    backgroundColor: 'white',
+                    backgroundColor: colors.box,
                     borderBottomWidth: index === 0 ? 0 : 1,
                     borderBottomColor: '#ddd',
                   }}>
-                  <NotifyItem id={item.id || item?.messageId} />
+                  <NotifyItem id={item.id} navigation={navigation} />
                 </View>
               );
             })

@@ -192,6 +192,12 @@
     "deleteAll": "Xóa tất cả",
     "all": "Tất cả",
     "system": "Hệ thống",
-    "other": "Khác"
+    "other": "Khác",
+    "no-notification": "Không có thông báo",
+    "markasread": "Đánh dấu đã đọc",
+    "deletenotify": "Xóa thông báo",
+    "pending": "Đang chờ",
+    "at": "lúc",
+    "address-of-accommodation": "Địa chỉ chỗ nghỉ"
   }
 }
