@@ -13,16 +13,18 @@ const DataTable = (props) => {
   const navigate = useNavigate();
   const { stateSidebar } = useSelector((state) => state.global);
   const [selectionModel, setSelectionModel] = useState([]);
-
   var dataTitle = {};
   switch (stateSidebar) {
     case "rooms":
+      console.log(stateSidebar);
       dataTitle = {
         title: "List Room",
         path: "/listroom/new",
         pathEdit: "/listroom/edit/:roomId",
       };
+      break;
     case "Bookings":
+      console.log(stateSidebar);
       dataTitle = {
         title: "List Booking",
         path: "/listbooking/:bookingId",
@@ -31,6 +33,7 @@ const DataTable = (props) => {
     default:
       break;
   }
+
 
   const handleColumnsBooking = () => {
     return [

@@ -18,13 +18,7 @@ const initialState = {
     total_night: 1,
   },
   hotelData: [],
-  payment_method: {
-    id: 'payment-hotel',
-    name: 'Thanh toán tại khách sạn',
-    image:
-      'https://cdn1.iconfinder.com/data/icons/condominium-juristic-management/64/Common_fee-fee-money-condominium-512.png',
-    available: true,
-  },
+  payment_method:0,
   notification: [],
 };
 export const globalSlice = createSlice({
