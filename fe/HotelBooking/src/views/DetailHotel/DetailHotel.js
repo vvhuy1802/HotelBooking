@@ -61,9 +61,6 @@ const DetailHotel = ({navigation, route}) => {
     fetchData();
   }, []);
 
-  const image_default =
-    'https://img1.ak.crunchyroll.com/i/spire3/d23bea1cbe84833135f94695d900f0651651339079_main.png';
-
   const Format = number => {
     var price = number * booking_date.total_night;
     return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
@@ -265,7 +262,7 @@ const DetailHotel = ({navigation, route}) => {
         <>
           <Lottie
             style={{}}
-            source={require('../../assets/animations/loading-circle.json')}
+            source={require('../../assets/animations/140846-vertical-animation.json')}
             autoPlay
             loop
           />
@@ -957,7 +954,9 @@ const DetailHotel = ({navigation, route}) => {
           </Pressable>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('Chat');
+              navigation.navigate('Chat', {
+                hotelData: hotelData,
+              });
             }}
             style={{
               position: 'absolute',
@@ -972,9 +971,10 @@ const DetailHotel = ({navigation, route}) => {
               borderRadius: 25,
               elevation: 10,
             }}>
-            <Image
-              source={require('../../assets/message.png')}
-              style={{width: 30, height: 30}}
+            <Lottie
+              source={require('../../assets/animations/61735-message.json')}
+              autoPlay
+              loop
             />
           </TouchableOpacity>
         </>

@@ -123,7 +123,7 @@ export default function DetailRoom({navigation, route}) {
         }}>
         <ImageBackground
           style={styles.headerImage}
-          source={{uri: image_default}}
+          source={{uri: dataRoom.image[0] || image_default}}
         />
         <View>
           <View style={{marginTop: 15, paddingHorizontal: 20}}>
@@ -238,7 +238,7 @@ export default function DetailRoom({navigation, route}) {
                   {t('gallery-photos')}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('HotelPhotos', item)}>
+                  onPress={() => navigation.navigate('ImageRoom', dataRoom)}>
                   <Text
                     style={{
                       fontSize: 16,
@@ -249,22 +249,22 @@ export default function DetailRoom({navigation, route}) {
                   </Text>
                 </TouchableOpacity>
               </View>
-              {/* <View style={{paddingTop: '5%'}}>
+              <View style={{paddingTop: '5%'}}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  {item.image.map((item, index) => (
+                  {dataRoom.image.map((item, index) => (
                     <Image
                       key={index}
                       source={{uri: item}}
                       style={{
                         width: 165,
                         height: 150,
-                        borderRadius: 20,
-                        marginRight: 20,
+                        borderRadius: 10,
+                        marginRight: 10,
                       }}
                     />
                   ))}
                 </ScrollView>
-              </View> */}
+              </View>
             </View>
             <View style={{paddingTop: '2%'}}>
               <View>

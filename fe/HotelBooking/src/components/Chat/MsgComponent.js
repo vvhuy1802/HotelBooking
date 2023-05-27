@@ -4,15 +4,22 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 // import TimeDelivery from './TimeDelivery';
 
 const MsgComponent = props => {
-  const {key, msg} = props;
+  const {msg, checkTime} = props;
   return (
-    <Pressable key={key} style={{marginHorizontal: 5}}>
+    <Pressable key={msg.time} style={{marginHorizontal: 5}}>
       <View
         style={[
           styles.TriangleShapeCSS,
           msg.fromSelf ? styles.right : [styles.left],
         ]}
       />
+      {checkTime && (
+        <View style={{alignSelf: 'center', marginVertical: 5}}>
+          <Text style={styles.timeText}>
+            {moment(msg.time).format('hh:mm A')}
+          </Text>
+        </View>
+      )}
       <View
         style={[
           styles.masBox,
@@ -36,7 +43,7 @@ const styles = StyleSheet.create({
   masBox: {
     alignSelf: 'flex-end',
     maxWidth: '80%',
-    marginVertical: 5,
+    marginVertical: 2,
     borderRadius: 10,
     padding: 10,
     marginHorizontal: 10,
@@ -44,6 +51,7 @@ const styles = StyleSheet.create({
   timeText: {
     fontFamily: 'AveriaSerifLibre-Light',
     fontSize: 10,
+    color:'black',
   },
   dayview: {
     alignSelf: 'center',
@@ -80,7 +88,7 @@ const styles = StyleSheet.create({
     transform: [{rotate: '10deg'}],
   },
   right: {
-    borderBottomColor: '#20abfd',
+    borderBottomColor: '#10abfd',
     right: 0,
     bottom: 10,
     transform: [{rotate: '90deg'}],
