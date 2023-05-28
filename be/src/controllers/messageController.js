@@ -14,6 +14,7 @@ const getMessages = async (req, res, next) => {
       return {
         fromSelf: msg.sender.toString() === from,
         message: msg.message,
+        time: msg.updatedAt,
       };
     });
     res.json(projectedMessages);
@@ -55,9 +56,9 @@ const deleteMessage = async (req, res, next) => {
 const getAllMessages = async (req, res, next) => {
   try {
     const { id_sender } = req.body;
-    const messages = await Message.find({ sender: id_sender })
-      .populate("sender")
-      .populate("receiver");
+    const messages = await Message.find({ sender: id_sender }).populate(
+      "receiver"
+    );
 
     res.json(messages);
   } catch (ex) {

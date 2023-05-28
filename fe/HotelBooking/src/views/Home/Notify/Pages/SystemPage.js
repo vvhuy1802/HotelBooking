@@ -36,10 +36,10 @@ const SystemPage = ({navigation}) => {
 
   useEffect(() => {
     const checkSystem = async () => {
-      const system = notify.find(item => item.data.type === 'system');
+      const system = notify.find(item => item.data.type === 'chat');
       setIsExist(system ? true : false);
       const notifySystem = await notify.filter(
-        item => item.data.type === 'system',
+        item => item.data.type === 'chat',
       );
       setNotifySystem(notifySystem);
     };
@@ -109,7 +109,7 @@ const SystemPage = ({navigation}) => {
           {notify
             ?.map((item, index) => {
               return (
-                item.data.type === 'system' && (
+                item.data.type === 'chat' && (
                   <View
                     key={index + item.id}
                     style={{

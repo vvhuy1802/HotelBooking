@@ -258,7 +258,7 @@ const Profile = ({navigation}) => {
             onPress={() => {
               navigation.navigate('Chat', {
                 hotelData: {
-                  _id:"hotel_booking.admins",
+                  _id:"6442aa5167b30af877e4ee71",
                   name: 'Hotel Booking Support',
                 },
               });

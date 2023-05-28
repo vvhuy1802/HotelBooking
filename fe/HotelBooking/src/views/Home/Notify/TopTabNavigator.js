@@ -48,7 +48,7 @@ const Mytab = () => {
         name="system"
         component={System}
         options={{
-          tabBarLabel: t('system'),
+          tabBarLabel: t('chat'),
         }}
       />
       <Tab.Screen

@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   timeText: {
     fontFamily: 'AveriaSerifLibre-Light',
     fontSize: 10,
-    color:'black',
+    color:'white',
   },
   dayview: {
     alignSelf: 'center',

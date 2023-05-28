@@ -7,8 +7,12 @@ import { v4 as uuidv4 } from "uuid";
 import { SendMessage, RecieveMessage } from "../../middlewares/message";
 
 function Chat() {
-  const { userInfo } = useSelector((state) => state.global);
-  const [currentUser, setCurrentUser] = useState(userInfo);
+  const { userInfo, totalHotel } = useSelector((state) => state.global);
+  const [currentUser, setCurrentUser] = useState(
+    userInfo.roll === "adminapp"
+      ? "6442aa5167b30af877e4ee71"
+      : totalHotel?.filter((item) => item.id === userInfo?.idHotel)[0]?._id
+  );
   const socket = useRef();
   const scrollRef = useRef();
   const [messages, setMessages] = useState();
@@ -17,16 +21,27 @@ function Chat() {
   const [arrivalMessage, setArrivalMessage] = useState(null);
 
   useEffect(() => {
+    if (userInfo.roll === "adminapp") {
+      setCurrentUser("6442aa5167b30af877e4ee71");
+    } else {
+      setCurrentUser(
+        totalHotel?.filter((item) => item.id === userInfo?.idHotel)[0]?._id
+      );
+    }
+  }, [userInfo, totalHotel]);
+
+  useEffect(() => {
     if (currentUser) {
       socket.current = io(LOCAL_API_URL);
-      socket.current.emit("add-user", "63fffb95a667eff7c6da2d89");
+      socket.current.emit("add-user", currentUser);
+      console.log("connected");
     }
   }, [currentUser]);
 
   useEffect(() => {
     const getMsg = async () => {
       const data = {
-        from: "63fffb95a667eff7c6da2d89",
+        from: currentUser,
         to: sentTo,
       };
       const response = await RecieveMessage(data);
@@ -35,12 +50,12 @@ function Chat() {
       }
     };
     getMsg();
-  }, []);
+  }, [currentUser]);
 
   const handleSendMsg = async (msg) => {
     socket.current.emit("send-msg", {
       to: sentTo,
-      from: "63fffb95a667eff7c6da2d89",
+      from: currentUser,
       msg,
     });
 
@@ -54,8 +69,8 @@ function Chat() {
     setMessages(msgs);
 
     const data = {
-      from: "63fffb95a667eff7c6da2d89",
-      fromType: "hotel",
+      from: currentUser,
+      fromType: userInfo.roll === "adminapp" ? "admin" : "hotel",
       to: sentTo,
       toType: "user",
       message: msg,
@@ -66,6 +81,7 @@ function Chat() {
 
   useEffect(() => {
     if (socket.current) {
+      console.log("listening");
       socket.current.on("msg-recieve", (msg) => {
         setArrivalMessage({
           fromSelf: false,
@@ -74,8 +90,10 @@ function Chat() {
           },
         });
       });
+    } else {
+      console.log("no socket");
     }
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
@@ -92,7 +110,7 @@ function Chat() {
           setMessages([]);
         }}
       >
-        Chat in {currentUser?._id} Screen
+        Chat in {currentUser} Screen
       </h1>
       {messages?.map((message) => {
         return (

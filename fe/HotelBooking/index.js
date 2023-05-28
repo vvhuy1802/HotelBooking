@@ -23,9 +23,12 @@ const toastConfig = {
             id_hotel: props.data.data.id_hotel,
             dataNotify: props.data,
           });
-        } else if (props?.data?.type === 'system') {
-          props.navigation.navigate('DetailNotify', {
-            dataNotify: props.data,
+        } else if (props?.data?.type === 'chat') {
+          props.navigation.navigate('Chat', {
+            hotelData: {
+              _id: props.data.data.id_chat,
+              name: props.data.title,
+            },
           });
         } else if (props?.data?.type === 'other') {
           props.navigation.navigate('DetailNotify', {

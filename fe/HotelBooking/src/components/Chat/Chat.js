@@ -74,7 +74,7 @@ const Chat = ({navigation, route}) => {
       from: currentUser._id,
       fromType: 'user',
       to: hotelData._id,
-      toType: 'hotel',
+      toType: hotelData._id === '6442aa5167b30af877e4ee71' ? 'admin' : 'hotel',
       message: msg,
     };
 
@@ -113,7 +113,11 @@ const Chat = ({navigation, route}) => {
 
   return (
     <View style={{flex: 1}}>
-      <CustomHeader title={hotelData.name} />
+      <CustomHeader
+        title={hotelData.name}
+        socket={socket.current}
+        id={currentUser._id}
+      />
       <ImageBackground
         source={require('../../assets/Background.jpg')}
         style={{flex: 1}}>
@@ -134,27 +138,29 @@ const Chat = ({navigation, route}) => {
             </View>
           </>
         ) : (
-          <FlatList
-            style={{flex: 1}}
-            data={messages}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            ref={listViewRef}
-            onLayout={e => {
-              listViewHeight.current = e.nativeEvent.layout.height;
-            }}
-            onContentSizeChange={() => {
-              listViewRef.current.scrollToEnd({animated: true});
-            }}
-            renderItem={({item, index}) => {
-              return (
-                <MsgComponent
-                  msg={item}
-                  checkTime={checkTime(item.time, index)}
-                />
-              );
-            }}
-          />
+          messages.length > 0 && (
+            <FlatList
+              style={{flex: 1}}
+              data={messages}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item, index) => index.toString()}
+              ref={listViewRef}
+              onLayout={e => {
+                listViewHeight.current = e.nativeEvent.layout.height;
+              }}
+              onContentSizeChange={() => {
+                listViewRef.current.scrollToEnd({animated: true});
+              }}
+              renderItem={({item, index}) => {
+                return (
+                  <MsgComponent
+                    msg={item}
+                    checkTime={checkTime(item.time, index)}
+                  />
+                );
+              }}
+            />
+          )
         )}
       </ImageBackground>
       <View

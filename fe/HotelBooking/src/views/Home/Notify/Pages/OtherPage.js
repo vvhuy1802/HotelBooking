@@ -37,11 +37,11 @@ const OtherPage = ({navigation}) => {
   useEffect(() => {
     const checkOther = async () => {
       const other = notify.find(
-        item => item.data.type !== 'system' && item.data.type !== 'booking',
+        item => item.data.type !== 'chat' && item.data.type !== 'booking',
       );
       setIsExist(other ? true : false);
       const notifyOther = await notify.filter(
-        item => item.data.type !== 'system' && item.data.type !== 'booking',
+        item => item.data.type !== 'chat' && item.data.type !== 'booking',
       );
       setNotifyOther(notifyOther);
     };

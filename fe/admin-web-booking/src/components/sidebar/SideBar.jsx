@@ -10,7 +10,7 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -94,15 +94,17 @@ const SideBar = () => {
             </li>
           </CustomLink>
           <p className="title">SERVICE</p>
-          <li
-            className={stateSidebar === "Notifications" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Notifications");
-            }}
-          >
-            <NotificationsNoneOutlinedIcon className="icon" />
-            <span>Notifications</span>
-          </li>
+          <CustomLink to="chat">
+            <li
+              className={stateSidebar === "Chats" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Chats");
+              }}
+            >
+              <HeadsetMicIcon className="icon" />
+              <span>Messages</span>
+            </li>
+          </CustomLink>
           <li
             className={stateSidebar === "Settings" ? "onUse" : ""}
             onClick={() => {
