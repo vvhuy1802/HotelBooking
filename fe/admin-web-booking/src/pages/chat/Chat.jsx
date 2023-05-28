@@ -81,17 +81,14 @@ function Chat() {
 
   useEffect(() => {
     if (socket.current) {
-      console.log("listening");
-      socket.current.on("msg-recieve", (msg) => {
+      socket.current.on("msg-recieve", (data) => {
         setArrivalMessage({
           fromSelf: false,
           message: {
-            text: msg,
+            text: data.msg,
           },
         });
       });
-    } else {
-      console.log("no socket");
     }
   }, [currentUser]);
 

@@ -83,14 +83,16 @@ const Chat = ({navigation, route}) => {
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on('msg-recieve', msg => {
-        const data = {
-          fromSelf: false,
-          message: {
-            text: msg,
-          },
-        };
-        setArrivalMessage(data);
+      socket.current.on('msg-recieve', data => {
+        if (data.from === hotelData._id) {
+          const dataMsg = {
+            fromSelf: false,
+            message: {
+              text: data.msg,
+            },
+          };
+          setArrivalMessage(dataMsg);
+        }
       });
     }
   }, []);

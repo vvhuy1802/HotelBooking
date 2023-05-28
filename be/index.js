@@ -61,7 +61,7 @@ async function StartApp() {
     socket.on("send-msg", async (data) => {
       const sendUserSocket = onlineUsers.get(data.to);
       if (sendUserSocket) {
-        socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+        socket.to(sendUserSocket).emit("msg-recieve", data);
       } else {
         console.log("User is offline");
         const user = await User.findById(data.to);
