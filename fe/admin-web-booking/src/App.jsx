@@ -236,16 +236,10 @@ function App() {
                       index
                       element={userInfo ? <Chat /> : <Navigate to="/login" />}
                     />
-                    {/* <Route
+                    <Route
                       path=":userID"
-                      element={
-                        userInfo ? (
-                          <Single inputs={HotelInputs} />
-                        ) : (
-                          <Navigate to="/login" />
-                        )
-                      }
-                    /> */}
+                      element={userInfo ? <Chat /> : <Navigate to="/login" />}
+                    />
                   </Route>
                 </Route>
 

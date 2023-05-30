@@ -47,7 +47,9 @@ export const PushNotifyToLocalStorage = async remoteMessage => {
   }
 };
 
-export const NotificationService = navigation => {
+export const NotificationService = async navigation => {
+  let currentUserID = await getAsyncStorage('currentUser');
+  console.log('currentUserID: ', currentUserID);
   messaging().onNotificationOpenedApp(remoteMessage => {
     console.log(
       'Notification caused app to open from background state:',
@@ -69,19 +71,21 @@ export const NotificationService = navigation => {
       id_user: remoteMessage.data.id_user,
     };
 
-    Toast.show({
-      type: 'notifyBasic',
-      text1: notification.title,
-      text2: notification.body,
-      visibilityTime: 3000,
-      autoHide: true,
-      topOffset: 10,
-      bottomOffset: 10,
-      props: {
-        navigation: navigation,
-        data: notification,
-      },
-    });
+    if (remoteMessage.data.id_user === currentUserID) {
+      Toast.show({
+        type: 'notifyBasic',
+        text1: notification.title,
+        text2: notification.body,
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 10,
+        bottomOffset: 10,
+        props: {
+          navigation: navigation,
+          data: notification,
+        },
+      });
+    }
 
     await PushNotifyToLocalStorage(notification);
   });

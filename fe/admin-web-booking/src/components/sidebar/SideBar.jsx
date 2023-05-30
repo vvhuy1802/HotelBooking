@@ -102,18 +102,9 @@ const SideBar = () => {
               }}
             >
               <HeadsetMicIcon className="icon" />
-              <span>Messages</span>
+              <span>Chat</span>
             </li>
           </CustomLink>
-          <li
-            className={stateSidebar === "Settings" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Settings");
-            }}
-          >
-            <SettingsOutlinedIcon className="icon" />
-            <span>Settings</span>
-          </li>
           <p className="title">ACCOUNT</p>
           <li
             className={stateSidebar === "Profile" ? "onUse" : ""}

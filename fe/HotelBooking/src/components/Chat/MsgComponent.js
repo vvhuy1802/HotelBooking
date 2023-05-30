@@ -84,13 +84,13 @@ const styles = StyleSheet.create({
   left: {
     borderBottomColor: 'white',
     left: 2,
-    bottom: 10,
-    transform: [{rotate: '10deg'}],
+    bottom: 5,
+    transform: [{rotate: '0deg'}],
   },
   right: {
     borderBottomColor: '#10abfd',
     right: 0,
-    bottom: 10,
+    bottom: 5,
     transform: [{rotate: '90deg'}],
   },
 });

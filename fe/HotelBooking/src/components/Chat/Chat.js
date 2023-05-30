@@ -46,7 +46,7 @@ const Chat = ({navigation, route}) => {
       };
       const response = await RecieveMessage(data);
       if (response.status === 200) {
-        setMessages(response.data);
+        setMessages(response.data.messages);
         console.log('response.data', response.data);
         setLoading(false);
       }

@@ -11,3 +11,9 @@ export const RecieveMessage = async (data) => {
   const response = await POST(path, data);
   return response;
 };
+
+export const GetListUser = async (data) => {
+  const path = `/messages/getallmsg`;
+  const response = await POST(path, data);
+  return response;
+};
