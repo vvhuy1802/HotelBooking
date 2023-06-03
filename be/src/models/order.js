@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
   id_user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
   id_room: { type: mongoose.Schema.Types.ObjectId, ref: "room" },
+  id_vehicle: { type: mongoose.Schema.Types.ObjectId, ref: "vehicle" },
   id_hotel: { type: String, default: "" },
   check_in: { type: String, default: "" },
   check_out: { type: String, default: "" },

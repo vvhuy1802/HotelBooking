@@ -256,6 +256,26 @@ const Profile = ({navigation}) => {
           <TouchableOpacity
             style={styles.view}
             onPress={() => {
+              navigation.navigate('Chat', {
+                hotelData: {
+                  _id:"hotel_booking.admins",
+                  name: 'Hotel Booking Support',
+                },
+              });
+            }}>
+            <Icon5 name="customerservice" size={25} color={colors.icon} />
+            <Text
+              style={{
+                fontSize: 16,
+                paddingHorizontal: 15,
+                color: colors.text,
+              }}>
+              {t('customer-support')}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.view}
+            onPress={() => {
               signOut();
             }}>
             <Icon5 name="logout" size={25} color={colors.icon} />

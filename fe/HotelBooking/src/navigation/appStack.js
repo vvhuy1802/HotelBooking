@@ -2,6 +2,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import DetailHotel from '../views/DetailHotel/DetailHotel';
 import Map from '../views/DetailHotel/Map';
+import Chat from '../components/Chat/Chat';
 import AllComments from '../views/DetailHotel/AllComments';
 import DetailRoom from '../views/DetalRoom/DetailRoom';
 import ImageRoom from '../views/DetalRoom/ImageRoom';
@@ -16,6 +17,8 @@ import NotificationPage from '../views/Home/Notify/index';
 import DetailNotify from '../views/Home/Notify/Pages/DetailNotify';
 import DetailBooking from '../views/Booking/DetailBooking';
 import TabNavigator from './tabNavigator';
+import HireVehicle from '../views/OrderRoom/HireVehicle';
+import DetailVehicle from '../views/OrderRoom/DetailVehicle';
 const Stack = createNativeStackNavigator();
 
 export default function AppStack() {
@@ -38,6 +41,20 @@ export default function AppStack() {
       <Stack.Screen
         name="DetailRoom"
         component={DetailRoom}
+        options={{
+          headerShown: false,
+        }}
+      />
+       <Stack.Screen
+        name="HireVehicle"
+        component={HireVehicle}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="DetailVehicle"
+        component={DetailVehicle}
         options={{
           headerShown: false,
         }}
@@ -129,6 +146,13 @@ export default function AppStack() {
       <Stack.Screen
         name="DetailBooking"
         component={DetailBooking}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Chat"
+        component={Chat}
         options={{
           headerShown: false,
         }}

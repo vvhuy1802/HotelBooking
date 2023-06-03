@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { getLocalStorage } from "./functions/asyncStorageFunctions";
 
-import { Home, Login, List, Single, New } from "./pages";
+import { Home, Login, List, Single, New, Chat } from "./pages";
 import SideBar from "./components/sidebar/SideBar";
 import NavBar from "./components/navbar/NavBar";
 import Announce from "./components/announce/Announce";
@@ -38,6 +38,7 @@ import { RoomInputs } from "./ContainerAdminHotel/Components/Input/DataInput";
 import AddNewRoom from "./ContainerAdminHotel/Container/ListRoom/AddNewRoom/AddNewRoom";
 import UpdateRoom from "./ContainerAdminHotel/Container/ListRoom/UpdateRoom/UpdateRoom";
 import BookingDetail from "./ContainerAdminHotel/Container/ListBooking/BookingDetail/BookingDetail";
+import ListVehicle from "./ContainerAdminHotel/Container/ListVehicle/ListVehicle";
 
 function App() {
   const dispatch = useDispatch();
@@ -110,7 +111,6 @@ function App() {
   useEffect(() => {
     const currentpath = location.pathname;
     if (userInfo.roll === "adminapp") {
-  
       if (currentpath === "/") {
         dispatch(setStateSidebar("Dashboard"));
       } else if (currentpath.split("/")[1] === "user") {
@@ -121,9 +121,7 @@ function App() {
         dispatch(setStateSidebar("Hotels"));
       } else if (currentpath.split("/")[1] === "booking")
         dispatch(setStateSidebar("Bookings"));
-    }
-    else {
-     
+    } else {
       if (currentpath === "/") {
         dispatch(setStateSidebar("Dashboard"));
       } else if (currentpath.split("/")[1] === "listroom") {
@@ -153,6 +151,10 @@ function App() {
                   <Route
                     path="login"
                     element={userInfo ? <Navigate to="/" /> : <Login />}
+                  />
+                  <Route
+                    path="chat"
+                    element={userInfo ? <Chat /> : <Navigate to="/login" />}
                   />
 
                   <Route path="user">
@@ -262,6 +264,10 @@ function App() {
                     path="login"
                     element={userInfo ? <Navigate to="/" /> : <Login />}
                   />
+                  <Route
+                    path="chat"
+                    element={userInfo ? <Chat /> : <Navigate to="/login" />}
+                  />
 
                   <Route path="listroom">
                     <Route
@@ -305,11 +311,16 @@ function App() {
                     <Route
                       path=":bookingId"
                       element={
-                        userInfo ? (
-                          <BookingDetail/>
-                        ) : (
-                          <Navigate to="/login" />
-                        )
+                        userInfo ? <BookingDetail /> : <Navigate to="/login" />
+                      }
+                    />
+                  </Route>
+
+                  <Route path="listvehicle">
+                    <Route 
+                      index
+                      element={
+                        userInfo ? <ListVehicle /> : <Navigate to="/login" />
                       }
                     />
                   </Route>

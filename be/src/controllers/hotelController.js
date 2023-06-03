@@ -41,7 +41,7 @@ const AddNewHotel = async (req, res) => {
 };
 
 const GetAllHotel = async (req, res) => {
-  var hotels = await Hotel.find().populate("rooms").populate("comments");
+  var hotels = await Hotel.find().populate("rooms").populate("vehicles").populate("comments");
 
   hotels = await Comments.populate(hotels, {
     path: "comments.id_user",
@@ -55,7 +55,7 @@ const GetAllHotel = async (req, res) => {
 };
 
 const GetByID = async (req, res) => {
-  let hotel = await Hotel.findById(req.params.id).populate("rooms").populate("comments");
+  let hotel = await Hotel.findById(req.params.id).populate("rooms").populate("vehicles").populate("comments");
   hotel = await Comments.populate(hotel, {
     path: "comments.id_user",
     select: "name",

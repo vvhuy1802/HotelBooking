@@ -24,17 +24,17 @@ import Icon4 from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import { GetHotelByID } from './apidetailhotel';
+import {GetHotelByID} from './apidetailhotel';
 import {setBookingDate} from '../../../redux/Globalreducer';
 
 const width = Dimensions.get('screen').width;
 const WINDOW_HEIGHT = Dimensions.get('screen').height;
 const SHEET_MAX_HEIGHT = WINDOW_HEIGHT * 0.8;
-const SHEET_MIN_HEIGHT = WINDOW_HEIGHT * 0.1;
+const SHEET_MIN_HEIGHT = WINDOW_HEIGHT * 0.09;
 const MAX_UPWARD_TRANSLATE_Y = -SHEET_MIN_HEIGHT - SHEET_MAX_HEIGHT; // negative number
 const MAX_DOWNWARD_TRANSLATE_Y = 0;
 const DRAG_THRESHOLD = 50;
-const DetailHotel = ({navigation,route}) => {
+const DetailHotel = ({navigation, route}) => {
   const _id = route.params.id;
   const {t} = useTranslation();
   const {colors} = useTheme();
@@ -46,27 +46,20 @@ const DetailHotel = ({navigation,route}) => {
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   const [isloading, setIsloading] = useState(true);
   const [hotelData, setHotelData] = useState({});
-  const {user_position, booking_date} = useSelector(
-    state => state.global,
-  );
-
+  const {user_position, booking_date} = useSelector(state => state.global);
 
   const fetchData = async () => {
     const response = await GetHotelByID(_id);
     if (response.status === 200) {
-      const data=response.data;
+      const data = response.data;
       setHotelData(data);
       setIsloading(false);
     }
-  }
-
+  };
 
   useEffect(() => {
     fetchData();
   }, []);
-
-  const image_default =
-    'https://img1.ak.crunchyroll.com/i/spire3/d23bea1cbe84833135f94695d900f0651651339079_main.png';
 
   const Format = number => {
     var price = number * booking_date.total_night;
@@ -264,143 +257,155 @@ const DetailHotel = ({navigation,route}) => {
   };
 
   return (
-    <SafeAreaView style={{flex:1,backgroundColor: colors.bg}}>
-      {isloading ? <>
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.bg}}>
+      {isloading ? (
+        <>
           <Lottie
             style={{}}
-            source={require('../../assets/animations/loading-circle.json')}
+            source={require('../../assets/animations/140846-vertical-animation.json')}
             autoPlay
             loop
           />
-        </>:<>
-      <AnimatedView
-        style={[
-          styles.HeaderBack,
-          {backgroundColor: colors.bg},
-          HeaderAnimated,
-        ]}>
-        <Icon
-          name="arrow-back-ios"
-          size={28}
-          color={colors.text}
-          onPress={navigation.goBack}
-        />
-        <View style={{alignItems: 'center', paddingRight: 20}}>
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: 'bold',
-              color: 'orange',
-            }}>
-            {hotelData.name}
-          </Text>
-          <Text style={{textAlign: 'center', color: colors.icon}}>
-            {hotelData.address}
-          </Text>
-        </View>
-        <Icon2 name="heart-outline" size={0} color="black" style={{}} />
-      </AnimatedView>
-      <AnimatedView style={[styles.HeaderTitle, HeaderAnimatedScroll]}>
-        <Icon
-          name="arrow-back-ios"
-          size={28}
-          color="white"
-          onPress={navigation.goBack}
-        />
-      </AnimatedView>
-      <ScrollView
-        onScroll={e => {
-          const currentOffset = e.nativeEvent.contentOffset.y;
-          animatedValue.setValue(currentOffset);
-        }}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}>
-        <View>
-          <ScrollView
-            pagingEnabled={true}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={{width: width, height: 300}}>
-            {hotelData.image.map((item, index) => (
-              <Image
-                key={index}
-                source={{uri: item}}
-                style={{
-                  width: width,
-                  height: 300,
-                  resizeMode: 'cover',
-                }}
-              />
-            ))}
-          </ScrollView>
-        </View>
-        <View style={{paddingHorizontal: 15, paddingBottom: 100}}>
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: colors.primary,
-              paddingVertical: 5,
-            }}>
-            <Text
-              style={{
-                fontSize: 25,
-                fontWeight: 'bold',
-                color: colors.text,
-                paddingVertical: 10,
-              }}>
-              {hotelData.name}
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Icon5
-                name="star"
-                size={20}
-                color={'orange'}
-                style={{marginLeft: 2}}
-              />
+        </>
+      ) : (
+        <>
+          <AnimatedView
+            style={[
+              styles.HeaderBack,
+              {backgroundColor: colors.bg},
+              HeaderAnimated,
+            ]}>
+            <Icon
+              name="arrow-back-ios"
+              size={28}
+              color={colors.text}
+              onPress={navigation.goBack}
+            />
+            <View style={{alignItems: 'center', paddingRight: 20}}>
               <Text
                 style={{
-                  fontSize: 17,
+                  fontSize: 18,
                   fontWeight: 'bold',
-                  paddingHorizontal: 5,
-                  color: colors.text,
+                  color: 'orange',
                 }}>
-                {TotalStar()}
-                <Text style={{color: colors.icon}}>
-                  {' (' + hotelData.comments.length + ` ${t('review')})`}
-                </Text>
+                {hotelData.name}
+              </Text>
+              <Text style={{textAlign: 'center', color: colors.icon}}>
+                {hotelData.address}
               </Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingVertical: 10,
-              }}>
-              <Icon2
-                name="md-location-sharp"
-                size={25}
-                color="orange"
-                style={{}}
-              />
-              <View
-                style={{
-                  paddingHorizontal: 2,
-                  paddingRight: 20,
-                }}>
-                <Text style={{color: colors.text, fontSize: 15}}>
-                  <Text style={{color: 'orange'}}>
-                    ~{calculateDistance()} km
-                  </Text>{' '}
-                  | {hotelData.address}
-                </Text>
-              </View>
+            <Icon2 name="heart-outline" size={0} color="black" style={{}} />
+          </AnimatedView>
+          <AnimatedView style={[styles.HeaderTitle, HeaderAnimatedScroll]}>
+            <Icon
+              name="arrow-back-ios"
+              size={28}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          </AnimatedView>
+          <ScrollView
+            onScroll={e => {
+              const currentOffset = e.nativeEvent.contentOffset.y;
+              animatedValue.setValue(currentOffset);
+            }}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}>
+            <View>
+              <ScrollView
+                pagingEnabled={true}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                style={{width: width, height: 300}}>
+                {hotelData.image.map((item, index) => (
+                  <Image
+                    key={index}
+                    source={{uri: item}}
+                    style={{
+                      width: width,
+                      height: 300,
+                      resizeMode: 'cover',
+                    }}
+                  />
+                ))}
+              </ScrollView>
             </View>
-          </View>
-          <View
+            <View style={{marginHorizontal:15,paddingBottom: 100}}>
+                <Text
+                  style={{
+                    fontSize: 25,
+                    fontWeight: 'bold',
+                    color: colors.text,
+                    paddingVertical: 10,
+                  }}>
+                  {hotelData.name}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Icon5
+                    name="star"
+                    size={20}
+                    color={'orange'}
+                    style={{marginLeft: 2}}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      fontWeight: 'bold',
+                      paddingHorizontal: 5,
+                      color: colors.text,
+                    }}>
+                    {TotalStar()}
+                    <Text style={{color: colors.icon}}>
+                      {' (' + hotelData.comments.length + ` ${t('review')})`}
+                    </Text>
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    paddingVertical: 10,
+                  }}>
+                  <Icon2 style={{
+                    top:5
+                  }} name="md-location-sharp" size={25} color="orange" />
+                  <View
+                    style={{
+                      paddingRight: 20,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text style={{color: colors.text, fontSize: 14,width:width-40}}>
+                      <Text style={{color: 'orange'}}>
+                        ~{calculateDistance()} km
+                      </Text>{' '}
+                      | {hotelData.address} |{' '}
+                    </Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor:colors.primary,
+                      height:40,
+                      borderRadius:15,
+                    }}
+                        onPress={() => {
+                          navigation.navigate('Map', hotelData);
+                        }}>
+                        <Text
+                          style={{
+                            color: "white",
+                            fontWeight:"bold"
+                          }}>
+                          {t('viewmap')}
+                        </Text>
+                      </TouchableOpacity>
+              {/* <View
             style={{
               marginTop: 10,
             }}>
@@ -459,464 +464,523 @@ const DetailHotel = ({navigation,route}) => {
                 />
               </MapView>
             </View>
-          </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: 'bold',
-              color: colors.text,
-              paddingVertical: 15,
-            }}>
-            {t('list-rooms')}
-          </Text>
-          {hotelData.rooms.map((items, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.RecentlyBox, {backgroundColor: colors.box}]}
-              onPress={() => {
-                navigation.navigate('DetailRoom', {
-                  room: items,
-                  hotel: hotelData,
-                });
-              }}>
-              <View
+          </View> */}
+              <Text
                 style={{
-                  width: '100%',
-                  height: 150,
-                  alignSelf: 'center',
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  color: colors.text,
+                  paddingVertical: 15,
                 }}>
-                <Image style={styles.IMGRecent} source={{uri: items.image[0]}} />
-              </View>
-              <View>
-                <View style={{paddingHorizontal: 15, paddingVertical: 5}}>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      height: 25,
-                      color: colors.text,
-                    }}>
-                    {items.name}
-                  </Text>
-                  <View style={{flexDirection: 'row', paddingVertical: 5}}>
-                    {items.utility.map((item, index) =>
-                      index < 2 ? (
-                        <View
-                          key={index}
-                          style={{
-                            alignContent: 'center',
-                            justifyContent: 'flex-start',
-                            marginRight: 10,
-                          }}>
-                          <Text style={{color: colors.icon, fontSize: 14}}>
-                            {item.split(' ')[1] === 'm²'
-                              ? item + ' '
-                              : t(`${slugify(item)}`)}
-                            <Text style={{color: colors.text}}>
-                              {index == 0 ? ' |' : ''}
-                            </Text>
-                          </Text>
-                        </View>
-                      ) : (
-                        <View key={index}></View>
-                      ),
-                    )}
-                  </View>
-                  <Text
-                    style={{
-                      color: colors.text,
-                      fontSize: 14,
-                      marginTop: 5,
-                      fontWeight: '500',
-                    }}>
-                    {booking_date.total_night} {t('day')}
-                    {booking_date.total_night > 1 && t('day') === 'day'
-                      ? 's'
-                      : ''}
-                  </Text>
+                {t('list-rooms')}
+              </Text>
+              {hotelData.rooms.map((items, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[styles.RecentlyBox, {backgroundColor: colors.box}]}
+                  onPress={() => {
+                    navigation.navigate('DetailRoom', {
+                      room: items,
+                      hotel: hotelData,
+                    });
+                  }}>
                   <View
                     style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
+                      width: '100%',
+                      height: 150,
+                      alignSelf: 'center',
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        paddingVertical: 10,
-                        fontWeight: 'bold',
-                        color: colors.text,
-                      }}>
-                      {Format(items.price)}{' '}
+                    <Image
+                      style={styles.IMGRecent}
+                      source={{uri: items.image[0]}}
+                    />
+                  </View>
+                  <View>
+                    <View style={{paddingHorizontal: 15, paddingVertical: 5}}>
                       <Text
                         style={{
-                          fontSize: 13,
+                          fontSize: 20,
+                          height: 25,
                           color: colors.text,
                         }}>
-                        đ
+                        {items.name}
                       </Text>
-                    </Text>
-                    <View
-                      style={{
-                        width: 100,
-                        height: 35,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 5,
-                        backgroundColor: colors.primary,
-                      }}>
+                      <View style={{flexDirection: 'row', paddingVertical: 5}}>
+                        {items.utility.map((item, index) =>
+                          index < 2 ? (
+                            <View
+                              key={index}
+                              style={{
+                                alignContent: 'center',
+                                justifyContent: 'flex-start',
+                                marginRight: 10,
+                              }}>
+                              <Text style={{color: colors.icon, fontSize: 14}}>
+                                {item.split(' ')[1] === 'm²'
+                                  ? item + ' '
+                                  : t(`${slugify(item)}`)}
+                                <Text style={{color: colors.text}}>
+                                  {index == 0 ? ' |' : ''}
+                                </Text>
+                              </Text>
+                            </View>
+                          ) : (
+                            <View key={index}></View>
+                          ),
+                        )}
+                      </View>
                       <Text
                         style={{
-                          color: 'white',
-                          fontSize: 15,
-                          fontWeight: 'bold',
+                          color: colors.text,
+                          fontSize: 14,
+                          marginTop: 5,
+                          fontWeight: '500',
                         }}>
-                        {t('choose-room')}
+                        {booking_date.total_night} {t('day')}
+                        {booking_date.total_night > 1 && t('day') === 'day'
+                          ? 's'
+                          : ''}
                       </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderBottomColor: colors.primary,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 10,
-              }}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  color: colors.text,
-                }}>
-                {t('description')}
-              </Text>
-            </View>
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 15,
-                paddingVertical: 10,
-              }}>
-              {hotelData.description}
-            </Text>
-          </View>
-          <View style={{marginTop: 20}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  color: colors.text,
-                }}>
-                {t('review')}
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('AllComments', hotelData.comments);
-                }}>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: colors.text,
-                  }}>
-                  {t('see-all')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {hotelData.comments
-              .map(
-                (item1, index) =>
-                  hotelData.comments.length - index <= 3 && (
-                    <View
-                      key={index}
-                      style={{
-                        marginTop: 10,
-                        width: '100%',
-                        backgroundColor: colors.box,
-                        borderRadius: 10,
-                        elevation: 5,
-                        shadowColor: 'black',
-                        alignSelf: 'center',
-                        borderWidth: 1,
-                        borderColor: '#eeeeee',
-                        paddingVertical: 10,
-                      }}>
                       <View
                         style={{
                           flexDirection: 'row',
                           justifyContent: 'space-between',
-                          alignItems: 'center',
-                          paddingHorizontal: 10,
                         }}>
-                        <View
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
-                          <Image
-                            source={require('../../assets/avatars.jpg')}
+                        <Text
+                          style={{
+                            fontSize: 20,
+                            paddingVertical: 10,
+                            fontWeight: 'bold',
+                            color: colors.text,
+                          }}>
+                          {Format(items.price)}{' '}
+                          <Text
                             style={{
-                              width: 50,
-                              height: 50,
-                              borderRadius: 25,
-                            }}
-                          />
-                          <View style={{marginLeft: 10}}>
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
-                              <Text
-                                style={{
-                                  fontWeight: '700',
-                                  fontSize: 16,
-                                  color: colors.text,
-                                }}>
-                                {item1.id_user.name}
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 13,
-                                  fontWeight: '400',
-                                  marginLeft: 10,
-                                }}>
-                                {FormatTimeStamp(item1.time_stamp)}
-                              </Text>
-                            </View>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                color: colors.text,
-                                fontWeight: 'bold',
-                              }}>
-                              {FormatRoomNameInComment(item1.id_room?.name)}
-                            </Text>
-                          </View>
-                        </View>
+                              fontSize: 13,
+                              color: colors.text,
+                            }}>
+                            đ
+                          </Text>
+                        </Text>
                         <View
                           style={{
-                            backgroundColor: colors.primary,
+                            width: 100,
+                            height: 35,
                             alignItems: 'center',
-                            justifyContent: 'space-between',
-                            borderRadius: 15,
-                            flexDirection: 'row',
-                            paddingHorizontal: 10,
-                            paddingVertical: 5,
+                            justifyContent: 'center',
+                            borderRadius: 5,
+                            backgroundColor: colors.primary,
                           }}>
-                          <Icon5 name="star" size={15} color={'yellow'} />
-                          <Text style={{color: 'white', marginLeft: 5}}>
-                            {item1.rating}
+                          <Text
+                            style={{
+                              color: 'white',
+                              fontSize: 15,
+                              fontWeight: 'bold',
+                            }}>
+                            {t('choose-room')}
                           </Text>
                         </View>
                       </View>
-                      <Text
-                        style={{
-                          paddingHorizontal: 20,
-                          fontWeight: '400',
-                          fontSize: 14,
-                          color: colors.text,
-                        }}>
-                        {item1.content}
-                      </Text>
                     </View>
-                  ),
-              )
-              .reverse()}
-          </View>
-        </View>
-      </ScrollView>
-      <Animated.View
-        style={[
-          styles.bottomSheet,
-          {backgroundColor: colors.box},
-          bottomSheetAnimation,
-        ]}>
-        <View style={styles.draggableArea} {...panResponder.panHandlers}>
-          <Text
-            style={{
-              color: 'orange',
-              fontSize: 18,
-              fontWeight: 'bold',
-              paddingBottom: 15,
-            }}>
-            {t('choice-the-date')}
-          </Text>
-          <View style={{flexDirection: 'row'}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-                width: '95%',
-                height: 60,
-                backgroundColor: colors.special,
-                borderRadius: 10,
-              }}>
-              <View style={{width: '33%'}}>
-                <Text style={{fontSize: 14, color: colors.icon}}>
-                  {t('check-in')}
-                </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.primary,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginTop: 10,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      color: colors.text,
+                    }}>
+                    {t('description')}
+                  </Text>
+                </View>
                 <Text
                   style={{
                     color: colors.text,
-                    fontWeight: 'bold',
-                    fontSize: 16,
+                    fontSize: 15,
+                    paddingVertical: 10,
                   }}>
-                  12:00, {formatDayShow(start)}
+                  {hotelData.description}
                 </Text>
               </View>
-              <Icon4 name="long-arrow-alt-right" size={25} color="orange" />
-              <View style={{width: '33%'}}>
-                <Text style={{fontSize: 14, color: colors.icon}}>
-                  {t('check-out')}
-                </Text>
-                {end ? (
+              <View style={{marginTop: 20}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
                   <Text
                     style={{
-                      color: colors.text,
+                      fontSize: 20,
                       fontWeight: 'bold',
-                      fontSize: 16,
+                      color: colors.text,
                     }}>
-                    12:00, {formatDayShow(end)}
+                    {t('review')}
                   </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('AllComments', hotelData.comments);
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        color: colors.text,
+                      }}>
+                      {t('see-all')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {hotelData.comments.length > 0 ? (
+                  hotelData.comments
+                    .map(
+                      (item1, index) =>
+                        hotelData.comments.length - index <= 3 && (
+                          <View
+                            key={index}
+                            style={{
+                              marginTop: 10,
+                              width: '100%',
+                              backgroundColor: colors.box,
+                              borderRadius: 10,
+                              elevation: 5,
+                              shadowColor: 'black',
+                              alignSelf: 'center',
+                              borderWidth: 1,
+                              borderColor: '#eeeeee',
+                              paddingVertical: 10,
+                            }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                paddingHorizontal: 10,
+                              }}>
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <Image
+                                  source={require('../../assets/avatars.jpg')}
+                                  style={{
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: 25,
+                                  }}
+                                />
+                                <View style={{marginLeft: 10}}>
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                    }}>
+                                    <Text
+                                      style={{
+                                        fontWeight: '700',
+                                        fontSize: 16,
+                                        color: colors.text,
+                                      }}>
+                                      {item1.id_user.name}
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        fontSize: 13,
+                                        fontWeight: '400',
+                                        marginLeft: 10,
+                                      }}>
+                                      {FormatTimeStamp(item1.time_stamp)}
+                                    </Text>
+                                  </View>
+                                  <Text
+                                    style={{
+                                      fontSize: 14,
+                                      color: colors.text,
+                                      fontWeight: 'bold',
+                                    }}>
+                                    {FormatRoomNameInComment(
+                                      item1.id_room?.name,
+                                    )}
+                                  </Text>
+                                </View>
+                              </View>
+                              <View
+                                style={{
+                                  backgroundColor: colors.primary,
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  borderRadius: 15,
+                                  flexDirection: 'row',
+                                  paddingHorizontal: 10,
+                                  paddingVertical: 5,
+                                }}>
+                                <Icon5 name="star" size={15} color={'yellow'} />
+                                <Text style={{color: 'white', marginLeft: 5}}>
+                                  {item1.rating}
+                                </Text>
+                              </View>
+                            </View>
+                            <Text
+                              style={{
+                                paddingHorizontal: 20,
+                                fontWeight: '400',
+                                fontSize: 14,
+                                color: colors.text,
+                              }}>
+                              {item1.content}
+                            </Text>
+                          </View>
+                        ),
+                    )
+                    .reverse()
                 ) : (
-                  <Text
-                    style={{
-                      color: colors.text,
-                      fontWeight: 'bold',
-                      fontSize: 16,
-                    }}></Text>
+                  <>
+                    <Image
+                      source={require('../../assets/empty.png')}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 25,
+                        marginTop: 10,
+                        alignSelf: 'center',
+                      }}
+                    />
+                  </>
                 )}
               </View>
             </View>
-          </View>
-        </View>
-        <View style={{marginTop: 10}}>
-          <Calendar
-            markingType={'period'}
-            markedDates={{
-              [start]: {
-                startingDay: true,
-                color: '#50cebb',
-                textColor: 'white',
-              },
-              [end]: {endingDay: true, color: '#50cebb', textColor: 'white'},
-              ...middle.reduce((acc, cur) => {
-                acc[cur] = {
-                  startingDay: false,
-                  endingDay: false,
-                  color: '#70d7c7',
-                  textColor: 'white',
-                };
-                return acc;
-              }, {}),
-            }}
-            onDayPress={day => handleChooseDay(day)}
-            hideExtraDays={true}
-            minDate={String(minday)}
-            theme={{
-              backgroundColor: colors.box,
-              calendarBackground: colors.box,
-              textSectionTitleColor: colors.text,
-              dayTextColor: colors.text,
-              monthTextColor: colors.text,
-              textDisabledColor: '#d9e1e8',
-            }}
-          />
-        </View>
-        <View
-          style={{
-            position: 'absolute',
-            zIndex: 1,
-            bottom: 15,
-            borderTopWidth: 1,
-            borderTopColor: 'gray',
-            width: '100%',
-            height: 60,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <TouchableOpacity
-            onPress={() => {
-              handleConfirm();
-            }}
-            disabled={end == '' ? true : false}
-            style={{
-              width: '90%',
-              height: 40,
-              backgroundColor: end == '' ? '#d1bebd' : '#f44336',
-              borderRadius: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text style={{color: 'white', fontSize: 17, fontWeight: 'bold'}}>
-              {t('confirm')}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Animated.View>
-      <Pressable
-        style={[styles.bottomSheet1, {backgroundColor: colors.box}]}
-        onPress={() => {
-          handleOpenCalendar();
-        }}>
-        <View style={{padding: 15}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <View>
+          </ScrollView>
+          <Animated.View
+            style={[
+              styles.bottomSheet,
+              {backgroundColor: colors.box},
+              bottomSheetAnimation,
+            ]}>
+            <View style={styles.draggableArea} {...panResponder.panHandlers}>
               <Text
-                style={{fontSize: 15, fontWeight: 'bold', color: colors.text}}>
-                {t('time-booking')}
+                style={{
+                  color: 'orange',
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  paddingBottom: 15,
+                }}>
+                {t('choice-the-date')}
               </Text>
-              <View style={{flexDirection: 'row', marginTop: 10}}>
-                <Text
+              <View style={{flexDirection: 'row'}}>
+                <View
                   style={{
-                    color: colors.text,
-                    textDecorationStyle: 'dashed',
-                    textDecorationLine: 'underline',
-                    fontSize: 15,
-                    fontWeight: 'bold',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-around',
+                    width: '95%',
+                    height: 60,
+                    backgroundColor: colors.special,
+                    borderRadius: 10,
                   }}>
-                  12:00,{' '}
-                  {formatDayShow(startTrue) +
-                    ' - 12:00, ' +
-                    formatDayShow(endTrue)}
-                </Text>
+                  <View style={{width: '33%'}}>
+                    <Text style={{fontSize: 14, color: colors.icon}}>
+                      {t('check-in')}
+                    </Text>
+                    <Text
+                      style={{
+                        color: colors.text,
+                        fontWeight: 'bold',
+                        fontSize: 16,
+                      }}>
+                      12:00, {formatDayShow(start)}
+                    </Text>
+                  </View>
+                  <Icon4 name="long-arrow-alt-right" size={25} color="orange" />
+                  <View style={{width: '33%'}}>
+                    <Text style={{fontSize: 14, color: colors.icon}}>
+                      {t('check-out')}
+                    </Text>
+                    {end ? (
+                      <Text
+                        style={{
+                          color: colors.text,
+                          fontWeight: 'bold',
+                          fontSize: 16,
+                        }}>
+                        12:00, {formatDayShow(end)}
+                      </Text>
+                    ) : (
+                      <Text
+                        style={{
+                          color: colors.text,
+                          fontWeight: 'bold',
+                          fontSize: 16,
+                        }}></Text>
+                    )}
+                  </View>
+                </View>
               </View>
+            </View>
+            <View style={{marginTop: 10}}>
+              <Calendar
+                markingType={'period'}
+                markedDates={{
+                  [start]: {
+                    startingDay: true,
+                    color: '#50cebb',
+                    textColor: 'white',
+                  },
+                  [end]: {
+                    endingDay: true,
+                    color: '#50cebb',
+                    textColor: 'white',
+                  },
+                  ...middle.reduce((acc, cur) => {
+                    acc[cur] = {
+                      startingDay: false,
+                      endingDay: false,
+                      color: '#70d7c7',
+                      textColor: 'white',
+                    };
+                    return acc;
+                  }, {}),
+                }}
+                onDayPress={day => handleChooseDay(day)}
+                hideExtraDays={true}
+                minDate={String(minday)}
+                theme={{
+                  backgroundColor: colors.box,
+                  calendarBackground: colors.box,
+                  textSectionTitleColor: colors.text,
+                  dayTextColor: colors.text,
+                  monthTextColor: colors.text,
+                  textDisabledColor: '#d9e1e8',
+                }}
+              />
             </View>
             <View
               style={{
-                borderRadius: 20,
-                alignItems: 'center',
+                position: 'absolute',
+                zIndex: 1,
+                bottom: 15,
+                borderTopWidth: 1,
+                borderTopColor: 'gray',
+                width: '100%',
+                height: 60,
                 justifyContent: 'center',
-                backgroundColor: colors.box,
-                borderWidth: 1,
-                borderColor: 'red',
-                paddingHorizontal: 20,
-                paddingVertical: 5,
+                alignItems: 'center',
               }}>
-              <Text style={{fontSize: 15, fontWeight: 'bold', color: 'red'}}>
-                {t('change-day')}
-              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  handleConfirm();
+                }}
+                disabled={end == '' ? true : false}
+                style={{
+                  width: '90%',
+                  height: 40,
+                  backgroundColor: end == '' ? '#d1bebd' : '#f44336',
+                  borderRadius: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{color: 'white', fontSize: 17, fontWeight: 'bold'}}>
+                  {t('confirm')}
+                </Text>
+              </TouchableOpacity>
             </View>
-          </View>
-        </View>
-      </Pressable>
-      </>}
+          </Animated.View>
+          <Pressable
+            style={[styles.bottomSheet1, {backgroundColor: colors.box}]}
+            onPress={() => {
+              handleOpenCalendar();
+            }}>
+            <View style={{padding: 15}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 'bold',
+                      color: colors.text,
+                    }}>
+                    {t('time-booking')}
+                  </Text>
+                  <View style={{flexDirection: 'row', marginTop: 5}}>
+                    <Text
+                      style={{
+                        color: colors.text,
+                        textDecorationStyle: 'dashed',
+                        textDecorationLine: 'underline',
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                      }}>
+                      12:00,{' '}
+                      {formatDayShow(startTrue) +
+                        ' - 12:00, ' +
+                        formatDayShow(endTrue)}
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    borderRadius: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: colors.box,
+                    borderWidth: 1,
+                    borderColor: 'red',
+                    paddingHorizontal: 20,
+                    paddingVertical: 5,
+                  }}>
+                  <Text
+                    style={{fontSize: 15, fontWeight: 'bold', color: 'red'}}>
+                    {t('change-day')}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </Pressable>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Chat', {
+                hotelData: hotelData,
+              });
+            }}
+            style={{
+              position: 'absolute',
+              bottom: 90,
+              width: 50,
+              height: 50,
+              justifyContent: 'center',
+              alignItems: 'center',
+              right: 10,
+              zIndex: 1,
+              backgroundColor: colors.box,
+              borderRadius: 25,
+              elevation: 10,
+            }}>
+            <Lottie
+              source={require('../../assets/animations/61735-message.json')}
+              autoPlay
+              loop
+            />
+          </TouchableOpacity>
+        </>
+      )}
     </SafeAreaView>
   );
 };

@@ -15,15 +15,15 @@ const Map = ({route}) => {
         provider={PROVIDER_GOOGLE}
         style={{flex: 1}}
         initialRegion={{
-          latitude: hotel.position[0],
-          longitude: hotel.position[1],
+          latitude: Number(hotel.position[0]),
+          longitude: Number(hotel.position[1]),
           latitudeDelta: 0.0115,
           longitudeDelta: 0.0121,
         }}>
         <Marker
           coordinate={{
-            latitude: hotel.position[0],
-            longitude: hotel.position[1],
+            latitude: Number(hotel.position[0]),
+            longitude: Number(hotel.position[1]),
           }}
         />
       </MapView>

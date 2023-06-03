@@ -8,7 +8,7 @@ import {
   ImageBackground,
   ToastAndroid,
   TouchableOpacity,
-  NativeModules
+  NativeModules,
 } from 'react-native';
 import React from 'react';
 import CustomHeader from '../../components/CustomHeader';
@@ -27,6 +27,9 @@ const OrderRoom = ({navigation, route}) => {
   const {payment_method, userData, booking_date} = useSelector(
     state => state.global,
   );
+
+  const {infoVehicle} = useSelector(state => state.VehicleReducer);
+console.log("infoVehicle",infoVehicle)
   const {colors} = useTheme();
   const {t} = useTranslation();
   const dispatch = useDispatch();
@@ -80,61 +83,76 @@ const OrderRoom = ({navigation, route}) => {
     var todayDate = new Date().toISOString().slice(2, 10);
     return todayDate.split('-').join('');
   }
-  const [token, setToken] = React.useState('')
-  
+
   // zalopay
-  const createOrder=async(money)=> {
-    let apptransid = getCurrentDateYYMMDD() + '_' + new Date().getTime()
-  
-    let appid = 554
-    let amount = parseInt(money)
-    let appuser = "ZaloPayDemo"
-    let apptime = (new Date).getTime()
-    let embeddata = "{}"
-    let item = "[]"
-    let description = "Merchant description for order #" + apptransid
-    let hmacInput = appid + "|" + apptransid + "|" + appuser + "|" + amount + "|" + apptime + "|" + embeddata + "|" + item
-    let mac = CryptoJS.HmacSHA256(hmacInput, "8NdU5pG5R2spGHGhyO99HN1OhD8IQJBn")
+  const createOrder = async money => {
+    let apptransid = getCurrentDateYYMMDD() + '_' + new Date().getTime();
+
+    let appid = 2554;
+    let amount = parseInt(money);
+    let appuser = 'ZaloPayDemo';
+    let apptime = new Date().getTime();
+    let embeddata = '{}';
+    let item = '[]';
+    let description = 'Merchant description for order #' + apptransid;
+    let hmacInput =
+      appid +
+      '|' +
+      apptransid +
+      '|' +
+      appuser +
+      '|' +
+      amount +
+      '|' +
+      apptime +
+      '|' +
+      embeddata +
+      '|' +
+      item;
+    let mac = CryptoJS.HmacSHA256(
+      hmacInput,
+      'sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn',
+    );
     var order = {
-      'app_id': appid,
-      'app_user': appuser,
-      'app_time': apptime,
-      'amount': amount,
-      'app_trans_id': apptransid,
-      'embed_data': embeddata,
-      'item': item,
-      'description': description,
-      'mac': mac
-    }
-  
-    let formBody = []
+      app_id: appid,
+      app_user: appuser,
+      app_time: apptime,
+      amount: amount,
+      app_trans_id: apptransid,
+      embed_data: embeddata,
+      item: item,
+      description: description,
+      mac: mac,
+    };
+
+    let formBody = [];
     for (let i in order) {
       var encodedKey = encodeURIComponent(i);
       var encodedValue = encodeURIComponent(order[i]);
-      formBody.push(encodedKey + "=" + encodedValue);
+      formBody.push(encodedKey + '=' + encodedValue);
     }
-    formBody = formBody.join("&");
+    formBody = formBody.join('&');
     await fetch('https://sb-openapi.zalopay.vn/v2/create', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
-      body: formBody
-    }).then(response => response.json())
+      body: formBody,
+    })
+      .then(response => response.json())
       .then(resJson => {
         var payZP = NativeModules.PayZaloBridge;
         payZP.payOrder(resJson.zp_trans_token);
       })
-      .catch((error) => {
-        console.log("error ", error)
-      })
-  }
+      .catch(error => {
+        console.log('error ', error);
+      });
+  };
 
   const handleBooking = () => {
     setIsBooking(true);
-    if(payment_method.id==="payment-zalopay"){
-      console.log("zalopay")
-      createOrder(totalOrder())
+    if (payment_method.id === 'payment-zalopay') {
+      createOrder(totalOrder());
     }
     const dataOrder = {
       id_user: userData._id,
@@ -144,6 +162,7 @@ const OrderRoom = ({navigation, route}) => {
       check_out: booking_date.check_out,
       total: totalOrder(),
       payment_method: payment_method.id,
+      paymented: payment_method.id === 'payment-zalopay' ? true : false,
     };
     AddNewOrder(dataOrder).then(res => {
       if (res.status === 200) {
@@ -153,8 +172,13 @@ const OrderRoom = ({navigation, route}) => {
           name: dataRoom.name,
         };
         dispatch(addOrder(data));
-        ToastAndroid.show(t('booking-success'), ToastAndroid.SHORT);
-        navigation.navigate('TabNavigator', {screen: 'Booking'});
+        if (payment_method.id === 'payment-zalopay') {
+          setTimeout(() => {
+            navigation.navigate('TabNavigator', {screen: 'Booking'});
+          }, 2000);
+        } else {
+          navigation.navigate('TabNavigator', {screen: 'Booking'});
+        }
         setIsBooking(false);
       }
     });
@@ -322,6 +346,30 @@ const OrderRoom = ({navigation, route}) => {
               {userData.phone_number}
             </Text>
           </View>
+        </View>
+
+        <View
+          style={{
+            marginTop: 10,
+            backgroundColor: colors.bg,
+            padding: 10,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          <View>
+            <Text
+              style={{fontSize: 20, fontWeight: 'bold', color: colors.text}}>
+              Hire vehicle
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('HireVehicle');
+            }}>
+            <Text style={{fontSize: 17, fontWeight: 'bold', color: 'orange'}}>
+              Hire
+            </Text>
+          </TouchableOpacity>
         </View>
 
         <View style={{marginTop: 10, backgroundColor: colors.bg, padding: 10}}>

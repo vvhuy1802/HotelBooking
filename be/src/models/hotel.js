@@ -7,6 +7,7 @@ const hotelSchema = new mongoose.Schema({
   comments: [
     { type: mongoose.Schema.Types.ObjectId, ref: "comment", default: [] },
   ],
+  vehicles:[{ type: mongoose.Schema.Types.ObjectId, ref: "vehicle", default: [] }],
   description: { type: String, default: null },
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "room", default: [] }],
   image: { type: Array, default: [] },

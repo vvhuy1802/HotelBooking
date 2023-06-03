@@ -7,6 +7,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import KingBedOutlinedIcon from '@mui/icons-material/KingBedOutlined';
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
+import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
@@ -70,6 +71,17 @@ const SideBarHotel = () => {
             >
               <ViewListOutlinedIcon className="icon" />
               <span>Booking</span>
+            </li>
+          </CustomLink>
+          <CustomLink to="listvehicle">
+            <li
+              className={stateSidebar === "Vehicles" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Vehicles");
+              }}
+            >
+              <TwoWheelerIcon className="icon" />
+              <span>List Vehicle</span>
             </li>
           </CustomLink>
           <p className="title">SERVICE</p>

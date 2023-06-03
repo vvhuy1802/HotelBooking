@@ -15,7 +15,10 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  NativeModules, NativeEventEmitter, Button,DeviceEventEmitter
+  NativeModules,
+  NativeEventEmitter,
+  Button,
+  DeviceEventEmitter,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
 import Swiper from 'react-native-swiper';
@@ -67,91 +70,6 @@ export default function HomeScreen({navigation}) {
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(false);
-  const [money, setMoney] = React.useState('10000')
-  const [token, setToken] = React.useState('')
-  const [returncode, setReturnCode] = React.useState('')
-
-  const payZaloBridgeEmitter = new NativeEventEmitter(NativeModules.PayZaloBridge);
-
-  useEffect(() => {
-    const subscription = payZaloBridgeEmitter.addListener(
-      'EventPayZalo',
-      (data) => {
-        console.log(data)
-        console.log("EventPayZalo")
-        if (data.returnCode === "1") {
-          console.log('Pay success!');
-        } else {
-          alert('Pay errror! ' + data.returnCode);
-        }
-      }
-    );
-    return () => {
-      subscription.remove();
-    }
-  }, []);
-
-
-function getCurrentDateYYMMDD() {
-  var todayDate = new Date().toISOString().slice(2, 10);
-  return todayDate.split('-').join('');
-}
-
-const createOrder=async(money)=> {
-  let apptransid = getCurrentDateYYMMDD() + '_' + new Date().getTime()
-  console.log(apptransid)
-  let appid = 2554
-  let amount = parseInt(money)
-  let appuser = "ZaloPayDemo"
-  let apptime = (new Date).getTime()
-  let embeddata = "{}"
-  let item = "[]"
-  let description = "Merchant description for order #" + apptransid
-  let hmacInput = appid + "|" + apptransid + "|" + appuser + "|" + amount + "|" + apptime + "|" + embeddata + "|" + item
-  let mac = CryptoJS.HmacSHA256(hmacInput, "sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn")
-  var order = {
-    'app_id': appid,
-    'app_user': appuser,
-    'app_time': apptime,
-    'amount': amount,
-    'app_trans_id': apptransid,
-    'embed_data': embeddata,
-    'item': item,
-    'description': description,
-    'mac': mac
-  }
-
-  console.log(order)
-
-  let formBody = []
-  for (let i in order) {
-    var encodedKey = encodeURIComponent(i);
-    var encodedValue = encodeURIComponent(order[i]);
-    formBody.push(encodedKey + "=" + encodedValue);
-  }
-  formBody = formBody.join("&");
-  await fetch('https://sb-openapi.zalopay.vn/v2/create', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-    },
-    body: formBody
-  }).then(response => response.json())
-    .then(resJson => {
-      console.log(resJson)
-      setToken(resJson.zp_trans_token)
-      setReturnCode(resJson.return_code)
-    })
-    .catch((error) => {
-      console.log("error ", error)
-    })
-}
-
-function payOrder() {
-  var payZP = NativeModules.PayZaloBridge;
-  payZP.payOrder(token);
-}
-
 
   const animatedValue = useRef(new Animated.Value(0)).current;
   const SearchShow = {
@@ -222,7 +140,7 @@ function payOrder() {
 
   const navigateTo = item => {
     dispatch(setHotelData(item));
-    navigation.navigate('DetailHotel');
+    navigation.navigate('DetailHotel', {id: item._id});
     setModalVisible(false);
     addItemToSearchHistory(item);
   };
@@ -296,8 +214,8 @@ function payOrder() {
           disabled={activeCardIndex != index}
           activeOpacity={1}
           onPress={() => {
-            navigation.navigate('DetailHotel',{id:hotel._id});
-             dispatch(setHotelData(hotel));
+            navigation.navigate('DetailHotel', {id: hotel._id});
+            dispatch(setHotelData(hotel));
           }}>
           <Animated.View
             style={{
@@ -612,7 +530,7 @@ function payOrder() {
               <Pressable
                 onPress={() => {
                   dispatch(setHotelData(hotels[item]));
-                  navigation.navigate('DetailHotel');
+                  navigation.navigate('DetailHotel', {id: hotels[item]._id});
                 }}>
                 <ImageBackground
                   source={{uri: hotels[item]?.image[0] || image_default}}
@@ -917,19 +835,6 @@ function payOrder() {
           </Pressable>
         </View>
       </Modal>
-      <Button
-          title="Create order"
-          onPress={() => { createOrder(money) }}
-        />
-        <Text>ZpTranstoken: {token}</Text>
-        <Text >returncode: {returncode}</Text>
-        {returncode == 1 ?
-          <Button
-            title="Pay order"
-            type="outline"
-            onPress={() => { payOrder() }}
-          /> : null
-        }
     </SafeAreaView>
   );
 }
@@ -1085,5 +990,3 @@ const styles = StyleSheet.create({
     borderColor: '#dddddd',
   },
 });
-
-
