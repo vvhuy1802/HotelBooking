@@ -5,24 +5,41 @@ import Icon from "react-native-vector-icons/FontAwesome"
 import CustomHeader from '../../components/CustomHeader';
 import Lottie from 'lottie-react-native';
 import { useTheme } from 'react-native-paper';
-import { GetAllVehicle } from './apiVehicle';
+import { GetAllVehicle, GetVehicleById } from './apiVehicle';
+import { useSelector } from 'react-redux';
 
 const width = Dimensions.get("window").width
 const HireVehicle = ({navigation}) => {
   const {colors}=useTheme();
   const [searchKey, setSearchKey] = useState('');
   const [data, setData] = useState([]);
+  const [dataFilter, setDataFilter] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const {idHotel}=useSelector(state=>state.VehicleReducer);
   const initFetch = async () => {
         setIsLoading(true);
-        const res= await GetAllVehicle();
+        const res= await GetVehicleById(idHotel)
         setData(res.data);
+        setDataFilter(res.data);
         setIsLoading(false);
   }
     const Format = number => {
     return number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
   };
+
+
+  const onChangeSearchKey = text => {
+      let dataFil= data.filter(item => {
+        console.log(item.name.toLowerCase())
+                  return (item.name.toLowerCase().replace(/\s+/g, "")).includes(text.toLowerCase().replace(/\s+/g, ""));
+        });
+        console.log(dataFil)
+        setDataFilter(dataFil);
+  }
+
+  useEffect(() => {
+        onChangeSearchKey(searchKey);
+  }, [searchKey]);
 
   useEffect(() => {
         initFetch();
@@ -193,7 +210,7 @@ const HireVehicle = ({navigation}) => {
           }
         />
         <FlatList
-        data={data}
+        data={searchKey===""?data:dataFilter}
         renderItem={
                 ({item,index})=>renderVehicle(item,index)
         }

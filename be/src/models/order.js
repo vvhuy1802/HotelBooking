@@ -7,6 +7,8 @@ const orderSchema = new mongoose.Schema({
   id_hotel: { type: String, default: "" },
   check_in: { type: String, default: "" },
   check_out: { type: String, default: "" },
+  start_date: { type: String, default: "" },
+  end_date: { type: String, default: "" },
   total: { type: Number, default: 0 },
   status: { type: String, default: "Pending" },
   number_person: { type: Number, default: 1 },

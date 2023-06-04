@@ -26,6 +26,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {GetHotelByID} from './apidetailhotel';
 import {setBookingDate} from '../../../redux/Globalreducer';
+import { saveIdHotel } from '../../../redux/VehicleReducer';
 
 const width = Dimensions.get('screen').width;
 const WINDOW_HEIGHT = Dimensions.get('screen').height;
@@ -53,6 +54,7 @@ const DetailHotel = ({navigation, route}) => {
     if (response.status === 200) {
       const data = response.data;
       setHotelData(data);
+      dispatch(saveIdHotel(data.id))
       setIsloading(false);
     }
   };
@@ -214,6 +216,7 @@ const DetailHotel = ({navigation, route}) => {
           var day = kt[2] - i < 10 ? '0' + (kt[2] - i) : kt[2] - i;
           arr.push(`${kt[0]}-${kt[1]}-${day}`);
         }
+        console.log(arr);
       } else {
         var maxDayOfMonth = new Date(bd[0], bd[1], 0).getDate();
         const sub = maxDayOfMonth - bd[2];
@@ -224,6 +227,7 @@ const DetailHotel = ({navigation, route}) => {
           var day = i < 10 ? '0' + i : i;
           arr.push(`${kt[0]}-${kt[1]}-${day}`);
         }
+        console.log(arr);
       }
       setMiddle(arr);
     }

@@ -79,5 +79,10 @@ const GetAllVehicles = async (req, res) => {
   res.status(200).send(vehicles);
 };
 
+const GetVehicleByIdHotel = async (req, res) => {
+  const vehicles = await Vehicle.find({ hotel_id: req.params.id_hotel });
+  res.status(200).send(vehicles);
+}
 
-module.exports = {AddNewVehicle,UpdateVehicle,DeleteVehicle,GetAllVehicles };
+
+module.exports = {AddNewVehicle,UpdateVehicle,DeleteVehicle,GetAllVehicles,GetVehicleByIdHotel };

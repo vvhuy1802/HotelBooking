@@ -21,6 +21,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {AddNewOrder} from '../../../middlewares/orders';
 import {addOrder} from '../../../redux/Globalreducer';
 import CryptoJS from 'crypto-js';
+import { clearInfoVehicle } from '../../../redux/VehicleReducer';
 const OrderRoom = ({navigation, route}) => {
   const dataRoom = route.params.room;
   const dataHotel = route.params.hotel;
@@ -29,7 +30,6 @@ const OrderRoom = ({navigation, route}) => {
   );
 
   const {infoVehicle} = useSelector(state => state.VehicleReducer);
-console.log("infoVehicle",infoVehicle)
   const {colors} = useTheme();
   const {t} = useTranslation();
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ console.log("infoVehicle",infoVehicle)
   const totalOrder = () => {
     const day = booking_date.total_night;
     const sum = Math.floor(
-      dataRoom.price * (day === 1 ? day : day * (day / (day + 0.5))),
+      dataRoom.price * (day === 1 ? day : day * (day / (day + 0.5)))+infoVehicle?.total_vehicle,
     );
     return sum;
   };
@@ -158,6 +158,9 @@ console.log("infoVehicle",infoVehicle)
       id_user: userData._id,
       id_hotel: dataHotel.id,
       id_room: dataRoom._id,
+      id_verhicle: infoVehicle?._id,
+      start_date: infoVehicle?.start_date,
+      end_date: infoVehicle?.end_date,
       check_in: booking_date.check_in,
       check_out: booking_date.check_out,
       total: totalOrder(),
@@ -180,9 +183,16 @@ console.log("infoVehicle",infoVehicle)
           navigation.navigate('TabNavigator', {screen: 'Booking'});
         }
         setIsBooking(false);
+        dispatch(clearInfoVehicle());
       }
     });
   };
+  const formatDate=(date)=>{
+    const arr = date.split('-');
+    const day = arr[2];
+    const month = arr[1];
+    return `${day}/${month}`;
+  }
   return (
     <View style={{flex: 1}}>
       <CustomHeader title={'information-booking'} />
@@ -347,12 +357,13 @@ console.log("infoVehicle",infoVehicle)
             </Text>
           </View>
         </View>
-
+        <View style={{
+                      marginTop: 10,
+                      backgroundColor: colors.bg,
+                      padding: 10,
+        }}>
         <View
           style={{
-            marginTop: 10,
-            backgroundColor: colors.bg,
-            padding: 10,
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
@@ -370,6 +381,63 @@ console.log("infoVehicle",infoVehicle)
               Hire
             </Text>
           </TouchableOpacity>
+        </View>
+        {infoVehicle && (
+          <>
+          <View style={{
+            justifyContent:"space-between",
+            marginTop:10,
+            flexDirection:"row",
+          }}>
+            <Text style={{fontSize: 16, color: colors.icon, fontWeight: '500'}}>
+              {t('name')}
+            </Text>
+            <Text
+              style={{fontSize: 16, color: colors.text, fontWeight: 'bold'}}>
+              {infoVehicle.name}
+            </Text>
+          </View>
+          <View style={{
+            justifyContent:"space-between",
+            marginTop:10,
+            flexDirection:"row",
+          }}>
+            <Text style={{fontSize: 16, color: colors.icon, fontWeight: '500'}}>
+              Brand
+            </Text>
+            <Text
+              style={{fontSize: 16, color: colors.text, fontWeight: 'bold'}}>
+              {infoVehicle.brand}
+            </Text>
+          </View>
+          <View style={{
+            justifyContent:"space-between",
+            marginTop:10,
+            flexDirection:"row",
+          }}>
+            <Text style={{fontSize: 16, color: colors.icon, fontWeight: '500'}}>
+              Date
+            </Text>
+            <Text
+              style={{fontSize: 16, color: colors.text, fontWeight: 'bold'}}>
+              {formatDate(infoVehicle.start_date)} - {formatDate(infoVehicle.end_date)}
+            </Text>
+          </View>
+          <View style={{
+            justifyContent:"space-between",
+            marginTop:10,
+            flexDirection:"row",
+          }}>
+            <Text style={{fontSize: 16, color: colors.icon, fontWeight: '500'}}>
+              Price
+            </Text>
+            <Text
+              style={{fontSize: 16, color: colors.text, fontWeight: 'bold'}}>
+              {FormatPrice(infoVehicle.total_vehicle)}
+            </Text>
+          </View>
+          </>
+        )}
         </View>
 
         <View style={{marginTop: 10, backgroundColor: colors.bg, padding: 10}}>
