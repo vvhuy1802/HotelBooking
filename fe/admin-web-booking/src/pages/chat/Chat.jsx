@@ -13,7 +13,7 @@ import { useLocation } from "react-router-dom";
 
 import {
   SendMessage,
-  RecieveMessage,
+  ReceiveMessage,
   GetListUser,
   DeleteConversation,
 } from "../../middlewares/message";
@@ -125,7 +125,7 @@ function Chat() {
         from: currentUser,
         to: currentChat,
       };
-      const response = await RecieveMessage(data);
+      const response = await ReceiveMessage(data);
       if (response.status === 200) {
         setMessages(response.data.messages);
         console.log(response.data);
@@ -136,7 +136,7 @@ function Chat() {
   }, [currentChat, currentUser]);
 
   useEffect(() => {
-    const handleMsgRecieve = (data) => {
+    const handleMsgReceive = (data) => {
       if (data.from === currentChat) {
         setArrivalMessage({
           fromSelf: false,
@@ -160,12 +160,12 @@ function Chat() {
   
   
     if (socket) {
-      socket.on("msg-recieve", handleMsgRecieve);
+      socket.on("msg-receive", handleMsgReceive);
     }
   
     return () => {
       if (socket) {
-        socket.off("msg-recieve", handleMsgRecieve);
+        socket.off("msg-receive", handleMsgReceive);
       }
     };
   }, [currentChat, handlePushMsgToConversation, socket]);
