@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useContext,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./chat.scss";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
@@ -19,12 +13,13 @@ import {
 } from "../../middlewares/message";
 import { GetSingleUser } from "../../middlewares/user";
 import avatar from "../../assets/avatar.jpg";
+import { LOCAL_API_URL } from "../../api";
+import { io } from "socket.io-client";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 import SendIcon from "@mui/icons-material/Send";
-import { SocketContext } from "../../contexts";
 
 function Chat() {
   const { userInfo, totalHotel } = useSelector((state) => state.global);
@@ -34,13 +29,13 @@ function Chat() {
       ? "6442aa5167b30af877e4ee71"
       : totalHotel?.filter((item) => item.id === userInfo?.idHotel)[0]?._id
   );
-  const { socket } = useContext(SocketContext);
-  console.log(socket);
 
+  const socket = useRef();
   const scrollRef = useRef(null);
   const scrollChatRef = useRef(null);
   const scrollIconRef = useRef(null);
   const deleteRef = useRef(null);
+
   const [messages, setMessages] = useState();
   const [input, setInput] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
@@ -80,14 +75,19 @@ function Chat() {
     }
   }, [userInfo, totalHotel]);
 
+  useEffect(() => {
+    if (currentUser) {
+      socket.current = io(LOCAL_API_URL);
+      socket.current.emit("add-user", currentUser);
+    }
+  }, [currentUser]);
+
   const handlePushMsgToConversation = useCallback(
     async (data) => {
       const id_conversation = data._id._id;
-      //find index of conversation
       const index = conversation.findIndex(
         (item) => item._id._id === id_conversation
       );
-      // update conversation and move to top
       if (index !== -1) {
         const newConversation = [...conversation];
         const dataNew = {
@@ -157,19 +157,16 @@ function Chat() {
       };
       handlePushMsgToConversation(dataUpdateConversation);
     };
-  
-  
-    if (socket) {
-      socket.on("msg-receive", handleMsgReceive);
+    if (socket.current) {
+      socket.current.on("msg-receive", handleMsgReceive);
     }
-  
+
     return () => {
-      if (socket) {
-        socket.off("msg-receive", handleMsgReceive);
+      if (socket.current) {
+        socket.current.off("msg-receive", handleMsgReceive);
       }
     };
-  }, [currentChat, handlePushMsgToConversation, socket]);
-  
+  }, [socket, currentChat, handlePushMsgToConversation, conversation]);
 
   useEffect(() => {
     arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
@@ -189,7 +186,7 @@ function Chat() {
   }, [messages]);
 
   const handleSendMsg = async (msg) => {
-    socket.emit("send-msg", {
+    socket.current.emit("send-msg", {
       to: currentChat,
       from: currentUser,
       msg,

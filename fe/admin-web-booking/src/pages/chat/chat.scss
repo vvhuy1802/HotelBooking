@@ -168,6 +168,14 @@
               color: #7451f8;
             }
           }
+
+          .icon {
+            font-size: 25px;
+
+            &:hover {
+              cursor: pointer;
+            }
+          }
         }
 
         .chatBody {
@@ -251,6 +259,10 @@
             .icon {
               font-size: 20px;
               color: #7451f8;
+
+              &:hover {
+                cursor: pointer;
+              }
             }
           }
         }
