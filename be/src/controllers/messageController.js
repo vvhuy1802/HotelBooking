@@ -120,4 +120,26 @@ const getAllMessages = async (req, res, next) => {
   }
 };
 
-module.exports = { getMessages, addMessage, deleteMessage, getAllMessages };
+const deleteAllMessages = async (req, res, next) => {
+  const { id_sender, id_receiver } = req.body;
+
+  try {
+    await Message.deleteMany({
+      users: {
+        $all: [id_sender, id_receiver],
+      },
+    });
+
+    return res.json({ msg: "Messages deleted successfully." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getMessages,
+  addMessage,
+  deleteMessage,
+  getAllMessages,
+  deleteAllMessages,
+};

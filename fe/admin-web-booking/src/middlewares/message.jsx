@@ -17,3 +17,9 @@ export const GetListUser = async (data) => {
   const response = await POST(path, data);
   return response;
 };
+
+export const DeleteConversation = async (data) => {
+  const path = `/messages/deleteallmsg`;
+  const response = await POST(path, data);
+  return response;
+};

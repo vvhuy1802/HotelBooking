@@ -1,21 +1,30 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+} from "react";
 import "./chat.scss";
 import { useSelector } from "react-redux";
-import { LOCAL_API_URL } from "../../api";
-import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment/moment";
+import { useLocation } from "react-router-dom";
+
 import {
   SendMessage,
   RecieveMessage,
   GetListUser,
+  DeleteConversation,
 } from "../../middlewares/message";
 import { GetSingleUser } from "../../middlewares/user";
 import avatar from "../../assets/avatar.jpg";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+
 import SendIcon from "@mui/icons-material/Send";
-import { useLocation } from "react-router-dom";
+import { SocketContext } from "../../contexts";
 
 function Chat() {
   const { userInfo, totalHotel } = useSelector((state) => state.global);
@@ -25,9 +34,13 @@ function Chat() {
       ? "6442aa5167b30af877e4ee71"
       : totalHotel?.filter((item) => item.id === userInfo?.idHotel)[0]?._id
   );
-  const socket = useRef();
-  const scrollRef = useRef();
-  const scrollChatRef = useRef();
+  const { socket } = useContext(SocketContext);
+  console.log(socket);
+
+  const scrollRef = useRef(null);
+  const scrollChatRef = useRef(null);
+  const scrollIconRef = useRef(null);
+  const deleteRef = useRef(null);
   const [messages, setMessages] = useState();
   const [input, setInput] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
@@ -35,7 +48,6 @@ function Chat() {
   const [currentChat, setCurrentChat] = useState(null);
   const [currentInfo, setCurrentInfo] = useState(null);
 
-  //getlistuser and set conversation
   useEffect(() => {
     const fetchListUser = async () => {
       setConversation([]);
@@ -50,7 +62,6 @@ function Chat() {
     fetchListUser();
   }, [currentUser]);
 
-  //dùng để set currentChat khi load lại trang
   useEffect(() => {
     const currentpath = location.pathname;
     if (currentpath !== "/chat") {
@@ -59,7 +70,6 @@ function Chat() {
     }
   }, [location.pathname]);
 
-  //cái này để set currentUser thôi
   useEffect(() => {
     if (userInfo.roll === "adminapp") {
       setCurrentUser("6442aa5167b30af877e4ee71");
@@ -70,15 +80,6 @@ function Chat() {
     }
   }, [userInfo, totalHotel]);
 
-  //cái này để connect socket
-  useEffect(() => {
-    if (currentUser) {
-      socket.current = io(LOCAL_API_URL);
-      socket.current.emit("add-user", currentUser);
-    }
-  }, [currentUser]);
-
-  //cái này update conversation khi có tin nhắn mới
   const handlePushMsgToConversation = useCallback(
     async (data) => {
       const id_conversation = data._id._id;
@@ -118,7 +119,6 @@ function Chat() {
     [conversation]
   );
 
-  //cái này để khi nào ấn vòa conversation thì nó sẽ lấy ra tin nhắn
   useEffect(() => {
     const getMsg = async () => {
       const data = {
@@ -157,19 +157,20 @@ function Chat() {
       };
       handlePushMsgToConversation(dataUpdateConversation);
     };
-
-    if (socket.current) {
-      socket.current.on("msg-recieve", handleMsgRecieve);
+  
+  
+    if (socket) {
+      socket.on("msg-recieve", handleMsgRecieve);
     }
-
+  
     return () => {
-      if (socket.current) {
-        socket.current.off("msg-recieve", handleMsgRecieve);
+      if (socket) {
+        socket.off("msg-recieve", handleMsgRecieve);
       }
     };
-  }, [socket, currentChat, handlePushMsgToConversation, conversation]);
+  }, [currentChat, handlePushMsgToConversation, socket]);
+  
 
-  //cái này để set tin nhắn mới vào messages
   useEffect(() => {
     arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
   }, [arrivalMessage]);
@@ -179,12 +180,16 @@ function Chat() {
   }, [conversation]);
 
   useEffect(() => {
-    scrollChatRef.current?.scrollIntoView({ behavior: "smooth" });
+    const scrollToBottom = () => {
+      if (scrollChatRef.current) {
+        scrollChatRef.current.scrollTop = scrollChatRef.current.scrollHeight;
+      }
+    };
+    scrollToBottom();
   }, [messages]);
 
-  //cái này để gửi tin nhắn
   const handleSendMsg = async (msg) => {
-    socket.current.emit("send-msg", {
+    socket.emit("send-msg", {
       to: currentChat,
       from: currentUser,
       msg,
@@ -239,12 +244,26 @@ function Chat() {
     return time.format("DD/MM/YYYY");
   };
 
-  //cái này để chọn conversation
   const handleChooseConversation = (item) => {
     setCurrentInfo(item._id);
     setCurrentChat(item._id._id);
     const path = `/chat/${item._id._id}`;
     window.history.pushState({}, null, path);
+  };
+
+  const handleDeleteConversation = async (id) => {
+    const data = {
+      id_sender: currentUser,
+      id_receiver: id,
+    };
+    const response = await DeleteConversation(data);
+    if (response.status === 200) {
+      console.log(response);
+      setConversation(conversation.filter((item) => item._id._id !== id));
+      setCurrentChat(null);
+      setCurrentInfo(null);
+      window.history.pushState({}, null, "/chat");
+    }
   };
 
   return (
@@ -253,7 +272,6 @@ function Chat() {
         <div className="contact">
           <div className="contactHeader">
             <p>Chat</p>
-            <AddCircleIcon className="icon" />
           </div>
           <div className="contactBody">
             {conversation
@@ -299,9 +317,47 @@ function Chat() {
                     <img src={avatar} alt="" className="HeaderImg" />
                     <p className="contactName">{currentInfo?.name}</p>
                   </div>
-                  <MoreHorizIcon className="icon" />
+                  <MoreHorizIcon
+                    className="icon"
+                    onClick={() => {
+                      deleteRef.current.style.display =
+                        deleteRef.current.style.display === "flex"
+                          ? "none"
+                          : "flex";
+                    }}
+                  />
+                  <div
+                    ref={deleteRef}
+                    className="deleteDiv"
+                    onClick={() => {
+                      handleDeleteConversation(currentChat);
+                    }}
+                  >
+                    <p className="deleteText">Delete this conversation</p>
+                  </div>
                 </div>
-                <div className="chatBody">
+                <div
+                  ref={scrollChatRef}
+                  onScroll={(e) => {
+                    console.log(
+                      e.target.scrollTop +
+                        e.target.clientHeight +
+                        0.20001220703125 >=
+                        e.target.scrollHeight - 300
+                    );
+                    if (
+                      e.target.scrollTop +
+                        e.target.clientHeight +
+                        0.20001220703125 >=
+                      e.target.scrollHeight - 300
+                    ) {
+                      scrollIconRef.current.style.display = "none";
+                    } else {
+                      scrollIconRef.current.style.display = "flex";
+                    }
+                  }}
+                  className="chatBody"
+                >
                   {messages?.map((item) => (
                     <div
                       key={uuidv4()}
@@ -314,6 +370,16 @@ function Chat() {
                       </div>
                     </div>
                   ))}
+                  <div
+                    className="iconScrollToEnd"
+                    ref={scrollIconRef}
+                    onClick={() => {
+                      scrollChatRef.current.scrollTop =
+                        scrollChatRef.current.scrollHeight;
+                    }}
+                  >
+                    <ArrowDownwardIcon className="icon" />
+                  </div>
                 </div>
                 <div className="chatFooter">
                   <div className="chatFooterInput">

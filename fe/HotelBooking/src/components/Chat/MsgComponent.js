@@ -32,7 +32,7 @@ const MsgComponent = props => {
           },
         ]}>
         <Text style={{color: msg.fromSelf ? 'white' : 'black', fontSize: 15}}>
-          {msg.message.text}
+          {msg.message.text.trim()}
         </Text>
       </View>
     </Pressable>

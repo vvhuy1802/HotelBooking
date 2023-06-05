@@ -5,6 +5,7 @@
 
   .container {
     display: flex;
+    position: relative;
 
     .contact {
       flex: 2;
@@ -113,6 +114,7 @@
       display: flex;
       min-height: 90vh;
       background-color: #ebebeb;
+      position: relative;
 
       .container {
         display: flex;
@@ -126,6 +128,7 @@
           border-bottom: 0.5px solid rgb(230, 227, 227);
           justify-content: space-between;
           box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+          position: relative;
 
           .InfoHeader {
             display: flex;
@@ -142,6 +145,27 @@
             p {
               font-size: 17px;
               font-weight: 500;
+            }
+          }
+          .deleteDiv {
+            position: absolute;
+            right: 30px;
+            top: 30px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+
+            &:hover {
+              cursor: pointer;
+            }
+
+            .deleteText {
+              font-size: 15px;
+              color: #7451f8;
             }
           }
         }
@@ -205,6 +229,28 @@
               font-size: 12px;
               color: #2b2929;
               margin-top: 5px;
+            }
+          }
+
+          .iconScrollToEnd {
+            position: absolute;
+            bottom: 15%;
+            right: 50%;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+              cursor: pointer;
+            }
+
+            .icon {
+              font-size: 20px;
+              color: #7451f8;
             }
           }
         }

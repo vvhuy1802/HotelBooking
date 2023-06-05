@@ -54,7 +54,8 @@ const Chat = ({navigation, route}) => {
     getMsg();
   }, []);
 
-  const handleSendMsg = async msg => {
+  const handleSendMsg = async Msg => {
+    const msg = Msg.trim();
     socket.current.emit('send-msg', {
       to: hotelData._id,
       from: currentUser._id,

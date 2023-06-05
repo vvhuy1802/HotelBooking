@@ -11,7 +11,6 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
 import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 
@@ -102,6 +101,7 @@ const SideBar = () => {
               }}
             >
               <HeadsetMicIcon className="icon" />
+              <div className="NewMsg" />
               <span>Chat</span>
             </li>
           </CustomLink>

@@ -1,9 +1,11 @@
 import "./app.scss";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { getLocalStorage } from "./functions/asyncStorageFunctions";
+import { LOCAL_API_URL } from "./api";
+import { io } from "socket.io-client";
 
 import { Home, Login, List, Single, New, Chat } from "./pages";
 import SideBar from "./components/sidebar/SideBar";
@@ -29,6 +31,8 @@ import {
   setAnnouncementAuto,
 } from "./redux/Slices/Global";
 
+import { SocketContext } from "./contexts/index";
+
 import HomeHotel from "./ContainerAdminHotel/Container/Home/Home";
 import SideBarHotel from "./ContainerAdminHotel/Components/SideBarHotel/SideBarHotel";
 import NavBarHotel from "./ContainerAdminHotel/Components/NavBarHotel/NavBarHotel";
@@ -42,6 +46,7 @@ import BookingDetail from "./ContainerAdminHotel/Container/ListBooking/BookingDe
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const [socket, setSocket] = useState(null);
   const { userInfo, isLoading } = useSelector((state) => state.global);
 
   useEffect(() => {
@@ -52,13 +57,29 @@ function App() {
     });
   }, [dispatch]);
 
+  const AddSocket = useCallback(
+    async (data) => {
+      const currentUser =
+        userInfo.roll === "adminapp"
+          ? "6442aa5167b30af877e4ee71"
+          : Array.isArray(data)
+          ? await data.filter((item) => item.id === userInfo?.idHotel)[0]?._id
+          : null;
+      const newSocket = io(LOCAL_API_URL);
+      newSocket.emit("add-user", currentUser);
+      setSocket(newSocket);
+    },
+    [userInfo]
+  );
+
   useEffect(() => {
-    GetAllOrders().then((res) => {
+    GetAllOrders().then(async (res) => {
       if (res.status === 200) {
         dispatch(setTotalOrder(res.data));
+        await AddSocket(res.data);
       }
     });
-  }, [dispatch]);
+  }, [dispatch, userInfo, AddSocket]);
 
   useEffect(() => {
     GetAllUsers().then((res) => {
@@ -231,16 +252,32 @@ function App() {
                     />
                   </Route>
 
-                  <Route path="chat">
+                  {/* <Route path="chat">
                     <Route
                       index
-                      element={userInfo ? <Chat /> : <Navigate to="/login" />}
+                      element={
+                        userInfo ? (
+                          <SocketContext.Provider value={socket}>
+                            <Chat />
+                          </SocketContext.Provider>
+                        ) : (
+                          <Navigate to="/login" />
+                        )
+                      }
                     />
                     <Route
                       path=":userID"
-                      element={userInfo ? <Chat /> : <Navigate to="/login" />}
+                      element={
+                        userInfo ? (
+                          <SocketContext.Provider value={socket}>
+                            <Chat />
+                          </SocketContext.Provider>
+                        ) : (
+                          <Navigate to="/login" />
+                        )
+                      }
                     />
-                  </Route>
+                  </Route> */}
                 </Route>
 
                 <Route
