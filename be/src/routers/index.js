@@ -5,6 +5,7 @@ const RoomRoute = require("./rooms");
 const CommentRoute = require("./comments");
 const OrderRoute = require("./orders");
 const MessageRoute = require("./messages");
+const VehicleRoute = require("./vehicle");
 function router(app) {
   app.use("/auth", AuthRoute);
   app.use("/admins", AdminRoute);
@@ -13,6 +14,7 @@ function router(app) {
   app.use("/comments", CommentRoute);
   app.use("/orders", OrderRoute);
   app.use("/messages", MessageRoute);
+  app.use("/vehicle", VehicleRoute);
   app.get("/", (req, res) => {
     res.send("Hello World!");
   });

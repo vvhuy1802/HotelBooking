@@ -70,103 +70,6 @@ export default function HomeScreen({navigation}) {
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(false);
-  const [money, setMoney] = React.useState('10000');
-  const [token, setToken] = React.useState('');
-  const [returncode, setReturnCode] = React.useState('');
-
-  const payZaloBridgeEmitter = new NativeEventEmitter(
-    NativeModules.PayZaloBridge,
-  );
-
-  useEffect(() => {
-    const subscription = payZaloBridgeEmitter.addListener(
-      'EventPayZalo',
-      data => {
-        if (data.returnCode == 1) {
-          console.log('Pay success!');
-        } else {
-          alert('Pay errror! ' + data.returnCode);
-        }
-      },
-    );
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  function getCurrentDateYYMMDD() {
-    var todayDate = new Date().toISOString().slice(2, 10);
-    return todayDate.split('-').join('');
-  }
-
-  const createOrder = async money => {
-    let apptransid = getCurrentDateYYMMDD() + '_' + new Date().getTime();
-
-    let appid = 554;
-    let amount = parseInt(money);
-    let appuser = 'ZaloPayDemo';
-    let apptime = new Date().getTime();
-    let embeddata = '{}';
-    let item = '[]';
-    let description = 'Merchant description for order #' + apptransid;
-    let hmacInput =
-      appid +
-      '|' +
-      apptransid +
-      '|' +
-      appuser +
-      '|' +
-      amount +
-      '|' +
-      apptime +
-      '|' +
-      embeddata +
-      '|' +
-      item;
-    let mac = CryptoJS.HmacSHA256(
-      hmacInput,
-      '8NdU5pG5R2spGHGhyO99HN1OhD8IQJBn',
-    );
-    var order = {
-      app_id: appid,
-      app_user: appuser,
-      app_time: apptime,
-      amount: amount,
-      app_trans_id: apptransid,
-      embed_data: embeddata,
-      item: item,
-      description: description,
-      mac: mac,
-    };
-
-    let formBody = [];
-    for (let i in order) {
-      var encodedKey = encodeURIComponent(i);
-      var encodedValue = encodeURIComponent(order[i]);
-      formBody.push(encodedKey + '=' + encodedValue);
-    }
-    formBody = formBody.join('&');
-    await fetch('https://sb-openapi.zalopay.vn/v2/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: formBody,
-    })
-      .then(response => response.json())
-      .then(resJson => {
-        setToken(resJson.zp_trans_token);
-        setReturnCode(resJson.return_code);
-      })
-      .catch(error => {
-        console.log('error ', error);
-      });
-  };
-
-  function payOrder() {
-    var payZP = NativeModules.PayZaloBridge;
-    payZP.payOrder(token);
-  }
 
   const animatedValue = useRef(new Animated.Value(0)).current;
   const SearchShow = {
@@ -932,23 +835,6 @@ export default function HomeScreen({navigation}) {
           </Pressable>
         </View>
       </Modal>
-      <Button
-        title="Create order"
-        onPress={() => {
-          createOrder(money);
-        }}
-      />
-      <Text>ZpTranstoken: {token}</Text>
-      <Text>returncode: {returncode}</Text>
-      {returncode == 1 ? (
-        <Button
-          title="Pay order"
-          type="outline"
-          onPress={() => {
-            payOrder();
-          }}
-        />
-      ) : null}
     </SafeAreaView>
   );
 }

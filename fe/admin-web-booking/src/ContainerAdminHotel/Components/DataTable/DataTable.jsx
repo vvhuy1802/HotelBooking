@@ -16,7 +16,6 @@ const DataTable = (props) => {
   var dataTitle = {};
   switch (stateSidebar) {
     case "rooms":
-      console.log(stateSidebar);
       dataTitle = {
         title: "List Room",
         path: "/listroom/new",
@@ -24,12 +23,17 @@ const DataTable = (props) => {
       };
       break;
     case "Bookings":
-      console.log(stateSidebar);
       dataTitle = {
         title: "List Booking",
         path: "/listbooking/:bookingId",
       };
       break;
+    case "Vehicles":
+      dataTitle = {
+        title: "List Vehicle",
+        path: "/listvehicle/new",
+        pathEdit: "/listvehicle/edit/:vehicleId",
+      }
     default:
       break;
   }

@@ -26,6 +26,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {GetHotelByID} from './apidetailhotel';
 import {setBookingDate} from '../../../redux/Globalreducer';
+import { saveIdHotel } from '../../../redux/VehicleReducer';
 
 const width = Dimensions.get('screen').width;
 const WINDOW_HEIGHT = Dimensions.get('screen').height;
@@ -53,6 +54,7 @@ const DetailHotel = ({navigation, route}) => {
     if (response.status === 200) {
       const data = response.data;
       setHotelData(data);
+      dispatch(saveIdHotel(data.id))
       setIsloading(false);
     }
   };
@@ -214,6 +216,7 @@ const DetailHotel = ({navigation, route}) => {
           var day = kt[2] - i < 10 ? '0' + (kt[2] - i) : kt[2] - i;
           arr.push(`${kt[0]}-${kt[1]}-${day}`);
         }
+        console.log(arr);
       } else {
         var maxDayOfMonth = new Date(bd[0], bd[1], 0).getDate();
         const sub = maxDayOfMonth - bd[2];
@@ -224,6 +227,7 @@ const DetailHotel = ({navigation, route}) => {
           var day = i < 10 ? '0' + i : i;
           arr.push(`${kt[0]}-${kt[1]}-${day}`);
         }
+        console.log(arr);
       }
       setMiddle(arr);
     }
@@ -330,13 +334,7 @@ const DetailHotel = ({navigation, route}) => {
                 ))}
               </ScrollView>
             </View>
-            <View style={{paddingHorizontal: 15, paddingBottom: 100}}>
-              <View
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: colors.primary,
-                  paddingVertical: 5,
-                }}>
+            <View style={{marginHorizontal:15,paddingBottom: 100}}>
                 <Text
                   style={{
                     fontSize: 25,
@@ -373,36 +371,44 @@ const DetailHotel = ({navigation, route}) => {
                 <View
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center',
                     paddingVertical: 10,
                   }}>
-                  <Icon2 name="md-location-sharp" size={25} color="orange" />
+                  <Icon2 style={{
+                    top:5
+                  }} name="md-location-sharp" size={25} color="orange" />
                   <View
                     style={{
                       paddingRight: 20,
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <Text style={{color: colors.text, fontSize: 14}}>
+                    <Text style={{color: colors.text, fontSize: 14,width:width-40}}>
                       <Text style={{color: 'orange'}}>
                         ~{calculateDistance()} km
                       </Text>{' '}
                       | {hotelData.address} |{' '}
-                      <TouchableOpacity
+                    </Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor:colors.primary,
+                      height:40,
+                      borderRadius:15,
+                    }}
                         onPress={() => {
                           navigation.navigate('Map', hotelData);
                         }}>
                         <Text
                           style={{
-                            color: colors.primary,
+                            color: "white",
+                            fontWeight:"bold"
                           }}>
-                          {t('viewmap')} {'>'}
+                          {t('viewmap')}
                         </Text>
                       </TouchableOpacity>
-                    </Text>
-                  </View>
-                </View>
-              </View>
               {/* <View
             style={{
               marginTop: 10,

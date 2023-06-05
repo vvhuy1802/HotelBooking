@@ -17,6 +17,8 @@ import NotificationPage from '../views/Home/Notify/index';
 import DetailNotify from '../views/Home/Notify/Pages/DetailNotify';
 import DetailBooking from '../views/Booking/DetailBooking';
 import TabNavigator from './tabNavigator';
+import HireVehicle from '../views/OrderRoom/HireVehicle';
+import DetailVehicle from '../views/OrderRoom/DetailVehicle';
 const Stack = createNativeStackNavigator();
 
 export default function AppStack() {
@@ -39,6 +41,20 @@ export default function AppStack() {
       <Stack.Screen
         name="DetailRoom"
         component={DetailRoom}
+        options={{
+          headerShown: false,
+        }}
+      />
+       <Stack.Screen
+        name="HireVehicle"
+        component={HireVehicle}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="DetailVehicle"
+        component={DetailVehicle}
         options={{
           headerShown: false,
         }}

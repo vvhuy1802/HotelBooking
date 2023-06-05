@@ -38,6 +38,7 @@ import { RoomInputs } from "./ContainerAdminHotel/Components/Input/DataInput";
 import AddNewRoom from "./ContainerAdminHotel/Container/ListRoom/AddNewRoom/AddNewRoom";
 import UpdateRoom from "./ContainerAdminHotel/Container/ListRoom/UpdateRoom/UpdateRoom";
 import BookingDetail from "./ContainerAdminHotel/Container/ListBooking/BookingDetail/BookingDetail";
+import ListVehicle from "./ContainerAdminHotel/Container/ListVehicle/ListVehicle";
 
 function App() {
   const dispatch = useDispatch();
@@ -325,6 +326,15 @@ function App() {
                       path=":bookingId"
                       element={
                         userInfo ? <BookingDetail /> : <Navigate to="/login" />
+                      }
+                    />
+                  </Route>
+
+                  <Route path="listvehicle">
+                    <Route 
+                      index
+                      element={
+                        userInfo ? <ListVehicle /> : <Navigate to="/login" />
                       }
                     />
                   </Route>

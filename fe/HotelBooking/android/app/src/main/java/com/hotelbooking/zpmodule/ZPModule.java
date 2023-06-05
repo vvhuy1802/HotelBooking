@@ -2,6 +2,7 @@ package com.hotelbooking.zpmodule;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.BaseActivityEventListener;
@@ -21,6 +22,7 @@ public class ZPModule extends ReactContextBaseJavaModule {
     final String PAYMENTSUCCESS = "1";
     final String PAYMENTFAILED = "-1";
     final String PAYMENTCANCELED = "4";
+    private int listenerCount = 0;
 
     PayOrderListener listener = new PayOrderListener() {
         @Override
@@ -71,6 +73,23 @@ public class ZPModule extends ReactContextBaseJavaModule {
     @Override
     public String getName() {
         return "PayZaloBridge";
+    }
+
+    @ReactMethod
+    public void addListener(String eventName) {
+        if (listenerCount == 0) {
+            // Set up any upstream listeners or background tasks as necessary
+        }
+
+        listenerCount += 1;
+    }
+
+    @ReactMethod
+    public void removeListeners(Integer count) {
+        listenerCount -= count;
+        if (listenerCount == 0) {
+            // Remove upstream listeners, stop unnecessary background tasks
+        }
     }
 
     @ReactMethod
