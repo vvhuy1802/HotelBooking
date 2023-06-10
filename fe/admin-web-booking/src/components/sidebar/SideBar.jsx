@@ -11,7 +11,7 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
 import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 
 const SideBar = () => {
@@ -105,16 +105,19 @@ const SideBar = () => {
               <span>Chat</span>
             </li>
           </CustomLink>
+          <p className="title">REVENUE</p>
+          <CustomLink to="revenue">
+            <li
+              className={stateSidebar === "Revenue" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Revenue");
+              }}
+            >
+              <BarChartIcon className="icon" />
+              <span>Revenue</span>
+            </li>
+          </CustomLink>
           <p className="title">ACCOUNT</p>
-          <li
-            className={stateSidebar === "Profile" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Profile");
-            }}
-          >
-            <AccountCircleOutlinedIcon className="icon" />
-            <span>Profile</span>
-          </li>
           <li
             className={stateSidebar === "Log" ? "onUse" : ""}
             onClick={() => {
@@ -126,10 +129,6 @@ const SideBar = () => {
           </li>
         </ul>
       </div>
-      {/* <div className="bottom">
-        <div className="colorOption"></div>
-        <div className="colorOption"></div>
-      </div> */}
     </div>
   );
 };

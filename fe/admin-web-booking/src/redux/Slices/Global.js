@@ -6,6 +6,7 @@ const initialState = {
   isDarkMode: false,
   announcement: [],
   typeMoney: "USD",
+  targetThisMonth: 30000,
   stateSidebar: "Dashboard",
   totalHotel: [],
   totalOrder: [],
@@ -37,6 +38,9 @@ export const globalSlice = createSlice({
     },
     setTypeMoney: (state, action) => {
       state.typeMoney = action.payload;
+    },
+    setTargetMonth: (state, action) => {
+      state.targetThisMonth = action.payload;
     },
     setStateSidebar: (state, action) => {
       state.stateSidebar = action.payload;
@@ -135,6 +139,7 @@ export const {
   updateData,
   deleteData,
   updataSingleData,
+  setTargetMonth,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

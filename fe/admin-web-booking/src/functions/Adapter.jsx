@@ -17,9 +17,11 @@ const moneyAdapter = (money, type) => {
 const paymentAdapter = (method) => {
   if (method === "payment-hotel") {
     return "At hotel";
-  } else if (method === "payment-online") {
-    return "Online";
-  }
+  } else if (method === "payment-momo") {
+    return "Momo";
+  } else if (method === "payment-zalopay") {
+    return "ZaloPay";
+  } else return "Null";
 };
 
 export { moneyAdapter, paymentAdapter };

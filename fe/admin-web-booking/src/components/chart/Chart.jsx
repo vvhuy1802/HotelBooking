@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./chart.scss";
 import {
   AreaChart,
@@ -10,93 +10,63 @@ import {
 } from "recharts";
 import { useSelector } from "react-redux";
 import { moneyAdapter } from "../../functions/Adapter";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const Chart = ({ dataChart, height, title }) => {
   const { typeMoney } = useSelector((state) => state.global);
 
-  var data1to6 = [
-    {
-      name: "January",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "February",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "March",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "April",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "May",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "June",
-      Total: 0,
-      showTotal: 0,
-    },
-  ];
+  var dataByYear = [];
+  var currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+  var startYear = 2021;
+  var endYear = 2023;
 
-  var data7to12 = [
-    {
-      name: "July",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "August",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "September",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "October",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "November",
-      Total: 0,
-      showTotal: 0,
-    },
-    {
-      name: "December",
-      Total: 0,
-      showTotal: 0,
-    },
-  ];
+  for (var year = startYear; year <= endYear; year++) {
+    var dataMonths = [];
+    for (var month = 0; month < 12; month++) {
+      dataMonths.push({
+        name: getMonthName(month),
+        Total: 0,
+        showTotal: 0,
+        count: 0,
+        orders: [],
+      });
+    }
+    dataByYear.push({ year: year, dataMonths: dataMonths });
+  }
+
+  function getMonthName(month) {
+    var monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return monthNames[month];
+  }
 
   const handlePushData = () => {
     dataChart?.forEach((item) => {
       if (item.status !== "Cancelled") {
-        const date = new Date(item.created_at);
-        if (date.getMonth() >= 0 && date.getMonth() <= 5) {
-          data1to6[date.getMonth()].Total += item.total;
-          data1to6[date.getMonth()].showTotal = moneyAdapter(
-            data1to6[date.getMonth()].Total,
-            typeMoney
-          );
-        } else if (date.getMonth() >= 6 && date.getMonth() <= 11) {
-          data7to12[date.getMonth() - 6].Total += item.total;
-          data7to12[date.getMonth() - 6].showTotal = moneyAdapter(
-            data7to12[date.getMonth() - 6].Total,
-            typeMoney
-          );
-        }
+        const date = new Date(item.check_in);
+        const month = date.getMonth();
+        const year = dataByYear.findIndex((x) => x.year === date.getFullYear());
+
+        dataByYear[year].dataMonths[month].Total += item.total;
+        dataByYear[year].dataMonths[month].showTotal = moneyAdapter(
+          dataByYear[year].dataMonths[month].Total,
+          typeMoney
+        );
+        dataByYear[year].dataMonths[month].count += 1;
+        dataByYear[year].dataMonths[month].orders.push(item);
       }
     });
   };
@@ -114,35 +84,42 @@ const Chart = ({ dataChart, height, title }) => {
 
   return (
     <div className="chart">
-      <div className="title">
-        {title}
+      <div className="top">
+        <h1 className="title"> {title}</h1>
         {handlePushData()}
+        <MoreVertIcon className="icon" fontSize="small" onClick={() => {}} />
       </div>
-      <ResponsiveContainer width="100%" height={height}>
-        <AreaChart
-          width={730}
-          height={250}
-          data={data1to6}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <defs>
-            <linearGradient id="total" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis dataKey="name" />
-          <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-          <Tooltip content={<CustomTooltip />} />
-          <Area
-            type="monotone"
-            dataKey="Total"
-            stroke="#8884d8"
-            fillOpacity={1}
-            fill="url(#total)"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+      <div className="left">
+        <ResponsiveContainer width="96%" height={height}>
+          <AreaChart
+            width={730}
+            height={250}
+            data={dataByYear[currentYear - 2021].dataMonths.slice(
+              0,
+              currentMonth + 1
+            )}
+            margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+            onClick={(e) => console.log(dataByYear)}
+          >
+            <defs>
+              <linearGradient id="total" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis dataKey="name" />
+            <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
+            <Tooltip content={<CustomTooltip />} />
+            <Area
+              type="monotone"
+              dataKey="Total"
+              stroke="#8884d8"
+              fillOpacity={1}
+              fill="url(#total)"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

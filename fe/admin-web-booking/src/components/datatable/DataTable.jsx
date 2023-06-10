@@ -53,7 +53,7 @@ const handleColumnsUser = (navigate) => {
       renderCell: (params) => {
         const handleView = () => {
           navigate(`/user/${params.row.id}`);
-          console.log(params.row);
+          // console.log(params.row);
         };
         return (
           <div className="action">
@@ -203,11 +203,11 @@ const handleColumnsHotel = (navigate) => {
 
 const handleColumnsBooking = (navigate) => {
   return [
-    { field: "id", headerName: "Order ID", width: 110 },
+    { field: "id", headerName: "Order ID", width: 135 },
     {
       field: "customer",
       headerName: "Customer",
-      width: 150,
+      width: 175,
       renderCell: (params) => {
         return (
           <div className="cellWithImg">
@@ -224,7 +224,7 @@ const handleColumnsBooking = (navigate) => {
     {
       field: "hotel",
       headerName: "Hotel",
-      width: 150,
+      width: 100,
     },
     {
       field: "room",
@@ -239,12 +239,12 @@ const handleColumnsBooking = (navigate) => {
       },
     },
     {
-      field: "checkin",
+      field: "check_in",
       headerName: "Check in",
       width: 100,
     },
     {
-      field: "checkout",
+      field: "check_out",
       headerName: "Check out",
       width: 100,
     },
@@ -417,12 +417,21 @@ const DataTable = () => {
           hotel: nameHotel(order.id_hotel),
           room: order.id_room.name,
           payment_method: paymentAdapter(order.payment_method),
-          checkin: formatDate(order.check_in),
-          checkout: formatDate(order.check_out),
+          check_in: formatDate(order.check_in),
+          check_out: formatDate(order.check_out),
           cost: moneyAdapter(order.total, typeMoney),
           status: order.status,
         })
       );
+
+      rows.sort(function (a, b) {
+        const dateA = a.check_in.split("/");
+        const dateB = b.check_in.split("/");
+        const newDateA = new Date(dateA[2], dateA[1] - 1, dateA[0]);
+        const newDateB = new Date(dateB[2], dateB[1] - 1, dateB[0]);
+        return newDateB - newDateA;
+      });
+
       return rows;
     },
     [typeMoney]
@@ -463,10 +472,10 @@ const DataTable = () => {
     const desertRef = ref(storage, `/${path}`);
     await deleteObject(desertRef)
       .then(() => {
-        console.log(`${path} deleted successfully`);
+        // console.log(`${path} deleted successfully`);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   };
 
@@ -475,7 +484,7 @@ const DataTable = () => {
       case "Admin":
         selectionModel.map(async (id) => {
           const res = await DeleteAdmin(id);
-          console.log(res);
+          // console.log(res);
           if (res.status === 200) {
             //get this admin by id in totalAdmin
             const admin = totalAdmin?.data?.admin?.find(
