@@ -5,7 +5,7 @@ import Lottie from 'lottie-react-native';
 import {
   Animated,
   Dimensions,
-  Image,
+  Image, 
   PanResponder,
   Platform,
   Pressable,
@@ -48,7 +48,13 @@ const DetailHotel = ({navigation, route}) => {
   const [isloading, setIsloading] = useState(true);
   const [hotelData, setHotelData] = useState({});
   const {user_position, booking_date} = useSelector(state => state.global);
-
+  const today = new Date();
+  const gettoday =
+      today.getFullYear() +
+      '-' +
+      (today.getMonth() + 1) +
+      '-' +
+      today.getDate();
   const fetchData = async () => {
     const response = await GetHotelByID(_id);
     if (response.status === 200) {
@@ -194,63 +200,49 @@ const DetailHotel = ({navigation, route}) => {
   //Calendar
   const minday = new Date();
   const [start, setStart] = useState(booking_date.check_in);
-  const [startTrue, setStartTrue] = useState(booking_date.check_in);
   const [middle, setMiddle] = useState([]);
   const [end, setEnd] = useState(booking_date.check_out);
-  const [endTrue, setEndTrue] = useState(booking_date.check_out);
+
+  
+  useEffect(() => {
+    let arr=[];
+    arr.push(booking_date.check_in);
+    arr.push(booking_date.check_out);
+    setMiddle(arr);
+}, []);
 
   const handleOpenCalendar = () => {
     springAnimation('up');
-    setStart(startTrue);
-    setEnd(endTrue);
   };
-
-  useEffect(() => {
-    if (start != '' && end != '') {
-      const bd = start.split('-');
-      const kt = end.split('-');
-      const arr = [];
-      if (kt[1] == bd[1]) {
-        const sub = kt[2] - bd[2];
-        for (let i = 1; i < sub; i++) {
-          var day = kt[2] - i < 10 ? '0' + (kt[2] - i) : kt[2] - i;
-          arr.push(`${kt[0]}-${kt[1]}-${day}`);
-        }
-        console.log(arr);
-      } else {
-        var maxDayOfMonth = new Date(bd[0], bd[1], 0).getDate();
-        const sub = maxDayOfMonth - bd[2];
-        for (let i = 1; i <= sub; i++) {
-          arr.push(`${bd[0]}-${bd[1]}-${bd[2] - 0 + i}`);
-        }
-        for (let i = 1; i < kt[2]; i++) {
-          var day = i < 10 ? '0' + i : i;
-          arr.push(`${kt[0]}-${kt[1]}-${day}`);
-        }
-        console.log(arr);
-      }
-      setMiddle(arr);
-    }
-  }, [end]);
 
   const handleChooseDay = day => {
+    let endday = '';
     if (start !== '' && end !== '') {
-      setStart(day.dateString);
-      setEnd('');
-      setMiddle([]);
+        setStart(day.dateString);
+        setEnd('');
+        setMiddle([]);
     }
     if (start === '') {
-      setStart(day.dateString);
+        setStart(day.dateString);
     } else if (end === '' && day.dateString > start) {
-      setEnd(day.dateString);
+        endday = day.dateString;
+        const startDate = new Date(start);
+        const endDate = new Date(endday);
+        const dateArray = [];
+        let currentDate = startDate;
+        while (currentDate <= endDate) {
+            const dateString = currentDate.toISOString().split('T')[0];
+            dateArray.push(dateString);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        setMiddle(dateArray);
+        setEnd(day.dateString);
     } else if (day.dateString < start) {
-      setStart(day.dateString);
+        setStart(day.dateString);
     }
-  };
+};
   const handleConfirm = () => {
     springAnimation('down');
-    setStartTrue(start);
-    setEndTrue(end);
     dispatch(
       setBookingDate({
         check_in: start,
@@ -834,41 +826,43 @@ const DetailHotel = ({navigation, route}) => {
               </View>
             </View>
             <View style={{marginTop: 10}}>
-              <Calendar
-                markingType={'period'}
-                markedDates={{
-                  [start]: {
-                    startingDay: true,
-                    color: '#50cebb',
-                    textColor: 'white',
-                  },
-                  [end]: {
-                    endingDay: true,
-                    color: '#50cebb',
-                    textColor: 'white',
-                  },
-                  ...middle.reduce((acc, cur) => {
-                    acc[cur] = {
-                      startingDay: false,
-                      endingDay: false,
-                      color: '#70d7c7',
-                      textColor: 'white',
-                    };
-                    return acc;
-                  }, {}),
-                }}
-                onDayPress={day => handleChooseDay(day)}
-                hideExtraDays={true}
-                minDate={String(minday)}
-                theme={{
-                  backgroundColor: colors.box,
-                  calendarBackground: colors.box,
-                  textSectionTitleColor: colors.text,
-                  dayTextColor: colors.text,
-                  monthTextColor: colors.text,
-                  textDisabledColor: '#d9e1e8',
-                }}
-              />
+            <Calendar
+                            // Customize the appearance of the calendar
+                            markingType={'period'}
+                            // Callback that gets called when the user selects a day
+                            markedDates={{
+                                [start]: {
+                                    startingDay: true,
+                                    color: '#50cebb',
+                                    textColor: 'white',
+                                },
+                                [end]: {
+                                    endingDay: true,
+                                    color: '#50cebb',
+                                    textColor: 'white',
+                                },
+                                ...middle.reduce((acc, cur) => {
+                                    acc[cur] = {
+                                        startingDay: cur===start?true:false,
+                                        endingDay: cur===end?true:false,
+                                        color: '#70d7c7',
+                                        textColor: 'white',
+                                    };
+                                    return acc;
+                                }, {}),
+                            }}
+                            onDayPress={day => handleChooseDay(day)}
+                            hideExtraDays={true}
+                            minDate={gettoday}
+                            theme={{
+                                backgroundColor: colors.box,
+                                calendarBackground: colors.box,
+                                textSectionTitleColor: colors.text,
+                                dayTextColor: colors.text,
+                                monthTextColor: colors.text,
+                                textDisabledColor: '#d9e1e8',
+                            }}
+                        />
             </View>
             <View
               style={{
@@ -933,9 +927,9 @@ const DetailHotel = ({navigation, route}) => {
                         fontWeight: 'bold',
                       }}>
                       12:00,{' '}
-                      {formatDayShow(startTrue) +
+                      {formatDayShow(start) +
                         ' - 12:00, ' +
-                        formatDayShow(endTrue)}
+                        formatDayShow(end)}
                     </Text>
                   </View>
                 </View>

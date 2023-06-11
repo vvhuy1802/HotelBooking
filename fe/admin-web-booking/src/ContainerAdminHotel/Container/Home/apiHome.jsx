@@ -5,7 +5,3 @@ export const GetAllOrders = async () => {
   const response = await GET(path);
   return response;
 };
-
-export const AddNewVehicleInHotel = (data) => {
-        const res = POST("/vehicle/addnewvehicle", data);
-}

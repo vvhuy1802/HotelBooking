@@ -3,12 +3,14 @@ import "./listroom.scss";
 import { getAllRoomInHotel } from "./apiListRoom";
 import { useSelector } from "react-redux";
 import DataTable from "../../Components/DataTable/DataTable";
+import { useLocation } from "react-router-dom";
 
 const ListRoom = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [reload, setReload] = useState(false);
   const {userInfo}=useSelector(state=>state.global)
+  const location = useLocation();
   const initFetch = async () => {
     setIsLoading(true);
     const res = await getAllRoomInHotel();
@@ -22,7 +24,7 @@ const ListRoom = () => {
   };
   useEffect(() => {
     initFetch();
-  }, []);
+  }, [location]);
 
   useEffect(() => {
     if(reload){

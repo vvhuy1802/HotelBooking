@@ -1,62 +1,35 @@
 import React, { useEffect, useState } from "react";
-import "./updateroom.scss";
+import "./updatevehicle.scss";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import Select from "react-select";
-import Switch from "../../../Components/Switch/Switch";
-import { AddNewRoomInHotel, UpdateRoomInHotel } from "./apiUpdateRoom";
-import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../../configFirebase/config";
+import { UpdateVehicleInHotel } from "./apiUpdateVehicle";
 
-const UpdateRoom = ({ title }) => {
+const UpdateVehicle = ({ title }) => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [inputs, setInputs] = useState([]);
-  const [file, setFile] = useState(null);
-  const { userInfo } = useSelector((state) => state.global);
   const [formData, setFormData] = useState({});
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [uti, setUti] = useState([]);
-  const [value, setValue] = useState(false);
   const [listImage, setListImage] = useState([]);
-  let options = [
-    { value: "Bồn tắm", label: "Bồn tắm" },
-    { value: "Bếp riêng", label: "Bếp riêng" },
-    { value: "Nhìn ra hồ", label: "Nhìn ra hồ" },
-    { value: "Nhìn ra thành phố", label: "Nhìn ra thành phố" },
-    { value: "Nhìn ra sông", label: "Nhìn ra sông" },
-    { value: "TV màn hình phẳng", label: "TV màn hình phẳng" },
-    { value: "Hệ thống cách âm", label: "Hệ thống cách âm" },
-    { value: "Wifi miễn phí", label: "Wifi miễn phí" },
-    { value: "Ban công", label: "Ban công" },
-    { value: "Tầm nhìn ra khung cảnh", label: "Tầm nhìn ra khung cảnh" },
-    {
-      value: "Phòng tắm riêng trong phòng",
-      label: "Phòng tắm riêng trong phòng",
-    },
-    { value: "Điều hòa không khí", label: "Điều hòa không khí" },
-    { value: "Sân hiên", label: "Sân hiên" },
-  ];
-
   useEffect(() => {
     const inputs = [
       {
         id: 1,
         label: "Name",
         type: "text",
-        id_input: "name",
         value: state.name,
-        placeholder: "Room Name",
+        id_input: "name",
+        placeholder: "Vehicle Name",
       },
       {
         id: 2,
-        label: "Description",
+        label: "Brand",
         type: "text",
-        id_input: "description",
-        value: state.description,
-        placeholder: "Description for the room",
+        value: state.brand,
+        id_input:"brand",
+        placeholder: "Brand",
       },
       {
         id: 3,
@@ -69,15 +42,32 @@ const UpdateRoom = ({ title }) => {
       {
         id: 4,
         label: "ID Hotel",
-        value: state.hotel_id,
         type: "text",
+        value: state.hotel_id,
         id_input: "hotel_id",
         placeholder: "ID",
       },
+      {
+        id: 5,
+        label: "Description",
+        type: "text",
+        value: state.description,
+        id_input: "description",
+        placeholder: "Description",
+      }
     ];
+
+    let specification={
+      max_power:state.specification[0],
+      Fuel:state.specification[1],
+      speed_4s:state.specification[2],
+      speed_max:state.specification[3]
+    }
 
     const formdata = {
       name: state.name,
+      brand: state.brand,
+      specification: specification,
       description: state.description,
       price: state.price,
       hotel_id: state.hotel_id,
@@ -85,31 +75,22 @@ const UpdateRoom = ({ title }) => {
     setFormData(formdata);
     setInputs(inputs);
     setListImage(state.image);
-    setValue(state.isactive);
-    setUti(state.utility);
-    let seleted = state.utility.map((item) => ({ value: item, label: item }));
-    setSelectedOptions(seleted);
   }, []);
 
-  const handleChange = (selectedOptions) => {
-    let dataUti = selectedOptions.map((item) => item.value);
-    setUti(dataUti);
-    setSelectedOptions(selectedOptions);
-  };
 
-  const handleAddListImage = (file) => {
+  const handleAddListImage = async(file) => {
     //listImage have id, img
     const listImageTemp = [...listImage];
     for (let i = 0; i < file.length; i++) {
       const storageRef = ref(storage, `/${state.hotel_id}/${file[i].name}`);
-      uploadBytes(storageRef, file[i]).then((snapshot) => {
+    await  uploadBytes(storageRef, file[i]).then(async(snapshot) => {
         const pathReference = ref(storage, `/${state.hotel_id}/${file[i].name}`);
-        getDownloadURL(pathReference).then((url) => {
+      await  getDownloadURL(pathReference).then((url) => {
           listImageTemp.push(url);
-          setListImage(listImageTemp);
         });
       });
     }
+    setListImage(listImageTemp);
     // 'file' comes from the Blob or File API
  
   };
@@ -120,11 +101,15 @@ const UpdateRoom = ({ title }) => {
       let price = parseInt(value);
       setFormData({ ...formData, [id]: price });
     } else {
+      if(id==="max_power"||id==="Fuel"||id==="speed_4s"||id==="speed_max"){
+        setFormData({ ...formData, "specification":{...formData.specification,[id]:value} });
+        return;
+      }
       setFormData({ ...formData, [id]: value });
     }
   };
 
-  const handleDeleteImage = (img) => {
+  const handleDeleteImage = async (img) => {
     const listImageTemp = [...listImage];
     const index = listImageTemp.findIndex((item) => item === img);
     const match = img.match(/\/o\/(.+?)\?/);
@@ -134,15 +119,15 @@ const UpdateRoom = ({ title }) => {
     }
     const desertRef = ref(storage, `/${imagePath}`);
     // Delete the file
-    deleteObject(desertRef)
+    await deleteObject(desertRef)
       .then(() => {
         // File deleted successfully
       })
       .catch((error) => {
         // Uh-oh, an error occurred!
       });
-    listImageTemp.splice(index, 1);
-    setListImage(listImageTemp);
+      listImageTemp.splice(index, 1);
+      setListImage(listImageTemp);
   };
 
   const handleSubmit = async (e) => {
@@ -150,12 +135,9 @@ const UpdateRoom = ({ title }) => {
     const data = {
       ...formData,
       image: listImage,
-      isactive: value,
-      utility: uti,
-      tag: [],
     };
-    const res = await UpdateRoomInHotel(state.id, data);
-    navigate("/listroom");
+    const res = await UpdateVehicleInHotel(state.id, data);
+    navigate("/listvehicle");
   };
 
   return (
@@ -210,17 +192,37 @@ const UpdateRoom = ({ title }) => {
                   />
                 </div>
               ))}
-              <Select
-                className="selectStyle"
-                options={options}
-                isMulti
-                value={selectedOptions}
-                onChange={handleChange}
-              />
-              <div className="switchStyle">
-                <span className="spanStyle">Active</span>
-                <Switch isOn={value} handleToggle={() => setValue(!value)} />
-              </div>
+              <div className="formInput">
+                    <label>Specification</label>
+                    <input
+                    type={"text"}
+                    id={"max_power"}
+                    value={formData["specification"]&&formData["specification"]["max_power"] || ""}
+                    placeholder={"Max Power"}
+                    onChange={handleChangeInput}
+                    />
+                    <input
+                    type={"text"}
+                    id={"Fuel"}
+                    value={formData["specification"]&&formData["specification"]["Fuel"] || ""}
+                    placeholder={"Fuel"}
+                    onChange={handleChangeInput}
+                    />
+                    <input
+                    type={"text"}
+                    id={"speed_4s"}
+                    value={formData["specification"]&&formData["specification"]["speed_4s"] || ""}
+                    placeholder={"Speed 4s"}
+                    onChange={handleChangeInput}
+                    />
+                    <input
+                    type={"text"}
+                    id={"speed_max"}
+                    value={formData["specification"]&&formData["specification"]["speed_max"] || ""}
+                    placeholder={"Speed Max"}
+                    onChange={handleChangeInput}
+                    />
+                  </div>
               <button className="buttonSave">Save</button>
             </form>
           </div>
@@ -230,4 +232,4 @@ const UpdateRoom = ({ title }) => {
   );
 };
 
-export default UpdateRoom;
+export default UpdateVehicle;

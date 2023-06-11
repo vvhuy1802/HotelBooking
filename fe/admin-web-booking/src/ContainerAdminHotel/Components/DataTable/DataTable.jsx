@@ -6,7 +6,7 @@ import avatar from "../../../assets/avatar.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { DeleteRoomInHotel, updateStatusInOrder } from "./apiDataTable";
+import { DeleteRoomInHotel, DeleteVehicleInHotel, updateStatusInOrder } from "./apiDataTable";
 
 const DataTable = (props) => {
   const { data, setReload } = props;
@@ -37,6 +37,90 @@ const DataTable = (props) => {
     default:
       break;
   }
+
+
+  const handleColumnsVehicle = () => {
+     return [
+    { field: "id", headerName: "ID", width: 170 },
+    { field: "hotel_id", headerName: "Hotel ID", width: 110 },
+    { field: "name", headerName: "Name", width: 150 },
+    {field:"brand",headerName:"Brand",width:150},
+    {field:"price",headerName:"Price",width:150},
+    {field:"specification",headerName:"Specification",width:280},
+    {
+      field: "image",
+      headerName: "Image",
+      width: 100,
+      renderCell: (params) => {
+        return (
+          <div className="cellWithImg">
+            <img
+              src={params.row.image || avatar}
+              alt="avatar"
+              className="cellImg"
+            />
+          </div>
+        );
+      },
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 100,
+      renderCell: (params) => {
+        const handleEdit = () => {
+          navigate(`/listvehicle/edit/${params.row.id}`, {
+            state: {
+              id: params.row.id,
+              name: params.row.name,
+              brand: params.row.brand,
+              description: params.row.description,
+              specification: params.row.specification,
+              price: params.row.price,
+              image: params.row.image,
+              hotel_id: params.row.hotel_id,
+            },
+          });
+        };
+        return (
+          <div className="action">
+            <div
+              className="btnEdit"
+              onClick={() => {
+                handleEdit();
+              }}
+            >
+              Edit
+            </div>
+          </div>
+        );
+      },
+    },
+     ]
+  }
+
+
+  const handleAddRowsVehicle = () => {
+    var rows = [];
+    data.map((item) => {
+      let arr=[];
+      arr.push(item.specification[0].max_power);
+      arr.push(item.specification[0].Fuel);
+      arr.push(item.specification[0].speed_4s);
+      arr.push(item.specification[0].speed_max);
+      rows.push({
+        id: item._id,
+        name: item.name,
+        brand: item.brand,
+        description: item.description,
+        specification: arr,
+        price: item.price,
+        image: item.image,
+        hotel_id: item.hotel_id,
+      });
+    });
+    return rows;
+  };
 
 
   const handleColumnsBooking = () => {
@@ -226,6 +310,12 @@ const DataTable = (props) => {
     }
     setReload(true);
   };
+  const deleteVehicle = async () => {
+    for (let i = 0; i < selectionModel.length; i++) {
+      const res = await DeleteVehicleInHotel(selectionModel[i]);
+    }
+    setReload(true);
+  };
 
   const ConfirmBooking = async () => {
     for (let i = 0; i < selectionModel.length; i++) {
@@ -240,12 +330,11 @@ const DataTable = (props) => {
     }
     setReload(true);
   }
-
   return (
     <div className="datatable">
       <div className="datatableTitle">
         {dataTitle.title}
-        {stateSidebar === "rooms" && (
+        {(stateSidebar === "rooms"||stateSidebar === "Vehicles") && (
           <div style={{}}>
             <Link
               to={dataTitle.path}
@@ -275,6 +364,8 @@ const DataTable = (props) => {
               ? handleAddRowsRoom()
               : stateSidebar === "Bookings"
               ? handleAddRowsBooking()
+              : stateSidebar === "Vehicles"
+              ? handleAddRowsVehicle()
               : null
           }
           columns={
@@ -282,6 +373,8 @@ const DataTable = (props) => {
               ? handleColumnsRoom()
               : stateSidebar === "Bookings"
               ? handleColumnsBooking()
+              : stateSidebar === "Vehicles"
+              ? handleColumnsVehicle()
               : null
           }
           pageSize={5}
@@ -299,6 +392,11 @@ const DataTable = (props) => {
       )}
       {selectionModel?.length > 0 && stateSidebar==="rooms" &&
         <div onClick={deleteRoom} className="delete">
+          Delete
+        </div>
+      }
+      {selectionModel?.length > 0 && stateSidebar==="Vehicles" &&
+        <div onClick={deleteVehicle} className="delete"> 
           Delete
         </div>
       }

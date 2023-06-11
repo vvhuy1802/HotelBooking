@@ -5,3 +5,9 @@ export const getAllVehicleInHotel=()=>{
         const response = GET(path);
         return response;
 }
+
+export const getVehicleById=(id)=>{
+        const path = `/vehicle/getvehiclebyidhotel/${id}`;
+        const response = GET(path);
+        return response;
+}

@@ -8,7 +8,7 @@ const motorcycleArray = [
             speed_4s: "3.5 giây",
             max_Speed: "130 km/h"
           },
-          price: 45000000,
+          price: 200000,
           image: "exciter150.jpg",
           hotel_id: "exciter150",
           description: "Một dòng xe mô tô thể thao phổ biến tại Việt Nam."

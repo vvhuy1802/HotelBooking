@@ -34,11 +34,13 @@ import SideBarHotel from "./ContainerAdminHotel/Components/SideBarHotel/SideBarH
 import NavBarHotel from "./ContainerAdminHotel/Components/NavBarHotel/NavBarHotel";
 import ListRoom from "./ContainerAdminHotel/Container/ListRoom/ListRoom";
 import ListBooking from "./ContainerAdminHotel/Container/ListBooking/ListBooking";
-import { RoomInputs } from "./ContainerAdminHotel/Components/Input/DataInput";
+import { RoomInputs, VehicleInputs } from "./ContainerAdminHotel/Components/Input/DataInput";
 import AddNewRoom from "./ContainerAdminHotel/Container/ListRoom/AddNewRoom/AddNewRoom";
 import UpdateRoom from "./ContainerAdminHotel/Container/ListRoom/UpdateRoom/UpdateRoom";
 import BookingDetail from "./ContainerAdminHotel/Container/ListBooking/BookingDetail/BookingDetail";
 import ListVehicle from "./ContainerAdminHotel/Container/ListVehicle/ListVehicle";
+import AddNewVehicle from "./ContainerAdminHotel/Container/ListVehicle/AddNewVehicle/AddNewVehicle";
+import UpdateVehicle from "./ContainerAdminHotel/Container/ListVehicle/UpdateVehicle/UpdateVehicle";
 
 function App() {
   const dispatch = useDispatch();
@@ -321,6 +323,29 @@ function App() {
                       index
                       element={
                         userInfo ? <ListVehicle /> : <Navigate to="/login" />
+                      }
+                    />
+                    <Route
+                      path="new"
+                      element={
+                        userInfo ? (
+                          <AddNewVehicle
+                            title={"Add New Vehicle"}
+                            inputs={VehicleInputs}
+                          />
+                        ) : (
+                          <Navigate to="/login" />
+                        )
+                      }
+                    />
+                     <Route
+                      path="edit/:roomId"
+                      element={
+                        userInfo ? (
+                          <UpdateVehicle title={"Update Vehicle"} />
+                        ) : (
+                          <Navigate to="/login" />
+                        )
                       }
                     />
                   </Route>
