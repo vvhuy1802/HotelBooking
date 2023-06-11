@@ -99,14 +99,14 @@ const Featured = () => {
       tempa[0] = tempa[0].replace("$", "").replace(",", "");
       tempb[0] = tempb[0].replace("$", "").replace(",", "");
 
-      return (tempa[0] / tempb[0]) * 100;
+      return ((tempa[0] / tempb[0]) * 100).toFixed(2);
     } else if (typeMoney === "VND") {
       tempa = a.replace("VND", "");
       tempb = b.replace("VND", "");
       tempa = tempa.replace(".", "");
       tempb = tempb.replace(".", "");
 
-      return (tempa / tempb) * 100;
+      return ((tempa / tempb) * 100).toFixed(2);
     }
   };
 

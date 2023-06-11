@@ -5,7 +5,7 @@ import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const windowWidth = Dimensions.get('window').width;
-const CustomHeader = ({title}) => {
+const CustomHeader = ({title, socket, id}) => {
   const navigation = useNavigation();
   const {t} = useTranslation();
   const {colors} = useTheme();
@@ -15,7 +15,10 @@ const CustomHeader = ({title}) => {
         name="arrow-back-ios"
         size={25}
         color={colors.text}
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          navigation.goBack();
+          socket?.emit('leave-room', id);
+        }}
       />
       <Text style={[styles.headerText, {color: colors.text}]}>{t(title)}</Text>
       <View />

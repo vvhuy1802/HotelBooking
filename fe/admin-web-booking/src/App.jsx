@@ -121,8 +121,11 @@ function App() {
         dispatch(setStateSidebar("Admin"));
       } else if (currentpath.split("/")[1] === "hotel") {
         dispatch(setStateSidebar("Hotels"));
-      } else if (currentpath.split("/")[1] === "booking")
+      } else if (currentpath.split("/")[1] === "booking") {
         dispatch(setStateSidebar("Bookings"));
+      } else if (currentpath.split("/")[1] === "chat") {
+        dispatch(setStateSidebar("Chats"));
+      }
     } else {
       if (currentpath === "/") {
         dispatch(setStateSidebar("Dashboard"));
@@ -228,6 +231,17 @@ function App() {
                           <Navigate to="/login" />
                         )
                       }
+                    />
+                  </Route>
+
+                  <Route path="chat">
+                    <Route
+                      index
+                      element={userInfo ? <Chat /> : <Navigate to="/login" />}
+                    />
+                    <Route
+                      path=":userID"
+                      element={userInfo ? <Chat /> : <Navigate to="/login" />}
                     />
                   </Route>
                 </Route>

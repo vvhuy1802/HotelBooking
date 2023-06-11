@@ -46,7 +46,7 @@ const Chat = ({navigation, route}) => {
       };
       const response = await RecieveMessage(data);
       if (response.status === 200) {
-        setMessages(response.data);
+        setMessages(response.data.messages);
         console.log('response.data', response.data);
         setLoading(false);
       }
@@ -54,7 +54,8 @@ const Chat = ({navigation, route}) => {
     getMsg();
   }, []);
 
-  const handleSendMsg = async msg => {
+  const handleSendMsg = async Msg => {
+    const msg = Msg.trim();
     socket.current.emit('send-msg', {
       to: hotelData._id,
       from: currentUser._id,
@@ -74,7 +75,7 @@ const Chat = ({navigation, route}) => {
       from: currentUser._id,
       fromType: 'user',
       to: hotelData._id,
-      toType: 'hotel',
+      toType: hotelData._id === '6442aa5167b30af877e4ee71' ? 'admin' : 'hotel',
       message: msg,
     };
 
@@ -83,14 +84,16 @@ const Chat = ({navigation, route}) => {
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on('msg-recieve', msg => {
-        const data = {
-          fromSelf: false,
-          message: {
-            text: msg,
-          },
-        };
-        setArrivalMessage(data);
+      socket.current.on('msg-receive', data => {
+        if (data.from === hotelData._id) {
+          const dataMsg = {
+            fromSelf: false,
+            message: {
+              text: data.msg,
+            },
+          };
+          setArrivalMessage(dataMsg);
+        }
       });
     }
   }, []);
@@ -113,7 +116,11 @@ const Chat = ({navigation, route}) => {
 
   return (
     <View style={{flex: 1}}>
-      <CustomHeader title={hotelData.name} />
+      <CustomHeader
+        title={hotelData.name}
+        socket={socket.current}
+        id={currentUser._id}
+      />
       <ImageBackground
         source={require('../../assets/Background.jpg')}
         style={{flex: 1}}>
@@ -134,27 +141,29 @@ const Chat = ({navigation, route}) => {
             </View>
           </>
         ) : (
-          <FlatList
-            style={{flex: 1}}
-            data={messages}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            ref={listViewRef}
-            onLayout={e => {
-              listViewHeight.current = e.nativeEvent.layout.height;
-            }}
-            onContentSizeChange={() => {
-              listViewRef.current.scrollToEnd({animated: true});
-            }}
-            renderItem={({item, index}) => {
-              return (
-                <MsgComponent
-                  msg={item}
-                  checkTime={checkTime(item.time, index)}
-                />
-              );
-            }}
-          />
+          messages.length > 0 && (
+            <FlatList
+              style={{flex: 1}}
+              data={messages}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item, index) => index.toString()}
+              ref={listViewRef}
+              onLayout={e => {
+                listViewHeight.current = e.nativeEvent.layout.height;
+              }}
+              onContentSizeChange={() => {
+                listViewRef.current.scrollToEnd({animated: true});
+              }}
+              renderItem={({item, index}) => {
+                return (
+                  <MsgComponent
+                    msg={item}
+                    checkTime={checkTime(item.time, index)}
+                  />
+                );
+              }}
+            />
+          )
         )}
       </ImageBackground>
       <View

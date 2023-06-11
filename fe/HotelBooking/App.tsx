@@ -37,6 +37,7 @@ const App = () => {
           if (res.status === 200) {
             console.log('User logged in');
             dispatch(setUserData(res.data.data.user));
+            setAsyncStorage('currentUser', res.data.data.user._id);
           } else {
             console.log('Token expired');
             dispatch(setUserData(''));

@@ -69,6 +69,13 @@ const NotifyItem = ({id, navigation}) => {
         id_booking: thisNotify.data.id_booking,
         id_hotel: thisNotify.data.id_hotel,
       });
+    } else if (thisNotify.data.type === 'chat') {
+      navigation.navigate('Chat', {
+        hotelData: {
+          _id: thisNotify.data.id_chat,
+          name: thisNotify.title,
+        },
+      });
     }
   };
 

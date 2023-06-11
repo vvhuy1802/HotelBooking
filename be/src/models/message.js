@@ -14,7 +14,7 @@ const messageSchema = mongoose.Schema(
     senderType: {
       type: String,
       required: true,
-      enum: ["user", "hotel"],
+      enum: ["user", "hotel", "admin"],
     },
     receiver: {
       type: mongoose.Schema.Types.ObjectId,
@@ -24,7 +24,7 @@ const messageSchema = mongoose.Schema(
     receiverType: {
       type: String,
       required: true,
-      enum: ["user", "hotel"],
+      enum: ["user", "hotel", "admin"],
     },
   },
   {
