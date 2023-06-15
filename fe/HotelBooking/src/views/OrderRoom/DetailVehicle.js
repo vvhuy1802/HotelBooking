@@ -4,7 +4,7 @@ import {
     ScrollView,
     Text,
     TouchableOpacity,
-    Image,
+    Image, 
     Dimensions,
     Modal,
 } from 'react-native';
@@ -18,6 +18,12 @@ import { Calendar } from 'react-native-calendars';
 const width = Dimensions.get('window').width;
 const DetailVehicle = ({ navigation, route }) => {
     const colors = useTheme().colors;
+    const field=[
+        'max_power',
+        'Fuel',
+        'speed_4s',
+        'speed_max'
+    ]
     const today = new Date();
     const { booking_date } = useSelector(state => state.global);
     const gettoday =
@@ -202,7 +208,7 @@ const DetailVehicle = ({ navigation, route }) => {
                                         fontWeight: '500',
                                         color: 'black',
                                     }}>
-                                    {item.specification[index]}
+                                    {item.specification[0][field[index]]}
                                 </Text>
                             </View>
                         </View>

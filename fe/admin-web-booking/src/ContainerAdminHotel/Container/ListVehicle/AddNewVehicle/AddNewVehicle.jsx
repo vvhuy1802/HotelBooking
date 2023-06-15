@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import "./addnewroom.scss";
+import "./addnewvehicle.scss";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import Select from "react-select";
-import Switch from "../../../Components/Switch/Switch";
-import { AddNewRoomInHotel } from "./apiAddNewRoom";
+import {  AddNewVehicleInHotel } from "./apiAddNewVehicle";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
@@ -16,56 +14,30 @@ import {
   uploadBytes,
 } from "firebase/storage";
 
-const AddNewRoom = ({ title, inputs }) => {
+const AddNewVehicle = ({ title, inputs }) => {
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.global);
   const [formData, setFormData] = useState({});
-  const [selectedOptions, setSelectedOptions] = useState([]);
   const [dataExcel, setDataExcel] = useState([]);
-  const [uti, setUti] = useState([]);
-  const [value, setValue] = useState(false);
   const [listImage, setListImage] = useState([]);
-  let options = [
-    { value: "Bồn tắm", label: "Bồn tắm" },
-    { value: "Bếp riêng", label: "Bếp riêng" },
-    { value: "Nhìn ra hồ", label: "Nhìn ra hồ" },
-    { value: "Nhìn ra thành phố", label: "Nhìn ra thành phố" },
-    { value: "Nhìn ra sông", label: "Nhìn ra sông" },
-    { value: "TV màn hình phẳng", label: "TV màn hình phẳng" },
-    { value: "Hệ thống cách âm", label: "Hệ thống cách âm" },
-    { value: "Wifi miễn phí", label: "Wifi miễn phí" },
-    { value: "Ban công", label: "Ban công" },
-    { value: "Tầm nhìn ra khung cảnh", label: "Tầm nhìn ra khung cảnh" },
-    {
-      value: "Phòng tắm riêng trong phòng",
-      label: "Phòng tắm riêng trong phòng",
-    },
-    { value: "Điều hòa không khí", label: "Điều hòa không khí" },
-    { value: "Sân hiên", label: "Sân hiên" },
-  ];
 
-  const handleChange = (selectedOptions) => {
-    let dataUti = selectedOptions.map((item) => item.value);
-    setUti(dataUti);
-    setSelectedOptions(selectedOptions);
-  };
 
-  const handleAddListImage = (file) => {
+  const handleAddListImage = async(file) => {
     //listImage have id, img
     const listImageTemp = [...listImage];
     for (let i = 0; i < file.length; i++) {
       const storageRef = ref(storage, `/${userInfo.idHotel}/${file[i].name}`);
-      uploadBytes(storageRef, file[i]).then((snapshot) => {
+     await uploadBytes(storageRef, file[i]).then(async(snapshot) => {
         const pathReference = ref(
           storage,
           `/${userInfo.idHotel}/${file[i].name}`
         );
-        getDownloadURL(pathReference).then((url) => {
+       await getDownloadURL(pathReference).then((url) => {
           listImageTemp.push(url);
-          setListImage(listImageTemp);
         });
       });
     }
+    setListImage(listImageTemp);
     // 'file' comes from the Blob or File API
   };
 
@@ -82,7 +54,6 @@ const AddNewRoom = ({ title, inputs }) => {
         });
       })
     }
-    console.log(listImageTemp);
     setListImage(listImageTemp);
     // 'file' comes from the Blob or File API
   };
@@ -97,6 +68,10 @@ const AddNewRoom = ({ title, inputs }) => {
       let price = parseInt(value);
       setFormData({ ...formData, [id]: price });
     } else {
+      if(id==="max_power"||id==="Fuel"||id==="speed_4s"||id==="speed_max"){
+        setFormData({ ...formData, "specification":{...formData.specification,[id]:value} });
+        return;
+      }
       setFormData({ ...formData, [id]: value });
     }
   };
@@ -110,7 +85,6 @@ const AddNewRoom = ({ title, inputs }) => {
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
-      console.log(file);
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workBook = XLSX.read(data, { type: "array" });
@@ -126,33 +100,26 @@ const AddNewRoom = ({ title, inputs }) => {
             img: [],
           };
           listImageTemp.push(urlExcel);
-          let selected = item.utility.split(", ");
-          let seleted = selected.map((item) => ({ value: item, label: item }));
-          item.utility = seleted;
         });
         setListImage(listImageTemp);
-        console.log(dataExcel);
-        console.log(listImageTemp);
       };
     };
     input.click();
   };
 
-  const handleSaveDataExcel = () => {
+  const handleSaveDataExcel = async() => {
     const dataExcelTemp = [...dataExcel];
     const listImageTemp = [...listImage];
     console.log(dataExcelTemp);
-    dataExcelTemp.forEach(async(item,index) => {
+   await dataExcelTemp.forEach(async(item,index) => {
       const data = {
         ...item,
         hotel_id: userInfo.idHotel,
         image: listImageTemp[index].img,
-        utility:item.utility.map((item) => item.value),
-        tag: [],
       };
-      console.log(data);
-      const res = await AddNewRoomInHotel(data);
+      const res = await AddNewVehicleInHotel(data);
     });
+    navigate("/listvehicle");
   };
 
   const handleDeleteImage = (img) => {
@@ -194,7 +161,6 @@ const AddNewRoom = ({ title, inputs }) => {
         // Uh-oh, an error occurred!
       });
     listImageTemp[indexDelete].img.splice(index, 1);
-    console.log(listImageTemp);
     setListImage(listImageTemp);
   };
 
@@ -203,13 +169,11 @@ const AddNewRoom = ({ title, inputs }) => {
     const data = {
       ...formData,
       image: listImage,
-      isactive: value,
-      utility: uti,
-      tag: [],
     };
-    const res = await AddNewRoomInHotel(data);
-    navigate("/listroom");
+    const res = await AddNewVehicleInHotel(data);
+    navigate("/listvehicle");
   };
+
 
   return (
     <div className="new">
@@ -287,34 +251,37 @@ const AddNewRoom = ({ title, inputs }) => {
                           />
                         </div>
                       ))}
-                      <Select
-                        className="selectStyle"
-                        options={options}
-                        isMulti
-                        value={item.utility}
-                        onChange={(e) => {
-                          console.log(index);
-                          const newItem = { ...item };
-                          newItem.utility = e;
-                          const newData = [...dataExcel];
-                          newData[index] = newItem;
-                          setDataExcel(newData);
-                        }}
-                      />
-                      <div className="switchStyle">
-                        <span className="spanStyle">Active</span>
-                        <Switch
-                          isOn={item.isactive}
-                          handleToggle={() => {
-                            const newItem = { ...item };
-                            newItem.isactive = !newItem.isactive;
-                            const newData = [...dataExcel];
-                            newData[index] = newItem;
-                            setDataExcel(newData);
-                          }}
-                          index={index}
-                        />
-                      </div>
+                      <div className="formInput">
+                    <label>Specification</label>
+                    <input
+                    type={"text"}
+                    id={"max_power"}
+                    value={formData["specification"]&&formData["specification"]["max_power"] || ""}
+                    placeholder={"Max Power"}
+                    onChange={handleChangeInput}
+                    />
+                    <input
+                    type={"text"}
+                    id={"Fuel"}
+                    value={formData["specification"]&&formData["specification"]["Fuel"] || ""}
+                    placeholder={"Fuel"}
+                    onChange={handleChangeInput}
+                    />
+                    <input
+                    type={"text"}
+                    id={"speed_4s"}
+                    value={formData["specification"]&&formData["specification"]["speed_4s"] || ""}
+                    placeholder={"Speed 4s"}
+                    onChange={handleChangeInput}
+                    />
+                    <input
+                    type={"text"}
+                    id={"speed_max"}
+                    value={formData["specification"]&&formData["specification"]["speed_max"] || ""}
+                    placeholder={"Speed Max"}
+                    onChange={handleChangeInput}
+                    />
+                  </div>
                     </form>
                   </div>
                 </div>
@@ -372,18 +339,35 @@ const AddNewRoom = ({ title, inputs }) => {
                       />
                     </div>
                   ))}
-                  <Select
-                    className="selectStyle"
-                    options={options}
-                    isMulti
-                    value={selectedOptions}
-                    onChange={handleChange}
-                  />
-                  <div className="switchStyle">
-                    <span className="spanStyle">Active</span>
-                    <Switch
-                      isOn={value}
-                      handleToggle={() => setValue(!value)}
+                  <div className="formInput">
+                    <label>Specification</label>
+                    <input
+                    type={"text"}
+                    id={"max_power"}
+                    value={formData["specification"]&&formData["specification"]["max_power"] || ""}
+                    placeholder={"Max Power"}
+                    onChange={handleChangeInput}
+                    />
+                    <input
+                    type={"text"}
+                    id={"Fuel"}
+                    value={formData["specification"]&&formData["specification"]["Fuel"] || ""}
+                    placeholder={"Fuel"}
+                    onChange={handleChangeInput}
+                    />
+                    <input
+                    type={"text"}
+                    id={"speed_4s"}
+                    value={formData["specification"]&&formData["specification"]["speed_4s"] || ""}
+                    placeholder={"Speed 4s"}
+                    onChange={handleChangeInput}
+                    />
+                    <input
+                    type={"text"}
+                    id={"speed_max"}
+                    value={formData["specification"]&&formData["specification"]["speed_max"] || ""}
+                    placeholder={"Speed Max"}
+                    onChange={handleChangeInput}
                     />
                   </div>
                   <button className="buttonSave">Save</button>
@@ -397,4 +381,4 @@ const AddNewRoom = ({ title, inputs }) => {
   );
 };
 
-export default AddNewRoom;
+export default AddNewVehicle;

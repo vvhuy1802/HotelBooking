@@ -97,19 +97,19 @@ const UpdateRoom = ({ title }) => {
     setSelectedOptions(selectedOptions);
   };
 
-  const handleAddListImage = (file) => {
+  const handleAddListImage = async(file) => {
     //listImage have id, img
     const listImageTemp = [...listImage];
     for (let i = 0; i < file.length; i++) {
       const storageRef = ref(storage, `/${state.hotel_id}/${file[i].name}`);
-      uploadBytes(storageRef, file[i]).then((snapshot) => {
+     await uploadBytes(storageRef, file[i]).then(async(snapshot) => {
         const pathReference = ref(storage, `/${state.hotel_id}/${file[i].name}`);
-        getDownloadURL(pathReference).then((url) => {
+       await getDownloadURL(pathReference).then((url) => {
           listImageTemp.push(url);
-          setListImage(listImageTemp);
         });
       });
     }
+    setListImage(listImageTemp);
     // 'file' comes from the Blob or File API
  
   };

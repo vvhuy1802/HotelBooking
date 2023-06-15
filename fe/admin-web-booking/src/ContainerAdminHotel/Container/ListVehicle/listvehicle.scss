@@ -3,6 +3,11 @@
     width: 100%;
 
     .listContainer {
-        flex:6
+        flex:6;
+        .noData{
+            text-align: center;
+            margin-top: 20%;
+            font-size: 20px;
+        }
     }
 }

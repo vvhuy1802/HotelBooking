@@ -21,6 +21,7 @@ const AddNewVehicle = async (req, res) => {
         hotel_id,
         description,
   });
+
   const hotel = await Hotel.find({ id: hotel_id });
   hotel[0].vehicles.push(String(vehicle._id));
   hotel[0].save();
