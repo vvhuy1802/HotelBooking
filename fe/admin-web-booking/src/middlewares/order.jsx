@@ -17,3 +17,9 @@ export const GetOrderByDate = async (data) => {
   const response = await POST(path, data);
   return response;
 };
+
+export const GetOrderByQuarter = async (data) => {
+  const path = `/orders/getbyquarter`;
+  const response = await POST(path, data);
+  return response;
+};

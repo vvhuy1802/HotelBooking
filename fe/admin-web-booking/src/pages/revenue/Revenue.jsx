@@ -1,9 +1,11 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { moneyAdapter } from "../../functions/Adapter";
 import "./revenue.scss";
 
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import { useSelector } from "react-redux";
+import CircularProgress from "@mui/material/CircularProgress";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import dayjs from "dayjs";
 import isBetweenPlugin from "dayjs/plugin/isBetween";
@@ -12,13 +14,14 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { MonthCalendar } from "@mui/x-date-pickers/MonthCalendar";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 
-import { GetOrderByDate } from "../../middlewares/order";
+import Radio from "@mui/material/Radio";
+
+import { GetOrderByDate, GetOrderByQuarter } from "../../middlewares/order";
 
 import {
   BarChart,
   AreaChart,
   Bar,
-  Cell,
   Area,
   XAxis,
   YAxis,
@@ -26,6 +29,8 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  LineChart,
+  Line,
 } from "recharts";
 
 dayjs.extend(isBetweenPlugin);
@@ -104,6 +109,8 @@ function Custom(props) {
   );
 }
 
+const options = ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"];
+
 function Revenue() {
   const [openCalendar, setOpenCalendar] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
@@ -116,10 +123,14 @@ function Revenue() {
     endDate: "",
   });
   const [dataChart, setDataChart] = useState([]);
+  const [dataShowQuarter, setDataShowQuarter] = useState([]);
   const isFirstChoise = useRef(true);
   const [loading, setLoading] = useState(true);
+  const [loadingQ, setLoadingQ] = useState(true);
   const [typeSelect, setTypeSelect] = useState("day");
   const [typeShow, setTypeShow] = useState("Today:");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [valueQuarter, setValueQuarter] = React.useState(options[1]);
 
   const { typeMoney, totalOrder } = useSelector((state) => state.global);
 
@@ -160,7 +171,7 @@ function Revenue() {
     return monthNames[month];
   }
 
-  const handlePushData = () => {
+  const handlePushData = useCallback(() => {
     totalOrder.data?.forEach((item) => {
       if (item.status !== "Cancelled") {
         const date = new Date(item.check_in);
@@ -176,6 +187,40 @@ function Revenue() {
         dataByYear[year].dataMonths[month].orders.push(item);
       }
     });
+  }, []);
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip">
+          <p className="intro">{label}</p>
+          <p className="label">{`Total : ${moneyAdapter(
+            payload[0].payload.total,
+            typeMoney
+          )}`}</p>
+        </div>
+      );
+    }
+  };
+
+  const CustomTooltipQuarter = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip">
+          <p className="intro">{label}</p>
+          <p className="label">{`Total : ${moneyAdapter(
+            payload[0].payload[selectedValue?.first],
+            typeMoney
+          )}`}</p>
+          {selectedValue?.second !== "" && (
+            <p className="label">{`Total : ${moneyAdapter(
+              payload[0].payload[selectedValue?.second],
+              typeMoney
+            )}`}</p>
+          )}
+        </div>
+      );
+    }
   };
 
   useEffect(() => {
@@ -194,10 +239,10 @@ function Revenue() {
     const dataByDate = [];
     const start = new Date(s);
     const end = new Date(e);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
 
-    const startD = new Date(start.toISOString().split("T")[0]);
-    const endD = new Date(end.toISOString().split("T")[0]);
-    const timeDiff = Math.abs(endD.getTime() - startD.getTime());
+    const timeDiff = Math.abs(end.getTime() - start.getTime());
     const numDays = Math.ceil(timeDiff / (24 * 60 * 60 * 1000));
 
     if (numDays === 0) {
@@ -226,9 +271,6 @@ function Revenue() {
         dataByDate.push(item);
       }
     }
-
-    console.log(dataByDate);
-    console.log(data);
 
     data?.forEach((item) => {
       const index = dataByDate.findIndex((x) => x.date === item.check_in);
@@ -290,12 +332,11 @@ function Revenue() {
   };
 
   const handleChooseDate = (date) => {
-    const newDate = new Date(date);
     switch (typeSelect) {
       case "day":
         setValueDay(date);
-        setStartDate(newDate);
-        setEndDate(newDate);
+        setStartDate(dayjs(date).toDate());
+        setEndDate(dayjs(date).toDate());
         setTypeShow("Today:");
         setValueWeek();
         setValueMonth();
@@ -371,6 +412,113 @@ function Revenue() {
         break;
     }
   };
+
+  const [selectedValue, setSelectedValue] = useState({
+    first: "2023",
+    second: "",
+  });
+  const handleChange = (event) => {
+    if (selectedValue.second === "") {
+      setSelectedValue({
+        ...selectedValue,
+        second: event.target.value,
+      });
+    } else {
+      setSelectedValue({
+        first: selectedValue.second,
+        second: event.target.value,
+      });
+    }
+  };
+  const controlProps = (item) => ({
+    checked: selectedValue.first === item || selectedValue.second === item,
+    onChange: handleChange,
+    value: item,
+    name: "size-radio-button-demo",
+    inputProps: { "aria-label": item },
+    onClick: () => {
+      if (item === selectedValue.second && selectedValue.first !== "") {
+        setSelectedValue({
+          ...selectedValue,
+          second: "",
+        });
+      } else if (item === selectedValue.first && selectedValue.second !== "") {
+        setSelectedValue({
+          first: selectedValue.second,
+          second: "",
+        });
+      }
+    },
+  });
+
+  const handleGetDataQuarter = useCallback(async (value) => {
+    const data = {
+      quarter: Number(value.split(" ")[1]),
+    };
+    await GetOrderByQuarter(data).then((res) => {
+      setDataShowQuarter(res.data.data);
+    });
+    setLoadingQ(false);
+  }, []);
+
+  useEffect(() => {
+    setLoadingQ(true);
+    handleGetDataQuarter(valueQuarter);
+  }, [valueQuarter]);
+
+  const [dataChartQuarter, setDataChartQuarter] = useState([]);
+  const handleChooseYearToGetDataQuarter = useCallback(
+    (first, second) => {
+      const indexFirst = dataShowQuarter.findIndex(
+        (x) => x.year === Number(first)
+      );
+      const indexSecond = dataShowQuarter.findIndex(
+        (x) => x.year === Number(second)
+      );
+      const data =
+        indexSecond !== -1
+          ? [
+              {
+                name: dataShowQuarter[indexFirst]?.month[0].name,
+                [first]: dataShowQuarter[indexFirst]?.month[0].total,
+                [second]: dataShowQuarter[indexSecond]?.month[0].total,
+              },
+              {
+                name: dataShowQuarter[indexFirst]?.month[1].name,
+                [first]: dataShowQuarter[indexFirst]?.month[1].total,
+                [second]: dataShowQuarter[indexSecond]?.month[1].total,
+              },
+              {
+                name: dataShowQuarter[indexFirst]?.month[2].name,
+                [first]: dataShowQuarter[indexFirst]?.month[2].total,
+                [second]: dataShowQuarter[indexSecond]?.month[2].total,
+              },
+            ]
+          : [
+              {
+                name: dataShowQuarter[indexFirst]?.month[0].name,
+                [first]: dataShowQuarter[indexFirst]?.month[0].total,
+              },
+              {
+                name: dataShowQuarter[indexFirst]?.month[1].name,
+                [first]: dataShowQuarter[indexFirst]?.month[1].total,
+              },
+              {
+                name: dataShowQuarter[indexFirst]?.month[2].name,
+                [first]: dataShowQuarter[indexFirst]?.month[2].total,
+              },
+            ];
+      setDataChartQuarter(data);
+    },
+    [dataShowQuarter]
+  );
+  useEffect(() => {
+    handleChooseYearToGetDataQuarter(
+      selectedValue?.first,
+      selectedValue?.second
+    );
+  }, [selectedValue, dataShowQuarter]);
+
   return (
     <div className="revenue">
       <div className="container">
@@ -390,120 +538,118 @@ function Revenue() {
                 }`}
               >
                 <div className="overview__title__date--type">{typeShow}</div>
-                <div className="overview__title__date--start">
+                <div className="overview__title__date--time">
                   {formatDate(startDate)}
                 </div>
-                <div className="overview__title__date--separate">-</div>
-                <div className="overview__title__date--end">
+                <div className="overview__title__date--time">-</div>
+                <div className="overview__title__date--time">
                   {formatDate(endDate)}
                 </div>
                 <CalendarTodayIcon className="icon" />
               </div>
             </div>
-            {openCalendar && (
-              <div className="date-picker">
-                <div className="date-picker__header">
-                  <div
-                    onClick={() => {
-                      handleChooseType("day");
-                    }}
-                    className={`date-picker__header--title ${
-                      typeSelect === "day" ? "active" : ""
-                    }`}
-                  >
-                    Day
-                  </div>
-                  <div>|</div>
-                  <div
-                    onClick={() => {
-                      handleChooseType("week");
-                    }}
-                    className={`date-picker__header--title ${
-                      typeSelect === "week" ? "active" : ""
-                    }`}
-                  >
-                    Week
-                  </div>
-                  <div>|</div>
-                  <div
-                    onClick={() => {
-                      handleChooseType("month");
-                    }}
-                    className={`date-picker__header--title ${
-                      typeSelect === "month" ? "active" : ""
-                    }`}
-                  >
-                    Month
-                  </div>
-                  <div>|</div>
-                  <div
-                    onClick={() => {
-                      handleChooseType("custom");
-                    }}
-                    className={`date-picker__header--title ${
-                      typeSelect === "custom" ? "active" : ""
-                    }`}
-                  >
-                    Custom
-                  </div>
+            <div className={`date-picker ${openCalendar ? "active" : ""}`}>
+              <div className="date-picker__header">
+                <div
+                  onClick={() => {
+                    handleChooseType("day");
+                  }}
+                  className={`date-picker__header--title ${
+                    typeSelect === "day" ? "active" : ""
+                  }`}
+                >
+                  Day
                 </div>
-                <div className="date-picker__content">
-                  {typeSelect === "day" && (
-                    <DateCalendar
-                      value={valueDay}
-                      onChange={(newValue) => {
-                        handleChooseDate(newValue);
-                      }}
-                      disableFuture
-                    />
-                  )}
-                  {typeSelect === "week" && (
-                    <DateCalendar
-                      value={valueWeek}
-                      showDaysOutsideCurrentMonth
-                      fixedWeekNumber={6}
-                      onChange={(newValue) => {
-                        handleChooseDate(newValue);
-                      }}
-                      slots={{ day: Day }}
-                      slotProps={{
-                        day: {
-                          selectedDay: valueWeek,
-                        },
-                      }}
-                      disableFuture
-                    />
-                  )}
-                  {typeSelect === "month" && (
-                    <MonthCalendar
-                      value={valueMonth}
-                      onChange={(newValue) => {
-                        handleChooseDate(newValue);
-                      }}
-                      disableFuture
-                    />
-                  )}
-                  {typeSelect === "custom" && (
-                    <DateCalendar
-                      showDaysOutsideCurrentMonth
-                      fixedWeekNumber={6}
-                      date={new Date()}
-                      onChange={(newValue) => {
-                        handleChooseDate(newValue);
-                      }}
-                      slots={{ day: Custom }}
-                      slotProps={{
-                        day: {
-                          firstDay: valueCustom.startDate,
-                          lastDay: valueCustom.endDate,
-                        },
-                      }}
-                      disableFuture
-                    />
-                  )}
+                <div>|</div>
+                <div
+                  onClick={() => {
+                    handleChooseType("week");
+                  }}
+                  className={`date-picker__header--title ${
+                    typeSelect === "week" ? "active" : ""
+                  }`}
+                >
+                  Week
+                </div>
+                <div>|</div>
+                <div
+                  onClick={() => {
+                    handleChooseType("month");
+                  }}
+                  className={`date-picker__header--title ${
+                    typeSelect === "month" ? "active" : ""
+                  }`}
+                >
+                  Month
+                </div>
+                <div>|</div>
+                <div
+                  onClick={() => {
+                    handleChooseType("custom");
+                  }}
+                  className={`date-picker__header--title ${
+                    typeSelect === "custom" ? "active" : ""
+                  }`}
+                >
+                  Custom
                 </div>
               </div>
-            )}
+              <div className="date-picker__content">
+                {typeSelect === "day" && (
+                  <DateCalendar
+                    value={valueDay}
+                    onChange={(newValue) => {
+                      handleChooseDate(newValue);
+                    }}
+                    disableFuture
+                  />
+                )}
+                {typeSelect === "week" && (
+                  <DateCalendar
+                    value={valueWeek}
+                    showDaysOutsideCurrentMonth
+                    fixedWeekNumber={6}
+                    onChange={(newValue) => {
+                      handleChooseDate(newValue);
+                    }}
+                    slots={{ day: Day }}
+                    slotProps={{
+                      day: {
+                        selectedDay: valueWeek,
+                      },
+                    }}
+                    disableFuture
+                  />
+                )}
+                {typeSelect === "month" && (
+                  <MonthCalendar
+                    value={valueMonth}
+                    onChange={(newValue) => {
+                      handleChooseDate(newValue);
+                    }}
+                    disableFuture
+                  />
+                )}
+                {typeSelect === "custom" && (
+                  <DateCalendar
+                    showDaysOutsideCurrentMonth
+                    fixedWeekNumber={6}
+                    date={new Date()}
+                    onChange={(newValue) => {
+                      handleChooseDate(newValue);
+                    }}
+                    slots={{ day: Custom }}
+                    slotProps={{
+                      day: {
+                        firstDay: valueCustom.startDate,
+                        lastDay: valueCustom.endDate,
+                      },
+                    }}
+                    disableFuture
+                  />
+                )}
+              </div>
+            </div>
           </div>
           <div className="overview__content">
             <div className="overview__content--header">
@@ -511,7 +657,9 @@ function Revenue() {
             </div>
             <div className="overview__content--chart">
               {loading ? (
-                <></>
+                <>
+                  <CircularProgress />
+                </>
               ) : typeShow === "Today:" ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
@@ -527,11 +675,15 @@ function Revenue() {
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
+                    <YAxis
+                      tickFormatter={(value) =>
+                        `${moneyAdapter(value, typeMoney, "chart")}`
+                      }
+                    />
+                    <Tooltip content={<CustomTooltip />} />
                     <Bar
                       dataKey="total"
-                      fill="#8884d8"
+                      fill="#82ca9d"
                       barSize={30}
                       radius={[5, 5, 0, 0]}
                     />
@@ -553,8 +705,12 @@ function Revenue() {
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
+                    <YAxis
+                      tickFormatter={(value) =>
+                        `${moneyAdapter(value, typeMoney, "chart")}`
+                      }
+                    />
+                    <Tooltip content={<CustomTooltip />} />
                     <Area
                       type="monotone"
                       dataKey="total"
@@ -563,6 +719,122 @@ function Revenue() {
                     />
                   </AreaChart>
                 </ResponsiveContainer>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="quarter">
+          <div className="quarter__content">
+            <div className="quarter__content--header">
+              <div className="quarter__content--header--title">Quarter</div>
+
+              <div
+                onClick={() => {
+                  setShowDropdown(!showDropdown);
+                }}
+                className="dropdown"
+              >
+                <p>{valueQuarter}</p>
+                <KeyboardArrowDownIcon className="icon" />
+              </div>
+              <div
+                className={`
+                dropdown__content ${showDropdown ? "active" : ""}
+                `}
+              >
+                {options.map((item, index) => (
+                  <div
+                    className="dropdown__content--item"
+                    key={index}
+                    onClick={() => {
+                      setValueQuarter(item);
+                      setShowDropdown(false);
+                    }}
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="quarter__content--container">
+              {loadingQ ? (
+                <div className="loadingQ">
+                  <CircularProgress />
+                </div>
+              ) : (
+                <>
+                  <div className="tab">
+                    <div className="yearTab">
+                      {dataShowQuarter
+                        .map((item, index) => (
+                          <div key={index} className="yearTab--item">
+                            <div className="yearTab--item--header">
+                              <div className="yearTab--item--title">
+                                Year: {item.year}
+                              </div>
+                              <Radio
+                                {...controlProps(`${item.year}`)}
+                                size="small"
+                              />
+                            </div>
+                            <div className="yearTab--item--content">
+                              {moneyAdapter(item.totalQuarter, typeMoney)}
+                            </div>
+                          </div>
+                        ))
+                        .reverse()}
+                    </div>
+                  </div>
+                  <div className="chartQuarter">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        width={500}
+                        height={300}
+                        data={dataChartQuarter}
+                        margin={{
+                          top: 5,
+                          right: 30,
+                          left: 20,
+                          bottom: 5,
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis
+                          yAxisId="left"
+                          orientation="left"
+                          tickFormatter={(value) =>
+                            `${moneyAdapter(value, typeMoney, "chart")}`
+                          }
+                        />
+                        <YAxis
+                          yAxisId="right"
+                          orientation="right"
+                          tickFormatter={(value) =>
+                            `${moneyAdapter(value, typeMoney, "chart")}`
+                          }
+                        />
+                        <Tooltip content={<CustomTooltipQuarter />} />
+                        <Legend />
+                        <Line
+                          yAxisId="left"
+                          type="monotone"
+                          dataKey={selectedValue?.first}
+                          stroke="#8884d8"
+                          activeDot={{ r: 8 }}
+                        />
+                        <Line
+                          yAxisId="right"
+                          type="monotone"
+                          dataKey={selectedValue?.second}
+                          stroke="#82ca9d"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </>
               )}
             </div>
           </div>

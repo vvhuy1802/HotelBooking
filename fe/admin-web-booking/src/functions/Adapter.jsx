@@ -1,4 +1,4 @@
-const moneyAdapter = (money, type) => {
+const moneyAdapter = (money, type, req) => {
   var m = 0;
   if (type === "VND") {
     m = money.toLocaleString("it-IT", {
@@ -10,6 +10,10 @@ const moneyAdapter = (money, type) => {
       style: "currency",
       currency: "USD",
     });
+  }
+  if (req === "chart") {
+    m = (money / 1000000).toFixed(2) + "M";
+    return m;
   }
   return m.split(".")[1] === "00" ? m.split(".")[0] : m;
 };
