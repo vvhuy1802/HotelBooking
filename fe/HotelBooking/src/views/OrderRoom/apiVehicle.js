@@ -31,3 +31,26 @@ export const GetVehicleById = async(id) => {
     };
   }
 }
+
+export const AddNewVehicle = async (data) => {
+  const API = `${LOCAL_API_URL}/vehicle/addnewvehicle`;
+  try {
+    const response = await fetch(API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+      // body: data,
+    });
+    const res = await response.json();
+    return {status: 200, data: res};
+  } catch (error) {
+    return {
+      status: 401,
+      message:
+        'An error occurred while getting orders. Please try again later.',
+      error: error,
+    };
+  }
+}

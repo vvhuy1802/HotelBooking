@@ -1,4 +1,4 @@
-const motorcycleArray = [
+export let motorcycleArray = [
         {
           name: "Exciter 150",
           brand: "Yamaha",
@@ -22,7 +22,7 @@ const motorcycleArray = [
             speed_4s: "3.9 giây",
             max_Speed: "120 km/h"
           },
-          price: 40000000,
+          price: 400000,
           image: "winnerx.jpg",
           hotel_id: "winnerx",
           description: "Một dòng xe mô tô thời trang và tiết kiệm nhiên liệu."
@@ -36,7 +36,7 @@ const motorcycleArray = [
             speed_4s: "4.5 giây",
             max_Speed: "110 km/h"
           },
-          price: 38000000,
+          price: 380000,
           image: "airblade.jpg",
           hotel_id: "airblade",
           description: "Một dòng xe tay ga phổ biến được biết đến với sự thoải mái và tiện ích của nó."
@@ -50,7 +50,7 @@ const motorcycleArray = [
             speed_4s: "5.5 giây",
             max_Speed: "90 km/h"
           },
-          price: 25000000,
+          price: 250000,
           image: "sirius.jpg",
           hotel_id: "sirius",
           description: "Một dòng xe mô tô cỡ nhỏ đáng tin cậy và giá cả phải chăng."
@@ -64,7 +64,7 @@ const motorcycleArray = [
             speed_4s: "5.8 giây",
             max_Speed: "85 km/h"
           },
-          price: 27000000,
+          price: 270000,
           image: "vision.jpg",
           hotel_id: "vision",
           description: "Một dòng xe tay ga nhẹ và tiết kiệm nhiên liệu."
@@ -78,7 +78,7 @@ const motorcycleArray = [
             speed_4s: "6.2 giây",
             max_Speed: "80 km/h"
           },
-          price: 22000000,
+          price: 220000,
           image: "wavealpha.jpg",
           hotel_id: "wavealpha",
           description: "Lựa chọn phổ biến cho việc di chuyển hàng ngày."
@@ -92,7 +92,7 @@ const motorcycleArray = [
             speed_4s: "3.1 giây",
             max_Speed: "140 km/h"
           },
-          price: 55000000,
+          price: 550000,
           image: "exciter155vva.jpg",
           hotel_id: "exciter155vva",
           description: "Một dòng xe mô tô thể thao cao cấp với Cơ chế Van Biến Thiên (VVA)."
@@ -106,7 +106,7 @@ const motorcycleArray = [
             speed_4s: "6.5 giây",
             max_Speed: "75 km/h"
           },
-          price: 24000000,
+          price: 240000,
           image: "vision110.jpg",
           hotel_id: "vision110",
           description: "Một dòng xe tay ga nhỏ gọn và tiết kiệm nhiên liệu cho việc đi lại trong thành phố."
@@ -120,7 +120,7 @@ const motorcycleArray = [
             speed_4s: "4.2 giây",
             max_Speed: "125 km/h"
           },
-          price: 42000000,
+          price: 420000,
           image: "exciter135.jpg",
           hotel_id: "exciter135",
           description: "Lựa chọn phổ biến cho các đam mê xe mô tô."
@@ -134,7 +134,7 @@ const motorcycleArray = [
             speed_4s: "5.0 giây",
             max_Speed: "95 km/h"
           },
-          price: 32000000,
+          price: 320000,
           image: "shmode.jpg",
           hotel_id: "shmode",
           description: "Một dòng xe tay ga thời trang và thoải mái cho việc di chuyển trong thành phố."
@@ -148,7 +148,7 @@ const motorcycleArray = [
             speed_4s: "5.7 giây",
             max_Speed: "87 km/h"
           },
-          price: 29000000,
+          price: 290000,
           image: "lead.jpg",
           hotel_id: "lead",
           description: "Một dòng xe tay ga thực tế và đáng tin cậy cho việc sử dụng hàng ngày."
@@ -162,7 +162,7 @@ const motorcycleArray = [
             speed_4s: "4.5 giây",
             max_Speed: "115 km/h"
           },
-          price: 38000000,
+          price: 380000,
           image: "winners.jpg",
           hotel_id: "winners",
           description: "Một dòng xe mô tô thể thao thể thao và linh hoạt cho cả đường phố và xa lộ."
@@ -176,7 +176,7 @@ const motorcycleArray = [
             speed_4s: "4.0 giây",
             max_Speed: "105 km/h"
           },
-          price: 47000000,
+          price: 470000,
           image: "pcxhybrid.jpg",
           hotel_id: "pcxhybrid",
           description: "Một dòng xe tay ga hybrid với hiệu suất nhiên liệu xuất sắc."
@@ -190,7 +190,7 @@ const motorcycleArray = [
             speed_4s: "5.5 giây",
             max_Speed: "90 km/h"
           },
-          price: 33000000,
+          price: 330000,
           image: "airblade125.jpg",
           hotel_id: "airblade125",
           description: "Một dòng xe tay ga mạnh mẽ và đầy tính năng cho các tay lái đô thị."
@@ -204,10 +204,11 @@ const motorcycleArray = [
             speed_4s: "3.0 giây",
             max_Speed: "150 km/h"
           },
-          price: 59000000,
+          price: 590000,
           image: "raider150.jpg",
           hotel_id: "raider150",
           description: "Một dòng xe mô tô hiệu suất cao nổi tiếng với tốc độ và sự linh hoạt của nó."
         }
       ];
       
+

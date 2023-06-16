@@ -5,8 +5,10 @@ import Icon from "react-native-vector-icons/FontAwesome"
 import CustomHeader from '../../components/CustomHeader';
 import Lottie from 'lottie-react-native';
 import { useTheme } from 'react-native-paper';
-import { GetAllVehicle, GetVehicleById } from './apiVehicle';
+import { AddNewVehicle, GetAllVehicle, GetVehicleById } from './apiVehicle';
+
 import { useSelector } from 'react-redux';
+import { motorcycleArray } from './datavehicle';
 
 const width = Dimensions.get("window").width
 const HireVehicle = ({navigation}) => {
@@ -27,7 +29,6 @@ const HireVehicle = ({navigation}) => {
     return number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
   };
 
-
   const onChangeSearchKey = text => {
       let dataFil= data.filter(item => {
         console.log(item.name.toLowerCase())
@@ -44,6 +45,26 @@ const HireVehicle = ({navigation}) => {
   useEffect(() => {
         initFetch();
   }, []);
+
+  const AddData = async () => {
+        //random number from 0 to 14
+        let add=6;
+        motorcycleArray.map(async (item,index)=>{
+                if(index<add){
+                        let previousRandom = -1;
+                        let random = -1;
+                        
+                        do {
+                          random = Math.floor(Math.random() * 15);
+                        } while (random === previousRandom);
+                        
+                        previousRandom = random;
+                motorcycleArray[random].hotel_id=idHotel;
+                motorcycleArray[random].image=[];
+                const res= await AddNewVehicle(motorcycleArray[random]);
+                }
+        })
+  }
 
   const renderVehicle = (item,index) => {
         return (
@@ -69,7 +90,7 @@ const HireVehicle = ({navigation}) => {
                         }}>
                                 <Image
                                 source={{
-                                      uri:item.image
+                                      uri:item.image[0]
                                 }}
                                 style={{
                                         width: 200,
@@ -174,6 +195,13 @@ const HireVehicle = ({navigation}) => {
         marginTop:20,
         marginHorizontal:5
       }}>
+        <TouchableOpacity style={{height:50,width:200,backgroundColor:"blue"}} onPress={()=>{
+                AddData()
+        }}>
+                <Text>
+                        ADD DATA
+                </Text>
+        </TouchableOpacity>
         <Input
           value={searchKey}
           onChangeText={text => setSearchKey(text)}

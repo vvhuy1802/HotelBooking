@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import KingBedOutlinedIcon from '@mui/icons-material/KingBedOutlined';
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
@@ -85,24 +86,18 @@ const SideBarHotel = () => {
             </li>
           </CustomLink>
           <p className="title">SERVICE</p>
-          <li
-            className={stateSidebar === "Notifications" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Notifications");
-            }}
-          >
-            <NotificationsNoneOutlinedIcon className="icon" />
-            <span>Notifications</span>
-          </li>
-          <li
-            className={stateSidebar === "Settings" ? "onUse" : ""}
-            onClick={() => {
-              setActive("Settings");
-            }}
-          >
-            <SettingsOutlinedIcon className="icon" />
-            <span>Settings</span>
-          </li>
+          <CustomLink to="chat">
+            <li
+              className={stateSidebar === "Chats" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Chats");
+              }}
+            >
+              <HeadsetMicIcon className="icon" />
+              <div className="NewMsg" />
+              <span>Chat</span>
+            </li>
+          </CustomLink>
           <p className="title">ACCOUNT</p>
           <li
             className={stateSidebar === "Profile" ? "onUse" : ""}
