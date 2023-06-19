@@ -51,15 +51,8 @@ const NavBar = () => {
             }}
           >
             <AttachMoneyIcon className="icon" />
+            <span>{typeMoney === "VND" ? "VND" : "USD"}</span>
           </div>
-          {/* <div className="item">
-            <NotificationsNoneOutlinedIcon className="icon" />
-            <div className="counter">1</div>
-          </div>
-          <div className="item">
-            <ChatBubbleOutlinedIcon className="icon" />
-            <div className="counter">2</div>
-          </div> */}
           <div className="item">
             <img src={avatar} alt="" className="avatar" />
           </div>

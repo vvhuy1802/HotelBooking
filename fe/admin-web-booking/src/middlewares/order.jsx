@@ -23,3 +23,9 @@ export const GetOrderByQuarter = async (data) => {
   const response = await POST(path, data);
   return response;
 };
+
+export const GetOrderByID = async (data) => {
+  const path = `/orders/${data}`;
+  const response = await GET(path);
+  return response;
+};

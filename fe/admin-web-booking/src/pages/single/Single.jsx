@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetSingleUser } from "../../middlewares/user";
 import { GetSingleAdmin } from "../../middlewares/admin";
 import { GetSingleHotel, UpdateHotel } from "../../middlewares/hotel";
+import { GetOrderByID } from "../../middlewares/order";
 import { setStateSidebar, updataSingleData } from "../../redux/Slices/Global";
-import { moneyAdapter } from "../../functions/Adapter";
+import { moneyAdapter, paymentAdapter } from "../../functions/Adapter";
 import { UpdateInfoAdmin } from "../../middlewares/admin";
 import { setAnnouncementAuto, setTotalAdmin } from "../../redux/Slices/Global";
 import { GetImageUrl } from "../../functions/Global";
+import CustomLink from "../../components/customlink/CustomLink";
 
 import Chart from "../../components/chart/Chart";
 import ListTable from "../../components/table/Table";
@@ -41,6 +43,7 @@ const Single = ({ inputs }) => {
   const [user, setUser] = useState({});
   const [admin, setAdmin] = useState({});
   const [hotel, setHotel] = useState({});
+  const [booking, setBooking] = useState({});
   const [file, setFile] = useState(null);
   const [listImage, setListImage] = useState([]);
   const [isShowImage, setIsShowImage] = useState(false);
@@ -99,12 +102,24 @@ const Single = ({ inputs }) => {
           });
         }
       });
+    } else if (currentPath.split("/")[1] === "booking") {
+      dispatch(setStateSidebar("booking"));
+      GetOrderByID(currentPath.split("/")[2]).then((res) => {
+        console.log(res.data.data);
+        if (res.status === 200) {
+          setBooking({
+            user: res.data.data.id_user,
+            room: res.data.data.id_room,
+            order: res.data.data,
+          });
+        }
+      });
     }
   }, [dispatch, currentPath]);
 
-  const totalSpending = () => {
+  const totalSpending = (data) => {
     var total = 0;
-    user?.orders?.forEach((order) => {
+    data?.orders?.forEach((order) => {
       total += order.total;
     });
     return moneyAdapter(total, typeMoney);
@@ -316,6 +331,14 @@ const Single = ({ inputs }) => {
     }
   };
 
+  const formatDate = (date) => {
+    const newDate = new Date(date);
+    const day = newDate.getDate();
+    const month = newDate.getMonth() + 1;
+    const year = newDate.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <div className="single">
       <div className="container">
@@ -368,7 +391,7 @@ const Single = ({ inputs }) => {
                   {user?.email ? (
                     <div className="bookingItem">
                       <span className="itemKey">Total Spending:</span>
-                      <span className="itemValue">{totalSpending()}</span>
+                      <span className="itemValue">{totalSpending(user)}</span>
                     </div>
                   ) : (
                     <Skeleton variant="text" className="skeletonText" />
@@ -482,7 +505,7 @@ const Single = ({ inputs }) => {
               </div>
             </div>
           </>
-        ) : (
+        ) : currentPath.split("/")[1] === "hotel" ? (
           <>
             <div className="bottomHotel">
               <div className="left">
@@ -619,6 +642,144 @@ const Single = ({ inputs }) => {
                     Save
                   </div>
                 </form>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="top">
+              <div className="left">
+                <h1 className="title">Information</h1>
+                <div className="item">
+                  {booking?.user?.email ? (
+                    <img src={avatar} alt="" className="itemImg" />
+                  ) : (
+                    <Skeleton variant="circular" className="itemImg" />
+                  )}
+                  <div className="details">
+                    {booking?.user?.email ? (
+                      <CustomLink to={`/user/${booking?.user?._id}`}>
+                        <h1 className="itemTitle">{booking?.user?.name}</h1>
+                      </CustomLink>
+                    ) : (
+                      <Skeleton variant="text" className="skeletonText dif" />
+                    )}
+                    {booking?.user?.email ? (
+                      <div className="detailItem">
+                        <span className="itemKey">Email:</span>
+                        <span className="itemValue">
+                          {booking?.user?.email}
+                        </span>
+                      </div>
+                    ) : (
+                      <Skeleton variant="text" className="skeletonText dif" />
+                    )}
+                    {booking?.user?.email ? (
+                      <div className="detailItem">
+                        <span className="itemKey">Phone:</span>
+                        <span className="itemValue">
+                          {booking?.user?.phone_number || "null"}
+                        </span>
+                      </div>
+                    ) : (
+                      <Skeleton variant="text" className="skeletonText dif" />
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="right booking">
+                <div className="room">
+                  <h1 className="title">Room</h1>
+                  <div className="roomItem">
+                    {booking?.room?.name ? (
+                      <img
+                        src={booking?.room?.image[0]}
+                        alt=""
+                        className="imgRoom"
+                      />
+                    ) : (
+                      <Skeleton variant="circular" className="imgRoom" />
+                    )}
+
+                    <div className="details">
+                      {booking?.room?.name ? (
+                        <h1 className="itemTitle">{booking?.room?.name}</h1>
+                      ) : (
+                        <Skeleton variant="text" className="skeletonText dif" />
+                      )}
+                      {booking?.room?.description ? (
+                        <div className="detailItem">
+                          <span className="itemKey">Description:</span>
+                          <span className="itemValue">
+                            {booking?.room?.description || "null"}
+                          </span>
+                        </div>
+                      ) : (
+                        <Skeleton variant="text" className="skeletonText dif" />
+                      )}
+                      {booking?.room?.utility ? (
+                        <div className="detailItem">
+                          <span className="itemKey">Utility:</span>
+                          <span className="itemValue">
+                            {booking?.room?.utility?.map((item, index) =>
+                              index < 5
+                                ? item +
+                                  `
+                              ${index === 4 ? "" : ","}
+                              `
+                                : ""
+                            )}
+                          </span>
+                        </div>
+                      ) : (
+                        <Skeleton variant="text" className="skeletonText dif" />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bottom">
+              <div className="listContainer">
+                <div className="listTitle">Order</div>
+                <div className="detailOrder">
+                  <div className="detailItem">
+                    <span className="itemKey">Check In:</span>
+                    <span className="itemValue">
+                      {formatDate(booking?.order?.check_in)}
+                    </span>
+                  </div>
+                  <div className="detailItem">
+                    <span className="itemKey">Check Out:</span>
+                    <span className="itemValue">
+                      {formatDate(booking?.order?.check_out)}
+                    </span>
+                  </div>
+                  <div className="detailItem">
+                    <span className="itemKey">Total:</span>
+                    <span className="itemValue">
+                      {moneyAdapter(booking?.order?.total, typeMoney)}
+                    </span>
+                  </div>
+                  <div className="detailItem">
+                    <span className="itemKey">Status:</span>
+                    <span className={`itemValue ${booking?.order?.status}`}>
+                      {booking?.order?.status}
+                    </span>
+                  </div>
+                  <div className="detailItem">
+                    <span className="itemKey">Payment Method:</span>
+                    <span className="itemValue">
+                      {paymentAdapter(booking?.order?.payment_method)}
+                    </span>
+                  </div>
+                  <div className="detailItem">
+                    <span className="itemKey">Payment:</span>
+                    <span className="itemValue">
+                      {booking?.order?.paymented ? "Paid" : "Not Paid"}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </>

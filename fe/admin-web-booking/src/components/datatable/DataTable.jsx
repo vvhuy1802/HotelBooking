@@ -276,7 +276,7 @@ const handleColumnsBooking = (navigate) => {
       width: 100,
       renderCell: (params) => {
         const handleView = () => {
-          navigate(`/admin/${params.row.id}`);
+          navigate(`/booking/${params.row.id}`);
         };
         return (
           <div className="action">
