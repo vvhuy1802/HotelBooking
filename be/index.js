@@ -4,6 +4,7 @@ const cors = require("cors");
 const socket = require("socket.io");
 const User = require("./src/models/user");
 const Hotel = require("./src/models/hotel");
+const errorMiddleware = require("./src/middleware/errorMiddleware");
 require("dotenv").config();
 const config = process.env;
 
@@ -19,6 +20,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(errorMiddleware)
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   next();
