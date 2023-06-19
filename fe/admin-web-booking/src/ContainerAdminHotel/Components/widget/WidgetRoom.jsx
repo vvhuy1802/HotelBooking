@@ -10,8 +10,9 @@ import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlin
 import { useSelector } from "react-redux";
 import CustomLink from "../../../components/customlink/CustomLink";
 import { setStateSidebar } from "../../../redux/Slices/Global";
+import BarChartIcon from '@mui/icons-material/BarChart';
 const WidgetRoom = ({ type }) => {
-  const { totalOrder, totalUser } = useSelector((state) => state.global);
+  const {order,totalOrder}=useSelector(state=>state.order)
   const dispatch = useDispatch();
   let data;
   const diff = 20;
@@ -21,29 +22,12 @@ const WidgetRoom = ({ type }) => {
   };
 
   switch (type) {
-    case "user":
-      data = {
-        title: "USERS",
-        isMoney: false,
-        link: "See all users",
-        amount: totalUser?.data?.users?.length,
-        icon: (
-          <PersonOutlinedIcon
-            className="icon"
-            style={{ color: "crimson", backgroundColor: "rgba(255,0,0,0.2)" }}
-          />
-        ),
-        state: "Users",
-        to: "/users",
-      };
-
-      break;
     case "order":
       data = {
-        title: "BOOKINGS",
+        title: "Booking",
         isMoney: false,
         link: "View all bookings",
-        amount: totalOrder?.data?.length,
+        amount: order?.length,
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
@@ -54,33 +38,23 @@ const WidgetRoom = ({ type }) => {
           />
         ),
         state: "Orders",
-        to: "/bookings",
+        to: "/listbooking",
       };
       break;
-    case "earning":
+    case "revenue":
       data = {
-        title: "EARNINGS",
+        title: "Revenue",
         isMoney: false,
-        link: "View net earnings",
+        amount: totalOrder,
+        link: "View revenue details",
         icon: (
-          <MonetizationOnOutlinedIcon
+          <BarChartIcon
             className="icon"
             style={{ color: "green", backgroundColor: "rgba(0,128,0,0.2)" }}
           />
         ),
-      };
-      break;
-    case "balance":
-      data = {
-        title: "MY BALANCE",
-        isMoney: false,
-        link: "See details",
-        icon: (
-          <AccountBalanceWalletOutlinedIcon
-            className="icon"
-            style={{ color: "purple", backgroundColor: "rgba(128,0,128,0.2)" }}
-          />
-        ),
+        state: "Revenue",
+        to: "/revenue",
       };
       break;
     default:

@@ -19,10 +19,10 @@ const width = Dimensions.get('window').width;
 const DetailVehicle = ({ navigation, route }) => {
     const colors = useTheme().colors;
     const field=[
-        'max_power',
+        'max_Power',
         'Fuel',
         'speed_4s',
-        'speed_max'
+        'max_Speed'
     ]
     const today = new Date();
     const { booking_date } = useSelector(state => state.global);
@@ -146,7 +146,7 @@ const DetailVehicle = ({ navigation, route }) => {
                 </View>
                 <Image
                     source={{
-                        uri: item.image,
+                        uri: item.image[0],
                     }}
                     style={{
                         width: 200,

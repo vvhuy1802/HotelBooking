@@ -582,7 +582,7 @@ const Single = ({ inputs }) => {
                     </div>
                   </div>
                 </div>
-              )}
+              )} 
               <div className="right">
                 <p>
                   <span>Informations</span>

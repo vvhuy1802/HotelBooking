@@ -3,6 +3,7 @@ import "./listbooking.scss";
 import { GetAllOrders } from "./apiListBooking";
 import { useSelector } from "react-redux";
 import DataTable from "../../Components/DataTable/DataTable";
+import Loading from "../../Components/Loading/Loading";
 
 const ListBooking = () => {
   const [data, setData] = useState([]);
@@ -34,7 +35,7 @@ const ListBooking = () => {
   return (
     <>
       {isLoading ? (
-        <></>
+        <Loading/>
       ) : (
         <div className="list">
           <div className="listContainer">

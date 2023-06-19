@@ -104,10 +104,10 @@ const DataTable = (props) => {
     var rows = [];
     data.map((item) => {
       let arr=[];
-      arr.push(item.specification[0].max_power);
+      arr.push(item.specification[0].max_Power);
       arr.push(item.specification[0].Fuel);
       arr.push(item.specification[0].speed_4s);
-      arr.push(item.specification[0].speed_max);
+      arr.push(item.specification[0].max_Speed);
       rows.push({
         id: item._id,
         name: item.name,
@@ -125,7 +125,7 @@ const DataTable = (props) => {
 
   const handleColumnsBooking = () => {
     return [
-      { field: "id", headerName: "ID", width: 170 },
+      { field: "id", headerName: "ID", width: 100 },
       { field: "customer", headerName: "Customer", width: 110 },
       {
         field: "room_name",
@@ -150,8 +150,8 @@ const DataTable = (props) => {
         headerName: "Check Out",
         width: 110,
       },
-      { field: "cost", headerName: "Cost", width: 100 },
-      { field: "payment_method", headerName: "Payment Method", width: 180 },
+      { field: "cost", headerName: "Cost", width: 80 },
+      { field: "payment_method", headerName: "Payment Method", width: 160 },
       {
         field: "status",
         headerName: "Status",
@@ -216,6 +216,7 @@ const DataTable = (props) => {
     });
     return rows;
   };
+
 
   const handleColumnsRoom = () => {
     return [
@@ -324,6 +325,7 @@ const DataTable = (props) => {
     setReload(true);
   }
 
+
   const CancelBooking = async () => {
     for (let i = 0; i < selectionModel.length; i++) {
       const res = await updateStatusInOrder(selectionModel[i],"Cancelled");
@@ -365,8 +367,7 @@ const DataTable = (props) => {
               : stateSidebar === "Bookings"
               ? handleAddRowsBooking()
               : stateSidebar === "Vehicles"
-              ? handleAddRowsVehicle()
-              : null
+              ? handleAddRowsVehicle():[]
           }
           columns={
             stateSidebar === "rooms"
@@ -375,7 +376,7 @@ const DataTable = (props) => {
               ? handleColumnsBooking()
               : stateSidebar === "Vehicles"
               ? handleColumnsVehicle()
-              : null
+              : []
           }
           pageSize={5}
           rowsPerPageOptions={[5]}

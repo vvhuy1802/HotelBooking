@@ -1,18 +1,21 @@
 import "./Home.scss";
 
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import RoomTable from "../../Components/table/RoomTable";
 import WidgetRoom from "../../Components/widget/WidgetRoom";
 import Featured from "../../../components/featured/Featured";
 import Chart from "../../../components/chart/Chart";
 import { useEffect, useState } from "react";
 import {  GetAllOrders } from "./apiHome";
+
+import { setOrder, setTotalBooking } from "../../../redux/Slices/OrderReducer";
+import Loading from "../../Components/Loading/Loading";
 const HomeHotel = () => {
   const [data, setData] = useState([]);
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const {userInfo}=useSelector(state=>state.global)
-  console.log(userInfo);
   const initFetch = async () => {
     setIsLoading(true);
     const res = await GetAllOrders();
@@ -20,6 +23,14 @@ const HomeHotel = () => {
       const data = res.data.data.filter(
         (item) => item.id_hotel === userInfo.idHotel
       );
+      let total = 0;
+      await data.map((item) => {
+        if (item.status !== "Cancelled"){
+        total += item.total;
+        }
+      });
+      dispatch(setTotalBooking(total));
+      dispatch(setOrder(data));
       setData(data);
       setIsLoading(false);
     }
@@ -31,13 +42,12 @@ const HomeHotel = () => {
 
   return (
     <>
-    {isLoading ? <></>:
+    {isLoading ? <Loading/>:
     <div className="home">
       <div className="homeContainer">
         <div className="widgets">
           <WidgetRoom type="order" />
-          <WidgetRoom type="earning" />
-          <WidgetRoom type="balance" />
+          <WidgetRoom type="revenue" />
         </div>
         <div className="charts">
           <Featured />

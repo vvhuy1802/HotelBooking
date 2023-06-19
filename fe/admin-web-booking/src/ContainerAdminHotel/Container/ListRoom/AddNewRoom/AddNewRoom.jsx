@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { storage } from "../../../../configFirebase/config";
+import LoadingImage from "../../../Components/LoadingImage/LoadingImage";
 import {
   deleteObject,
   getDownloadURL,
@@ -25,6 +26,8 @@ const AddNewRoom = ({ title, inputs }) => {
   const [uti, setUti] = useState([]);
   const [value, setValue] = useState(false);
   const [listImage, setListImage] = useState([]);
+  const [progress, setProgress] = useState(0);
+  const [startSave, setStartSave] = useState(false);
   let options = [
     { value: "Bồn tắm", label: "Bồn tắm" },
     { value: "Bếp riêng", label: "Bếp riêng" },
@@ -51,6 +54,8 @@ const AddNewRoom = ({ title, inputs }) => {
   };
 
   const handleAddListImage = async(file) => {
+    setStartSave(true);
+    setProgress(0);
     //listImage have id, img
     const listImageTemp = [...listImage];
     for (let i = 0; i < file.length; i++) {
@@ -64,12 +69,15 @@ const AddNewRoom = ({ title, inputs }) => {
           listImageTemp.push(url);
         });
       });
+      setProgress(((i+1) / file.length)*100);
     }
     setListImage(listImageTemp);
     // 'file' comes from the Blob or File API
   };
 
   const handleAddListImageExcel = async(file, index) => {
+    setStartSave(true);
+    setProgress(0);
     //listImage have id, img
     let listImageTemp = [...listImage];
     console.log(listImageTemp[index]);
@@ -80,9 +88,9 @@ const AddNewRoom = ({ title, inputs }) => {
        await getDownloadURL(pathReference).then((url) => {
             listImageTemp[index].img.push(url);
         });
+        setProgress(((i+1) / file.length)*100);
       })
     }
-    console.log(listImageTemp);
     setListImage(listImageTemp);
     // 'file' comes from the Blob or File API
   };
@@ -131,8 +139,6 @@ const AddNewRoom = ({ title, inputs }) => {
           item.utility = seleted;
         });
         setListImage(listImageTemp);
-        console.log(dataExcel);
-        console.log(listImageTemp);
       };
     };
     input.click();
@@ -141,7 +147,6 @@ const AddNewRoom = ({ title, inputs }) => {
   const handleSaveDataExcel = () => {
     const dataExcelTemp = [...dataExcel];
     const listImageTemp = [...listImage];
-    console.log(dataExcelTemp);
     dataExcelTemp.forEach(async(item,index) => {
       const data = {
         ...item,
@@ -150,8 +155,10 @@ const AddNewRoom = ({ title, inputs }) => {
         utility:item.utility.map((item) => item.value),
         tag: [],
       };
-      console.log(data);
       const res = await AddNewRoomInHotel(data);
+      if(res.status===200){
+        navigate("/listroom"); 
+      }
     });
   };
 
@@ -194,7 +201,6 @@ const AddNewRoom = ({ title, inputs }) => {
         // Uh-oh, an error occurred!
       });
     listImageTemp[indexDelete].img.splice(index, 1);
-    console.log(listImageTemp);
     setListImage(listImageTemp);
   };
 
@@ -208,7 +214,9 @@ const AddNewRoom = ({ title, inputs }) => {
       tag: [],
     };
     const res = await AddNewRoomInHotel(data);
-    navigate("/listroom");
+    if (res.status === 200) {
+      navigate("/listroom");
+    }
   };
 
   return (
@@ -233,6 +241,7 @@ const AddNewRoom = ({ title, inputs }) => {
                 <div className="bottom">
                   <div className="left">
                     <div className="listImageContainer">
+                      {startSave&&<LoadingImage progress={progress}/>}
                       <div className="content">
                         {listImage[index]&&
                         listImage[index].img.map((img) => (
@@ -325,6 +334,7 @@ const AddNewRoom = ({ title, inputs }) => {
             <div className="bottom">
               <div className="left">
                 <div className="listImageContainer">
+                {startSave&&<LoadingImage progress={progress}/>}
                   <div className="content">
                     {listImage.map((img) => (
                       <div className="item">

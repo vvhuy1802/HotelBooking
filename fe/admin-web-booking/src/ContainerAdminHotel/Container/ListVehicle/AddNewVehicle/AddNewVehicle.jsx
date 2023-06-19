@@ -13,6 +13,7 @@ import {
   ref,
   uploadBytes,
 } from "firebase/storage";
+import LoadingImage from "../../../Components/LoadingImage/LoadingImage";
 
 const AddNewVehicle = ({ title, inputs }) => {
   const navigate = useNavigate();
@@ -20,9 +21,11 @@ const AddNewVehicle = ({ title, inputs }) => {
   const [formData, setFormData] = useState({});
   const [dataExcel, setDataExcel] = useState([]);
   const [listImage, setListImage] = useState([]);
-
+  const [progress, setProgress] = useState(0);
+  const [startSave, setStartSave] = useState(false);
 
   const handleAddListImage = async(file) => {
+    setStartSave(true);
     //listImage have id, img
     const listImageTemp = [...listImage];
     for (let i = 0; i < file.length; i++) {
@@ -35,6 +38,7 @@ const AddNewVehicle = ({ title, inputs }) => {
        await getDownloadURL(pathReference).then((url) => {
           listImageTemp.push(url);
         });
+        setProgress(((i+1) / file.length)*100);
       });
     }
     setListImage(listImageTemp);
@@ -43,8 +47,8 @@ const AddNewVehicle = ({ title, inputs }) => {
 
   const handleAddListImageExcel = async(file, index) => {
     //listImage have id, img
+    setStartSave(true)
     let listImageTemp = [...listImage];
-    console.log(listImageTemp[index]);
     for (let i = 0; i < file.length; i++) {
       const storageRef = ref(storage, `/${userInfo.idHotel}/${file[i].name}`);
       await uploadBytes(storageRef, file[i]).then(async(snapshot) => {
@@ -52,6 +56,7 @@ const AddNewVehicle = ({ title, inputs }) => {
        await getDownloadURL(pathReference).then((url) => {
             listImageTemp[index].img.push(url);
         });
+        setProgress(((i+1) / file.length)*100);
       })
     }
     setListImage(listImageTemp);
@@ -68,7 +73,7 @@ const AddNewVehicle = ({ title, inputs }) => {
       let price = parseInt(value);
       setFormData({ ...formData, [id]: price });
     } else {
-      if(id==="max_power"||id==="Fuel"||id==="speed_4s"||id==="speed_max"){
+      if(id==="max_Power"||id==="Fuel"||id==="speed_4s"||id==="max_Speed"){
         setFormData({ ...formData, "specification":{...formData.specification,[id]:value} });
         return;
       }
@@ -110,7 +115,6 @@ const AddNewVehicle = ({ title, inputs }) => {
   const handleSaveDataExcel = async() => {
     const dataExcelTemp = [...dataExcel];
     const listImageTemp = [...listImage];
-    console.log(dataExcelTemp);
    await dataExcelTemp.forEach(async(item,index) => {
       const data = {
         ...item,
@@ -118,8 +122,10 @@ const AddNewVehicle = ({ title, inputs }) => {
         image: listImageTemp[index].img,
       };
       const res = await AddNewVehicleInHotel(data);
+      if(res.status===200){
+        navigate("/listvehicle");
+      }
     });
-    navigate("/listvehicle");
   };
 
   const handleDeleteImage = (img) => {
@@ -132,7 +138,7 @@ const AddNewVehicle = ({ title, inputs }) => {
     }
     const desertRef = ref(storage, `/${imagePath}`);
     // Delete the file
-    deleteObject(desertRef)
+     deleteObject(desertRef)
       .then(() => {
         // File deleted successfully
       })
@@ -171,7 +177,9 @@ const AddNewVehicle = ({ title, inputs }) => {
       image: listImage,
     };
     const res = await AddNewVehicleInHotel(data);
+    if(res.status===200){
     navigate("/listvehicle");
+    }
   };
 
 
@@ -197,6 +205,7 @@ const AddNewVehicle = ({ title, inputs }) => {
                 <div className="bottom">
                   <div className="left">
                     <div className="listImageContainer">
+                    {startSave&&<LoadingImage progress={progress}/>}
                       <div className="content">
                         {listImage[index]&&
                         listImage[index].img.map((img) => (
@@ -255,8 +264,8 @@ const AddNewVehicle = ({ title, inputs }) => {
                     <label>Specification</label>
                     <input
                     type={"text"}
-                    id={"max_power"}
-                    value={formData["specification"]&&formData["specification"]["max_power"] || ""}
+                    id={"max_Power"}
+                    value={formData["specification"]&&formData["specification"]["max_Power"] || ""}
                     placeholder={"Max Power"}
                     onChange={handleChangeInput}
                     />
@@ -276,9 +285,9 @@ const AddNewVehicle = ({ title, inputs }) => {
                     />
                     <input
                     type={"text"}
-                    id={"speed_max"}
-                    value={formData["specification"]&&formData["specification"]["speed_max"] || ""}
-                    placeholder={"Speed Max"}
+                    id={"max_Speed"}
+                    value={formData["specification"]&&formData["specification"]["max_Speed"] || ""}
+                    placeholder={"Max Speed"}
                     onChange={handleChangeInput}
                     />
                   </div>
@@ -292,6 +301,7 @@ const AddNewVehicle = ({ title, inputs }) => {
             <div className="bottom">
               <div className="left">
                 <div className="listImageContainer">
+                {startSave&&<LoadingImage progress={progress}/>}
                   <div className="content">
                     {listImage.map((img) => (
                       <div className="item">
@@ -343,8 +353,8 @@ const AddNewVehicle = ({ title, inputs }) => {
                     <label>Specification</label>
                     <input
                     type={"text"}
-                    id={"max_power"}
-                    value={formData["specification"]&&formData["specification"]["max_power"] || ""}
+                    id={"max_Power"}
+                    value={formData["specification"]&&formData["specification"]["max_Power"] || ""}
                     placeholder={"Max Power"}
                     onChange={handleChangeInput}
                     />
@@ -364,9 +374,9 @@ const AddNewVehicle = ({ title, inputs }) => {
                     />
                     <input
                     type={"text"}
-                    id={"speed_max"}
-                    value={formData["specification"]&&formData["specification"]["speed_max"] || ""}
-                    placeholder={"Speed Max"}
+                    id={"max_Speed"}
+                    value={formData["specification"]&&formData["specification"]["max_Speed"] || ""}
+                    placeholder={"Max Speed"}
                     onChange={handleChangeInput}
                     />
                   </div>

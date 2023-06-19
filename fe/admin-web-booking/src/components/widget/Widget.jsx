@@ -8,7 +8,7 @@ import CustomLink from "../customlink/CustomLink";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import BarChartIcon from '@mui/icons-material/BarChart';
 import { useSelector } from "react-redux";
 import { moneyAdapter } from "../../functions/Adapter";
 
@@ -77,11 +77,13 @@ const Widget = ({ type }) => {
         amount: totalEarnings(),
         link: "View revenue details",
         icon: (
-          <MonetizationOnOutlinedIcon
+          <BarChartIcon
             className="icon"
             style={{ color: "green", backgroundColor: "rgba(0,128,0,0.2)" }}
           />
         ),
+        state: "Revenue",
+        to: "/revenue",
       };
       break;
     case "hotel":

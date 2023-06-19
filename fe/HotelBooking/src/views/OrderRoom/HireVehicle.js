@@ -31,10 +31,8 @@ const HireVehicle = ({navigation}) => {
 
   const onChangeSearchKey = text => {
       let dataFil= data.filter(item => {
-        console.log(item.name.toLowerCase())
                   return (item.name.toLowerCase().replace(/\s+/g, "")).includes(text.toLowerCase().replace(/\s+/g, ""));
         });
-        console.log(dataFil)
         setDataFilter(dataFil);
   }
 
@@ -46,26 +44,6 @@ const HireVehicle = ({navigation}) => {
         initFetch();
   }, []);
 
-  const AddData = async () => {
-        //random number from 0 to 14
-        let add=6;
-        motorcycleArray.map(async (item,index)=>{
-                if(index<add){
-                        let previousRandom = -1;
-                        let random = -1;
-                        
-                        do {
-                          random = Math.floor(Math.random() * 15);
-                        } while (random === previousRandom);
-                        
-                        previousRandom = random;
-                motorcycleArray[random].hotel_id=idHotel;
-                motorcycleArray[random].image=[];
-                const res= await AddNewVehicle(motorcycleArray[random]);
-                }
-        })
-  }
-
   const renderVehicle = (item,index) => {
         return (
                 <View style={{
@@ -73,8 +51,7 @@ const HireVehicle = ({navigation}) => {
                       }}> 
                        <TouchableOpacity style={{
                         marginHorizontal:20,
-                        borderColor: 'rgba(208, 208, 208, 0.5)',
-                        backgroundColor: "#F5F6F8",
+                        borderColor: 'rgba(208, 208, 208, 0.5)',        
                         borderWidth: 1,
                         borderRadius: 15,
                        }}
@@ -195,13 +172,6 @@ const HireVehicle = ({navigation}) => {
         marginTop:20,
         marginHorizontal:5
       }}>
-        <TouchableOpacity style={{height:50,width:200,backgroundColor:"blue"}} onPress={()=>{
-                AddData()
-        }}>
-                <Text>
-                        ADD DATA
-                </Text>
-        </TouchableOpacity>
         <Input
           value={searchKey}
           onChangeText={text => setSearchKey(text)}
@@ -238,6 +208,9 @@ const HireVehicle = ({navigation}) => {
           }
         />
         <FlatList
+        style={{
+                marginBottom:200
+        }}
         data={searchKey===""?data:dataFilter}
         renderItem={
                 ({item,index})=>renderVehicle(item,index)

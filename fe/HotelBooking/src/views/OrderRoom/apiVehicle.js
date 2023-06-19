@@ -41,7 +41,6 @@ export const AddNewVehicle = async (data) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-      // body: data,
     });
     const res = await response.json();
     return {status: 200, data: res};

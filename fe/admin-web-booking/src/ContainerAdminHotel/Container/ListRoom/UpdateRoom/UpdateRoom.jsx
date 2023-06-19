@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../../configFirebase/config";
+import LoadingImage from "../../../Components/LoadingImage/LoadingImage";
 
 const UpdateRoom = ({ title }) => {
   const { state } = useLocation();
@@ -21,6 +22,8 @@ const UpdateRoom = ({ title }) => {
   const [uti, setUti] = useState([]);
   const [value, setValue] = useState(false);
   const [listImage, setListImage] = useState([]);
+  const [progress, setProgress] = useState(0);
+  const [startSave, setStartSave] = useState(false);
   let options = [
     { value: "Bồn tắm", label: "Bồn tắm" },
     { value: "Bếp riêng", label: "Bếp riêng" },
@@ -98,6 +101,7 @@ const UpdateRoom = ({ title }) => {
   };
 
   const handleAddListImage = async(file) => {
+    setStartSave(true);
     //listImage have id, img
     const listImageTemp = [...listImage];
     for (let i = 0; i < file.length; i++) {
@@ -108,6 +112,7 @@ const UpdateRoom = ({ title }) => {
           listImageTemp.push(url);
         });
       });
+      setProgress(((i+1) / file.length)*100);
     }
     setListImage(listImageTemp);
     // 'file' comes from the Blob or File API
@@ -147,7 +152,7 @@ const UpdateRoom = ({ title }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
+    const data = { 
       ...formData,
       image: listImage,
       isactive: value,
@@ -155,7 +160,9 @@ const UpdateRoom = ({ title }) => {
       tag: [],
     };
     const res = await UpdateRoomInHotel(state.id, data);
-    navigate("/listroom");
+    if (res.status === 200) {
+      navigate("/listroom");
+    }
   };
 
   return (
@@ -167,6 +174,7 @@ const UpdateRoom = ({ title }) => {
         <div className="bottom">
           <div className="left">
             <div className="listImageContainer">
+            {startSave&&<LoadingImage progress={progress}/>}
               <div className="content">
                 {listImage.map((img) => (
                   <div className="item">
