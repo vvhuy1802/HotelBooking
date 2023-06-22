@@ -15,4 +15,5 @@ export const updateStatusInOrder= (id,status) =>{
         const res = PUT(`/orders/status/${id}`,{
                 status: status,
         });
+        return res;
 }
