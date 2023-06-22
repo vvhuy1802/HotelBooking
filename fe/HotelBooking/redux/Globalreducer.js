@@ -18,7 +18,6 @@ const initialState = {
     total_night: 1,
   },
   hotelData: [],
-  payment_method:0,
   notification: [],
 };
 export const globalSlice = createSlice({
@@ -50,9 +49,6 @@ export const globalSlice = createSlice({
     },
     setHotelData: (state, action) => {
       state.hotelData = action.payload;
-    },
-    setPaymentMethod: (state, action) => {
-      state.payment_method = action.payload;
     },
     addOrder: (state, action) => {
       state.userData.orders.push(action.payload);
@@ -92,7 +88,6 @@ export const {
   setBookingDate,
   addComment,
   setHotelData,
-  setPaymentMethod,
   addOrder,
   updateUser,
   updateStatusOrder,

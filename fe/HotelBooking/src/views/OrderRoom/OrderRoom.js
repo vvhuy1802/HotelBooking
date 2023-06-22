@@ -25,11 +25,11 @@ import { clearInfoVehicle } from '../../../redux/VehicleReducer';
 const OrderRoom = ({navigation, route}) => {
   const dataRoom = route.params.room;
   const dataHotel = route.params.hotel;
-  const {payment_method, userData, booking_date} = useSelector(
+  const {userData, booking_date} = useSelector(
     state => state.global,
   );
 
-  const {infoVehicle} = useSelector(state => state.VehicleReducer);
+  const {payment_method,infoVehicle} = useSelector(state => state.VehicleReducer);
   const {colors} = useTheme();
   const {t} = useTranslation();
   const dispatch = useDispatch();
@@ -158,7 +158,7 @@ const OrderRoom = ({navigation, route}) => {
       id_user: userData._id,
       id_hotel: dataHotel.id,
       id_room: dataRoom._id,
-      id_verhicle: infoVehicle?._id,
+      id_vehicle: infoVehicle?._id,
       start_date: infoVehicle?.start_date,
       end_date: infoVehicle?.end_date,
       check_in: booking_date.check_in,

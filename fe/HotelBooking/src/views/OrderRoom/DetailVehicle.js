@@ -12,12 +12,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import IconMark from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
+import {useTranslation} from 'react-i18next';
 import { saveInfoVehicle } from '../../../redux/VehicleReducer';
 import { Calendar } from 'react-native-calendars';
 
 const width = Dimensions.get('window').width;
 const DetailVehicle = ({ navigation, route }) => {
     const colors = useTheme().colors;
+    const {t} = useTranslation();
     const field = ['max_Power', 'Fuel', 'speed_4s', 'max_Speed'];
     const today = new Date();
     const { booking_date } = useSelector(state => state.global);
@@ -157,7 +159,7 @@ const DetailVehicle = ({ navigation, route }) => {
                         fontSize: 18,
                         marginTop: 30,
                     }}>
-                    Specifications
+                    {t('Specifications')}
                 </Text>
                 <View
                     style={{
@@ -216,7 +218,7 @@ const DetailVehicle = ({ navigation, route }) => {
                         fontSize: 18,
                         marginTop: 30,
                     }}>
-                    Descriptions
+                    {t('Descriptions')}
                 </Text>
                 <Text
                     style={{
@@ -244,7 +246,7 @@ const DetailVehicle = ({ navigation, route }) => {
                             color: 'white',
                             fontWeight: '600',
                         }}>
-                        Choose Date
+                       {t('Choose-Date')}
                     </Text>
                 </TouchableOpacity>
                 <Modal
@@ -314,7 +316,7 @@ const DetailVehicle = ({ navigation, route }) => {
                                     color: 'white',
                                     fontWeight: '600',
                                 }}>
-                                Close
+                                {t('close')}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -341,7 +343,7 @@ const DetailVehicle = ({ navigation, route }) => {
                             fontSize: 14,
                             fontWeight: '500',
                         }}>
-                        Price
+                        {t('Price')}
                     </Text>
                     <Text
                         style={{
@@ -377,7 +379,7 @@ const DetailVehicle = ({ navigation, route }) => {
                             fontSize: 15,
                             fontWeight: '500',
                         }}>
-                        Book Now
+                        {t('book-now')}
                     </Text>
                 </TouchableOpacity>
             </View>
