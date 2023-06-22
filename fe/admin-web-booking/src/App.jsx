@@ -225,6 +225,16 @@ function App() {
                         index
                         element={userInfo ? <List /> : <Navigate to="/login" />}
                       />
+                      <Route
+                        path=":bookingId"
+                        element={
+                          userInfo ? (
+                            <Single inputs={HotelInputs} />
+                          ) : (
+                            <Navigate to="/login" />
+                          )
+                        }
+                      />
                     </Route>
 
                     <Route path="hotel">
@@ -281,18 +291,7 @@ function App() {
                     </Route>
                   </Route>
 
-                  <Route
-                    path="*"
-                    element={
-                      <h1>
-                        <div className="notfound">
-                          <div className="notfound-404">
-                            <h1>404</h1>
-                          </div>
-                        </div>
-                      </h1>
-                    }
-                  />
+                  <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </LocalizationProvider>
             </div>
@@ -442,18 +441,7 @@ function App() {
                     </Route>
                   </Route>
 
-                  <Route
-                    path="*"
-                    element={
-                      <h1>
-                        <div className="notfound">
-                          <div className="notfound-404">
-                            <h1>404</h1>
-                          </div>
-                        </div>
-                      </h1>
-                    }
-                  />
+                  <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </LocalizationProvider>
             </div>

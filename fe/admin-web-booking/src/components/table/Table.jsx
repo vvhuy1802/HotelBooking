@@ -11,7 +11,7 @@ import Paper from "@mui/material/Paper";
 import { useSelector } from "react-redux";
 import { moneyAdapter, paymentAdapter } from "../../functions/Adapter";
 
-const ListTable = ({ dataTable,userName }) => {
+const ListTable = ({ dataTable, userName }) => {
   const { typeMoney } = useSelector((state) => state.global);
 
   const formatID = (id) => {
@@ -41,7 +41,7 @@ const ListTable = ({ dataTable,userName }) => {
     } else return "No Data";
   };
 
-  return dataTable? (
+  return dataTable ? (
     <TableContainer component={Paper} className="table">
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -66,7 +66,7 @@ const ListTable = ({ dataTable,userName }) => {
                     <TableRow key={item._id}>
                       <TableCell>{formatID(item._id)}</TableCell>
                       <TableCell className="tableCell">
-                        {item.id_user.name||userName}
+                        {item.id_user.name || userName}
                       </TableCell>
                       <TableCell className="tableCell">
                         {nameHotel(item.id_hotel)}
@@ -97,7 +97,12 @@ const ListTable = ({ dataTable,userName }) => {
                     </TableRow>
                   )
               )
-              .reverse()
+              .sort((a, b) => {
+                return (
+                  new Date(b.check_in).getTime() -
+                  new Date(a.check_in).getTime()
+                );
+              })
           ) : (
             <div className="empty">
               <p className="emptyText">No data</p>
@@ -106,11 +111,11 @@ const ListTable = ({ dataTable,userName }) => {
         </TableBody>
       </Table>
     </TableContainer>
-  ) :(
+  ) : (
     <div className="loading-table">
-      <div className="loading-spinner-table"/>
+      <div className="loading-spinner-table" />
     </div>
-  )
+  );
 };
 
 export default ListTable;

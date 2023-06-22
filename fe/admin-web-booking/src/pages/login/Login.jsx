@@ -63,6 +63,11 @@ const Login = () => {
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleLogin();
+                }
+              }}
               required
             />
             <label>User Name</label>
@@ -75,6 +80,11 @@ const Login = () => {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleLogin();
+                }
               }}
               required
             />

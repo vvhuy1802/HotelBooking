@@ -449,6 +449,7 @@ function Revenue() {
         });
       }
     },
+    disabled: selectedValue.first === item && selectedValue.second === "",
   });
 
   const handleGetDataQuarter = useCallback(async (value) => {
@@ -769,7 +770,16 @@ function Revenue() {
                     <div className="yearTab">
                       {dataShowQuarter
                         .map((item, index) => (
-                          <div key={index} className="yearTab--item">
+                          <div
+                            key={index}
+                            className={`yearTab--item ${
+                              selectedValue?.first === `${item.year}`
+                                ? selectedValue?.second === ""
+                                  ? "disable"
+                                  : ""
+                                : ""
+                            }`}
+                          >
                             <div className="yearTab--item--header">
                               <div className="yearTab--item--title">
                                 Year: {item.year}

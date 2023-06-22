@@ -12,7 +12,8 @@ const moneyAdapter = (money, type, req) => {
     });
   }
   if (req === "chart") {
-    m = (money / 1000000).toFixed(2) + "M";
+    if (type === "VND") m = (money / 1000000).toFixed(2) + "M";
+    else if (type === "USD") m = "$" + (money / 23000 / 1000).toFixed(2) + "K";
     return m;
   }
   return m.split(".")[1] === "00" ? m.split(".")[0] : m;
