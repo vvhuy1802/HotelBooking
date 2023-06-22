@@ -1,22 +1,34 @@
 import "./hotelfeatured.scss";
+import React, { useState, useEffect, useCallback } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpOutLinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
-import { useSelector } from "react-redux";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import Tooltip from "@mui/material/Tooltip";
 import { moneyAdapter } from "../../../functions/Adapter";
 import { AddOrder } from "../../../middlewares/order";
+import { AddUser } from "../../../middlewares/user";
+import FormControl from "@mui/material/FormControl";
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import { useSelector, useDispatch } from "react-redux";
+import { setLocalStorage } from "../../../functions/asyncStorageFunctions";
+import { setTargetMonth } from "../../../redux/Slices/Global";
 
-const HotelFeatured = () => {
+const Featured = () => {
   const { typeMoney, targetThisMonth } = useSelector(
     (state) => state.global
   );
-  const { order } = useSelector((state) => state.order);
+  const {order: totalOrder} = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+
   const totalToday = () => {
     var total = 0;
     const today = new Date();
-    order.forEach((item) => {
+    totalOrder.forEach((item) => {
       const date = new Date(item.check_in);
       if (
         date.getDate() === today.getDate() &&
@@ -43,7 +55,7 @@ const HotelFeatured = () => {
       now.getDate() + (6 - now.getDay())
     ); // Lấy ngày kết thúc của tuần
     var total = 0;
-    order.forEach((item) => {
+    totalOrder.forEach((item) => {
       const date = new Date(item.check_in);
       if (
         date >= startOfWeek &&
@@ -62,7 +74,7 @@ const HotelFeatured = () => {
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Lấy ngày kết thúc của tháng
 
     var total = 0;
-    order.forEach((item) => {
+    totalOrder.forEach((item) => {
       const date = new Date(item.check_in);
       if (
         date >= startOfMonth &&
@@ -113,15 +125,124 @@ const HotelFeatured = () => {
     }
   };
 
-  const targetWeek = moneyAdapter((targetThisMonth / 4) * 23000, typeMoney);
-  const targetMonth = moneyAdapter(targetThisMonth * 23000, typeMoney);
+  const [targetWeek, setW] = useState(
+    moneyAdapter((targetThisMonth / 4) * 23000, typeMoney)
+  );
+  const [targetMonth, setM] = useState(
+    moneyAdapter(targetThisMonth * 23000, typeMoney)
+  );
+
+  useEffect(() => {
+    setW(moneyAdapter((targetThisMonth / 4) * 23000, typeMoney));
+    setM(moneyAdapter(targetThisMonth * 23000, typeMoney));
+  }, [targetThisMonth]);
 
   const handleAddVirtualData = async () => {
     const id_user = [
       "640ac9668df7f8a1209eebc1",
-      "6410ac705b9b6e3be5bb05e0",
       "640aca4c8df7f8a1209eebc4",
+      "6410ac705b9b6e3be5bb05e0",
       "641345867aaa3bc49837d05c",
+      "648ead3ed91a0b9e8e5150bc",
+      "648ead3fd91a0b9e8e5150bf",
+      "648ead40d91a0b9e8e5150c2",
+      "648ead40d91a0b9e8e5150c5",
+      "648ead41d91a0b9e8e5150c8",
+      "648ead41d91a0b9e8e5150cb",
+      "648ead42d91a0b9e8e5150ce",
+      "648ead43d91a0b9e8e5150d1",
+      "648ead43d91a0b9e8e5150d4",
+      "648ead44d91a0b9e8e5150d7",
+      "648ead44d91a0b9e8e5150da",
+      "648ead45d91a0b9e8e5150dd",
+      "648ead46d91a0b9e8e5150e0",
+      "648ead46d91a0b9e8e5150e3",
+      "648ead47d91a0b9e8e5150e6",
+      "648ead48d91a0b9e8e5150e9",
+      "648ead48d91a0b9e8e5150ec",
+      "648ead49d91a0b9e8e5150ef",
+      "648ead49d91a0b9e8e5150f2",
+      "648ead4ad91a0b9e8e5150f5",
+      "648ead4bd91a0b9e8e5150f8",
+      "648ead4bd91a0b9e8e5150fb",
+      "648ead4cd91a0b9e8e5150fe",
+      "648ead4cd91a0b9e8e515101",
+      "648ead4dd91a0b9e8e515104",
+      "648ead4ed91a0b9e8e515107",
+      "648ead4ed91a0b9e8e51510a",
+      "648ead4fd91a0b9e8e51510d",
+      "648ead4fd91a0b9e8e515110",
+      "648ead50d91a0b9e8e515113",
+      "648ead51d91a0b9e8e515116",
+      "648ead51d91a0b9e8e515119",
+      "648ead52d91a0b9e8e51511c",
+      "648ead52d91a0b9e8e51511f",
+      "648ead53d91a0b9e8e515122",
+      "648ead54d91a0b9e8e515125",
+      "648ead54d91a0b9e8e515128",
+      "648ead55d91a0b9e8e51512b",
+      "648ead55d91a0b9e8e51512e",
+      "648ead56d91a0b9e8e515131",
+      "648ead57d91a0b9e8e515134",
+      "648ead57d91a0b9e8e515137",
+      "648ead58d91a0b9e8e51513a",
+      "648ead58d91a0b9e8e51513d",
+      "648ead59d91a0b9e8e515140",
+      "648ead5ad91a0b9e8e515143",
+      "648ead5ad91a0b9e8e515146",
+      "648ead5bd91a0b9e8e515149",
+      "648ead5bd91a0b9e8e51514c",
+      "648ead5cd91a0b9e8e51514f",
+      "648ead5cd91a0b9e8e515152",
+      "648ead5dd91a0b9e8e515155",
+      "648ead5ed91a0b9e8e515158",
+      "648ead5ed91a0b9e8e51515b",
+      "648ead5fd91a0b9e8e51515e",
+      "648ead5fd91a0b9e8e515161",
+      "648ead60d91a0b9e8e515164",
+      "648ead61d91a0b9e8e515167",
+      "648ead61d91a0b9e8e51516a",
+      "648ead62d91a0b9e8e51516d",
+      "648ead62d91a0b9e8e515170",
+      "648ead63d91a0b9e8e515173",
+      "648ead63d91a0b9e8e515176",
+      "648ead64d91a0b9e8e515179",
+      "648ead65d91a0b9e8e51517c",
+      "648ead65d91a0b9e8e51517f",
+      "648ead66d91a0b9e8e515182",
+      "648ead66d91a0b9e8e515185",
+      "648ead67d91a0b9e8e515188",
+      "648ead68d91a0b9e8e51518b",
+      "648ead68d91a0b9e8e51518e",
+      "648ead69d91a0b9e8e515191",
+      "648ead69d91a0b9e8e515194",
+      "648ead6ad91a0b9e8e515197",
+      "648ead6bd91a0b9e8e51519a",
+      "648ead6bd91a0b9e8e51519d",
+      "648ead6cd91a0b9e8e5151a0",
+      "648ead6cd91a0b9e8e5151a3",
+      "648ead6dd91a0b9e8e5151a6",
+      "648ead6dd91a0b9e8e5151a9",
+      "648ead6ed91a0b9e8e5151ac",
+      "648ead6fd91a0b9e8e5151af",
+      "648ead6fd91a0b9e8e5151b2",
+      "648ead70d91a0b9e8e5151b5",
+      "648ead70d91a0b9e8e5151b8",
+      "648ead71d91a0b9e8e5151bb",
+      "648ead72d91a0b9e8e5151be",
+      "648ead72d91a0b9e8e5151c1",
+      "648ead73d91a0b9e8e5151c4",
+      "648ead73d91a0b9e8e5151c7",
+      "648ead74d91a0b9e8e5151ca",
+      "648ead74d91a0b9e8e5151cd",
+      "648ead75d91a0b9e8e5151d0",
+      "648ead76d91a0b9e8e5151d3",
+      "648ead76d91a0b9e8e5151d6",
+      "648ead77d91a0b9e8e5151d9",
+      "648ead77d91a0b9e8e5151dc",
+      "648ead78d91a0b9e8e5151df",
+      "648ead79d91a0b9e8e5151e2",
+      "648ead79d91a0b9e8e5151e5",
     ];
     const data_room_hotel = [
       {
@@ -190,10 +311,10 @@ const HotelFeatured = () => {
       return new Date(timestamp);
     }
 
-    for (let i = 0; i < 512; ) {
+    for (let i = 0; i < 712; ) {
       const r = Math.floor(Math.random() * data_room_hotel.length);
 
-      let start = randomDate(new Date(2021, 0, 1), new Date(2023, 6, 22));
+      let start = randomDate(new Date(2021, 0, 1), new Date(2023, 5, 22));
       let end = addDays(start, Math.floor(Math.random() * 10));
 
       start = `${start.getFullYear()}-${
@@ -218,11 +339,188 @@ const HotelFeatured = () => {
       await AddOrder(temp).then((res) => {
         if (res.status === 200) {
           i++;
-          console.log("success");
         } else {
-          console.log(res);
         }
       });
+    }
+  };
+
+  const handleAddVirtualUser = async () => {
+    const FirstName = [
+      "Nguyễn",
+      "Trần",
+      "Lê",
+      "Phạm",
+      "Hoàng",
+      "Huỳnh",
+      "Phan",
+      "Vũ",
+      "Võ",
+      "Đặng",
+      "Bùi",
+      "Đỗ",
+      "Hồ",
+      "Ngô",
+      "Dương",
+      "Lý",
+      "An",
+      "Bạch",
+      "Bảo",
+      "Bửu",
+    ];
+
+    const MiddleName = [
+      "Thị",
+      "Văn",
+      "Quốc",
+      "Thế",
+      "Thiên",
+      "Thành",
+      "Thái",
+      "Viết",
+      "Đức",
+      "Nhật",
+      "Hữu",
+    ];
+
+    const LastName = [
+      "Huy",
+      "Hùng",
+      "Hưng",
+      "Hải",
+      "Hà",
+      "Hạnh",
+      "Hạ",
+      "Hân",
+      "Hào",
+      "Hậu",
+      "Hiếu",
+      "Hiền",
+      "Hiệp",
+      "Hoa",
+      "Hoài",
+      "Hoàn",
+      "Hoàng",
+      "Hoan",
+      "Hoạt",
+    ];
+
+    const Email = [
+      "gmail.com",
+      "yahoo.com",
+      "outlook.com",
+      "icloud.com",
+      "hotmail.com",
+      "mail.com",
+      "zoho.com",
+      "protonmail.com",
+      "aol.com",
+      "gmx.com",
+    ];
+
+    const Phone = [
+      "032",
+      "033",
+      "034",
+      "035",
+      "036",
+      "037",
+      "038",
+      "039",
+      "070",
+      "079",
+      "077",
+      "076",
+      "078",
+      "083",
+      "084",
+      "085",
+      "081",
+      "082",
+      "088",
+      "089",
+      "090",
+      "093",
+      "089",
+      "091",
+      "094",
+      "092",
+      "056",
+    ];
+
+    const Type = ["google", "app"];
+
+    const Password = [
+      "123456",
+      "123456789",
+      "12345678",
+      "1234567890",
+      "12345678910",
+      "12345678911",
+      "12345678912",
+      "12345678913",
+      "12345678914",
+      "12345678915",
+      "12345678916",
+      "12345678917",
+      "12345678918",
+      "12345678919",
+      "12345678920",
+    ];
+
+    //xóa dấu tiếng việt
+    const removeAccents = (str) => {
+      return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D")
+        .toLowerCase()
+        .replace(/ /g, "");
+    };
+
+    for (let i = 0; i < 100; i++) {
+      const nametemp = `${
+        FirstName[Math.floor(Math.random() * FirstName.length)]
+      } ${MiddleName[Math.floor(Math.random() * MiddleName.length)]} ${
+        LastName[Math.floor(Math.random() * LastName.length)]
+      }`;
+      const temp = {
+        name: nametemp,
+
+        email: `${removeAccents(nametemp)}${Math.floor(
+          Math.random() * 100000000
+        )}@${Email[Math.floor(Math.random() * Email.length)]}`,
+        phone_number: `${
+          Phone[Math.floor(Math.random() * Phone.length)]
+        }${Math.floor(Math.random() * 100000000)}`,
+        type: Type[Math.floor(Math.random() * Type.length)],
+        password: Password[Math.floor(Math.random() * Password.length)],
+      };
+
+      await AddUser(temp).then((res) => {
+        if (res.status === 200) {
+        } else {
+        }
+      });
+    }
+  };
+  const [showPopup, setShowPopup] = useState(false);
+  const [target, setTarget] = useState(targetThisMonth);
+  const handleShowPopup = () => {
+    setShowPopup(!showPopup);
+  };
+
+  const handleChange = (e) => {
+    const newValue = e.target.value; // Get the new input value
+    setTarget(newValue); // Update the target value
+  };
+
+  const handleSaveTarget = () => {
+    if (target > 0) {
+      setLocalStorage("target", target);
+      dispatch(setTargetMonth(target));
+      setShowPopup(false);
     }
   };
 
@@ -230,13 +528,68 @@ const HotelFeatured = () => {
     <div className="featured">
       <div className="top">
         <h1 className="title">Total Revenue</h1>
-        <MoreVertIcon
-          className="icon"
-          fontSize="small"
-          onClick={() => {
-            // handleAddVirtualData();
-          }}
-        />
+        <Tooltip
+          title="
+        Change target
+        "
+          placement="bottom"
+        >
+          <MoreVertIcon
+            className="icon"
+            fontSize="small"
+            onClick={() => {
+              // handleAddVirtualData();
+              // handleAddVirtualUser();
+              handleShowPopup();
+            }}
+          />
+        </Tooltip>
+        <div className={`changetarget ${showPopup ? "active" : ""}`}>
+          <div className="header">
+            <p className="title">Change target</p>
+          </div>
+          <div className="bodyFuck">
+            <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+              <InputLabel htmlFor="standard-adornment-amount">
+                Target
+              </InputLabel>
+              <Tooltip
+                title="
+        The target must be > 0
+        "
+                placement="bottom"
+                arrow={true}
+                describeChild={false}
+              >
+                <Input
+                  id="standard-adornment-amount"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      {typeMoney === "USD" ? "$" : "VND"}
+                    </InputAdornment>
+                  }
+                  type="number"
+                  value={target}
+                  onChange={handleChange}
+                  onKeyDown={(e)=>{
+                    
+                    if(e.key==="Enter"){
+                      handleSaveTarget();
+                    }
+                  }}
+                />
+              </Tooltip>
+            </FormControl>
+            <CheckCircleIcon
+              className={`icon ${
+                target !== targetThisMonth ? "activeFuck" : ""
+              }`}
+              onClick={() => {
+                handleSaveTarget();
+              }}
+            />
+          </div>
+        </div>
       </div>
       <div className="bottom">
         <div className="featuredChart">
@@ -256,7 +609,7 @@ const HotelFeatured = () => {
             <div className="itemTitle">Target</div>
             <div className="itemResult positive">
               <div className="resultAmount">
-                {moneyAdapter(30000 * 23000, typeMoney)}
+                {moneyAdapter(targetThisMonth * 23000, typeMoney)}
               </div>
             </div>
           </div>
@@ -302,4 +655,4 @@ const HotelFeatured = () => {
   );
 };
 
-export default HotelFeatured;
+export default Featured;

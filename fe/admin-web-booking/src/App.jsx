@@ -29,6 +29,7 @@ import {
   setStateSidebar,
   setIsLoading,
   setAnnouncementAuto,
+  setTargetMonth,
 } from "./redux/Slices/Global";
 
 import HomeHotel from "./ContainerAdminHotel/Container/Home/Home";
@@ -57,6 +58,14 @@ function App() {
     GetAllHotels().then((res) => {
       if (res.status === 200) {
         dispatch(setTotalHotel(res.data));
+      }
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    getLocalStorage("target").then((res) => {
+      if (res) {
+        dispatch(setTargetMonth(res));
       }
     });
   }, [dispatch]);
