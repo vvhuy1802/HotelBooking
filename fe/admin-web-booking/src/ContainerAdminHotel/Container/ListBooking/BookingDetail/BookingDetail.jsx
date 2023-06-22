@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GetAllOrders } from "../apiListBooking";
 import Skeleton from "@mui/material/Skeleton";
 import avatar from "../../../../assets/avatar.jpg";
 import { OrderInputs } from "../../../Components/Input/InputOrder";
 import "./bookingdetail.scss";
 import Loading from "../../../Components/Loading/Loading";
+import { updateStatusInOrder } from "../../../Components/DataTable/apiDataTable";
 const BookingDetail = () => {
+  const navigate = useNavigate();
   const { bookingId } = useParams();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,9 +19,22 @@ const BookingDetail = () => {
       const data = await res.data.data.filter((item) => item._id === bookingId);
       setData(data);
       setIsLoading(false);
-      console.log(data)
     }
   };
+
+  const ConfirmBooking = async () => {
+      const res = await updateStatusInOrder(bookingId,"Completed");
+      if (res.status===200){
+        navigate("/listbooking")
+      }
+  }
+
+  const CancelBooking = async () => {
+      const res = await updateStatusInOrder(bookingId,"Cancelled");
+      if(res.status===200){
+        navigate("/listbooking")
+      }
+    }
 
   useEffect(() => {
     initFetch();
@@ -103,7 +118,10 @@ const BookingDetail = () => {
                     </div>
                   ))}
                   {data[0]?.status==="Pending" && 
-                  <button className="buttonSave">Confirm</button>
+                  <button onClick={ConfirmBooking} className="buttonSave">Confirm</button>
+                  }
+                  {data[0]?.status==="Pending" && 
+                  <button onClick={CancelBooking} className="buttonCancel">Cancel</button>
                   }
                 </form>
               </div>

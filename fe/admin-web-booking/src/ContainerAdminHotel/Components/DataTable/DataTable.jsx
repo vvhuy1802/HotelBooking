@@ -289,6 +289,7 @@ const DataTable = (props) => {
     ];
   };
 
+
   const handleAddRowsRoom = () => {
     var rows = [];
     data.map((item) => {
@@ -324,17 +325,22 @@ const DataTable = (props) => {
   const ConfirmBooking = async () => {
     for (let i = 0; i < selectionModel.length; i++) {
       const res = await updateStatusInOrder(selectionModel[i],"Completed");
+      if(res.status===200&&i===selectionModel.length-1){
+        setReload(true);
+      }
     }
-    setReload(true);
   }
 
 
   const CancelBooking = async () => {
     for (let i = 0; i < selectionModel.length; i++) {
       const res = await updateStatusInOrder(selectionModel[i],"Cancelled");
+      if(res.status===200&&i===selectionModel.length-1){
+        setReload(true);
+      }
     }
-    setReload(true);
   }
+
   return (
     <div className="datatable">
       <div className="datatableTitle">
@@ -404,7 +410,7 @@ const DataTable = (props) => {
           Delete
         </div>
       }
-      {selectionModel?.length > 0 && stateSidebar==="Bookings"&&data.status==="Pending" &&
+      {selectionModel?.length > 0 && stateSidebar==="Bookings"&&
         <div className="statusOrder">
         <div onClick={ConfirmBooking} className="confirm">
           Confirm
