@@ -5,6 +5,7 @@ import Skeleton from "@mui/material/Skeleton";
 import avatar from "../../../../assets/avatar.jpg";
 import { OrderInputs } from "../../../Components/Input/InputOrder";
 import "./bookingdetail.scss";
+import Loading from "../../../Components/Loading/Loading";
 const BookingDetail = () => {
   const { bookingId } = useParams();
   const [data, setData] = useState([]);
@@ -16,6 +17,7 @@ const BookingDetail = () => {
       const data = await res.data.data.filter((item) => item._id === bookingId);
       setData(data);
       setIsLoading(false);
+      console.log(data)
     }
   };
 
@@ -29,13 +31,17 @@ const BookingDetail = () => {
     } else if (method === "payment-online") {
       return "Payment online";
     }
+    else if (method==="payment-zalopay"){
+      return "Payment ZaloPay";
+    }
   };
 
   return (
-    <div className="bookingDetail">
-      {isLoading ? (
-        <div></div>
+    <>
+          {isLoading ? (
+        <Loading/>
       ) : (
+    <div className="bookingDetail">
         <div className="container">
           <>
             <div className="top">
@@ -96,7 +102,7 @@ const BookingDetail = () => {
                       />
                     </div>
                   ))}
-                  {data[0]?.payment_method==="Pending" && 
+                  {data[0]?.status==="Pending" && 
                   <button className="buttonSave">Confirm</button>
                   }
                 </form>
@@ -104,8 +110,9 @@ const BookingDetail = () => {
             </div>
           </>
         </div>
-      )}
     </div>
+     )}
+      </>
   );
 };
 

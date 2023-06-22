@@ -3,15 +3,17 @@ import "./widgetroom.scss";
 
 import { useDispatch } from "react-redux";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { useSelector } from "react-redux";
 import CustomLink from "../../../components/customlink/CustomLink";
 import { setStateSidebar } from "../../../redux/Slices/Global";
+import BarChartIcon from '@mui/icons-material/BarChart';
+import { moneyAdapter } from "../../../functions/Adapter";
 const WidgetRoom = ({ type }) => {
-  const { totalOrder, totalUser } = useSelector((state) => state.global);
+  const { typeMoney} = useSelector(
+    (state) => state.global
+  );
+  const {order,totalOrder}=useSelector(state=>state.order)
   const dispatch = useDispatch();
   let data;
   const diff = 20;
@@ -21,29 +23,12 @@ const WidgetRoom = ({ type }) => {
   };
 
   switch (type) {
-    case "user":
-      data = {
-        title: "USERS",
-        isMoney: false,
-        link: "See all users",
-        amount: totalUser?.data?.users?.length,
-        icon: (
-          <PersonOutlinedIcon
-            className="icon"
-            style={{ color: "crimson", backgroundColor: "rgba(255,0,0,0.2)" }}
-          />
-        ),
-        state: "Users",
-        to: "/users",
-      };
-
-      break;
     case "order":
       data = {
-        title: "BOOKINGS",
+        title: "Booking",
         isMoney: false,
         link: "View all bookings",
-        amount: totalOrder?.data?.length,
+        amount: order?.length,
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
@@ -54,33 +39,23 @@ const WidgetRoom = ({ type }) => {
           />
         ),
         state: "Orders",
-        to: "/bookings",
+        to: "/listbooking",
       };
       break;
-    case "earning":
+    case "revenue":
       data = {
-        title: "EARNINGS",
+        title: "Revenue",
         isMoney: false,
-        link: "View net earnings",
+        amount:moneyAdapter(totalOrder, typeMoney),
+        link: "View revenue details",
         icon: (
-          <MonetizationOnOutlinedIcon
+          <BarChartIcon
             className="icon"
             style={{ color: "green", backgroundColor: "rgba(0,128,0,0.2)" }}
           />
         ),
-      };
-      break;
-    case "balance":
-      data = {
-        title: "MY BALANCE",
-        isMoney: false,
-        link: "See details",
-        icon: (
-          <AccountBalanceWalletOutlinedIcon
-            className="icon"
-            style={{ color: "purple", backgroundColor: "rgba(128,0,128,0.2)" }}
-          />
-        ),
+        state: "Revenue",
+        to: "/revenue",
       };
       break;
     default:

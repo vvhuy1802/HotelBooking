@@ -4,7 +4,7 @@ import {
     ScrollView,
     Text,
     TouchableOpacity,
-    Image, 
+    Image,
     Dimensions,
     Modal,
 } from 'react-native';
@@ -18,12 +18,7 @@ import { Calendar } from 'react-native-calendars';
 const width = Dimensions.get('window').width;
 const DetailVehicle = ({ navigation, route }) => {
     const colors = useTheme().colors;
-    const field=[
-        'max_power',
-        'Fuel',
-        'speed_4s',
-        'speed_max'
-    ]
+    const field = ['max_Power', 'Fuel', 'speed_4s', 'max_Speed'];
     const today = new Date();
     const { booking_date } = useSelector(state => state.global);
     const gettoday =
@@ -63,7 +58,7 @@ const DetailVehicle = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = React.useState(false);
 
     useEffect(() => {
-        let arr=[];
+        let arr = [];
         arr.push(booking_date.check_in);
         arr.push(booking_date.check_out);
         setDateArray(arr);
@@ -146,7 +141,7 @@ const DetailVehicle = ({ navigation, route }) => {
                 </View>
                 <Image
                     source={{
-                        uri: item.image,
+                        uri: item.image[0],
                     }}
                     style={{
                         width: 200,
@@ -278,8 +273,9 @@ const DetailVehicle = ({ navigation, route }) => {
                                 },
                                 ...dateArray.reduce((acc, cur) => {
                                     acc[cur] = {
-                                        startingDay: cur===start?true:false,
-                                        endingDay: cur===end?true:false,
+                                        startingDay:
+                                            cur === start ? true : false,
+                                        endingDay: cur === end ? true : false,
                                         color: '#70d7c7',
                                         textColor: 'white',
                                     };
@@ -299,28 +295,28 @@ const DetailVehicle = ({ navigation, route }) => {
                             }}
                         />
                         <TouchableOpacity
-                    style={{
-                        height: 40,
-                        width: 150,
-                        backgroundColor: colors.primary,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 10,
-                        marginHorizontal: 10,
-                        marginTop: 15,
-                        alignSelf: 'center',
-                    }}
-                    onPress={() => {
-                        setModalVisible(false);
-                    }}>
-                    <Text
-                        style={{
-                            color: 'white',
-                            fontWeight: '600',
-                        }}>
-                        Close
-                    </Text>
-                </TouchableOpacity>
+                            style={{
+                                height: 40,
+                                width: 150,
+                                backgroundColor: colors.primary,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: 10,
+                                marginHorizontal: 10,
+                                marginTop: 15,
+                                alignSelf: 'center',
+                            }}
+                            onPress={() => {
+                                setModalVisible(false);
+                            }}>
+                            <Text
+                                style={{
+                                    color: 'white',
+                                    fontWeight: '600',
+                                }}>
+                                Close
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                 </Modal>
             </ScrollView>
@@ -367,12 +363,12 @@ const DetailVehicle = ({ navigation, route }) => {
                     }}
                     onPress={() => {
                         navigation.pop(2);
-                        let data={
+                        let data = {
                             ...item,
                             start_date: start,
                             end_date: end,
-                            total_vehicle: item.price * (dateArray.length-1),
-                        }
+                            total_vehicle: item.price * (dateArray.length - 1),
+                        };
                         dispatch(saveInfoVehicle(data));
                     }}>
                     <Text

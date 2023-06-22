@@ -4,13 +4,12 @@ import { useSelector } from "react-redux";
 import DataTable from "../../Components/DataTable/DataTable";
 import { getVehicleById } from "./apiListVehicle";
 import { Link, useLocation } from "react-router-dom";
-
-
+import Loading from "../../Components/Loading/Loading";
 const ListVehicle = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [reload, setReload] = useState(false);
-  const {userInfo}=useSelector(state=>state.global)
+  const { userInfo } = useSelector((state) => state.global);
   const location = useLocation();
   const initFetch = async () => {
     setIsLoading(true);
@@ -25,32 +24,19 @@ const ListVehicle = () => {
   }, [location]);
 
   useEffect(() => {
-    if(reload){
+    if (reload) {
       initFetch();
-      setReload(false)
+      setReload(false);
     }
   }, [reload]);
   return (
     <>
       {isLoading ? (
-        <></>
+        <Loading />
       ) : (
         <div className="list">
           <div className="listContainer">
-            {data.length> 0?
-            <DataTable data={data} setReload={setReload}/>
-            :
-            <>
-            <Link
-              to={"/listvehicle/new"}
-              style={{ textDecoration: "none" }}
-              className="link"
-            >
-              Add new
-            </Link>
-            <div className="noData">Không có dữ liệu</div>
-            </>
-            }
+            <DataTable data={data} setReload={setReload} />
           </div>
         </div>
       )}

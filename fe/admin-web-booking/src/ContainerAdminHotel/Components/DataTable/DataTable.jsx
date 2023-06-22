@@ -7,11 +7,12 @@ import { Link, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { DeleteRoomInHotel, DeleteVehicleInHotel, updateStatusInOrder } from "./apiDataTable";
+import { formatDate, moneyAdapter } from "../../../functions/Adapter";
 
 const DataTable = (props) => {
   const { data, setReload } = props;
   const navigate = useNavigate();
-  const { stateSidebar } = useSelector((state) => state.global);
+  const { stateSidebar,typeMoney } = useSelector((state) => state.global);
   const [selectionModel, setSelectionModel] = useState([]);
   var dataTitle = {};
   switch (stateSidebar) {
@@ -45,7 +46,7 @@ const DataTable = (props) => {
     { field: "hotel_id", headerName: "Hotel ID", width: 110 },
     { field: "name", headerName: "Name", width: 150 },
     {field:"brand",headerName:"Brand",width:150},
-    {field:"price",headerName:"Price",width:150},
+    {field:"price_show",headerName:"Price",width:150},
     {field:"specification",headerName:"Specification",width:280},
     {
       field: "image",
@@ -104,16 +105,17 @@ const DataTable = (props) => {
     var rows = [];
     data.map((item) => {
       let arr=[];
-      arr.push(item.specification[0].max_power);
+      arr.push(item.specification[0].max_Power);
       arr.push(item.specification[0].Fuel);
       arr.push(item.specification[0].speed_4s);
-      arr.push(item.specification[0].speed_max);
+      arr.push(item.specification[0].max_Speed);
       rows.push({
         id: item._id,
         name: item.name,
         brand: item.brand,
         description: item.description,
         specification: arr,
+        price_show: moneyAdapter(item.price, typeMoney),
         price: item.price,
         image: item.image,
         hotel_id: item.hotel_id,
@@ -125,7 +127,7 @@ const DataTable = (props) => {
 
   const handleColumnsBooking = () => {
     return [
-      { field: "id", headerName: "ID", width: 170 },
+      { field: "id", headerName: "ID", width: 100 },
       { field: "customer", headerName: "Customer", width: 110 },
       {
         field: "room_name",
@@ -150,8 +152,8 @@ const DataTable = (props) => {
         headerName: "Check Out",
         width: 110,
       },
-      { field: "cost", headerName: "Cost", width: 100 },
-      { field: "payment_method", headerName: "Payment Method", width: 180 },
+      { field: "cost", headerName: "Cost", width: 80 },
+      { field: "payment_method", headerName: "Payment Method", width: 160 },
       {
         field: "status",
         headerName: "Status",
@@ -206,16 +208,17 @@ const DataTable = (props) => {
         id: item._id,
         customer: item.id_user.name,
         room_name: item.id_room.name,
-        cost: item.total,
+        cost: moneyAdapter(item.total, typeMoney),
         image: item.id_room.image[0],
-        check_in: item.check_in,
-        check_out: item.check_out,
+        check_in: formatDate(item.check_in),
+        check_out: formatDate(item.check_out),
         payment_method: paymentAdapter(item.payment_method),
         status: item.status,
       });
     });
     return rows;
   };
+
 
   const handleColumnsRoom = () => {
     return [
@@ -228,7 +231,7 @@ const DataTable = (props) => {
       },
       { field: "description", headerName: "Description", width: 200 },
       {
-        field: "price",
+        field: "price_show",
         headerName: "Price",
         width: 100,
       },
@@ -294,6 +297,7 @@ const DataTable = (props) => {
         name: item.name,
         description: item.description,
         price: item.price,
+        price_show: moneyAdapter(item.price, typeMoney),
         image: item.image,
         isactive: item.isactive,
         utility: item.utility,
@@ -323,6 +327,7 @@ const DataTable = (props) => {
     }
     setReload(true);
   }
+
 
   const CancelBooking = async () => {
     for (let i = 0; i < selectionModel.length; i++) {
@@ -365,8 +370,7 @@ const DataTable = (props) => {
               : stateSidebar === "Bookings"
               ? handleAddRowsBooking()
               : stateSidebar === "Vehicles"
-              ? handleAddRowsVehicle()
-              : null
+              ? handleAddRowsVehicle():[]
           }
           columns={
             stateSidebar === "rooms"
@@ -375,7 +379,7 @@ const DataTable = (props) => {
               ? handleColumnsBooking()
               : stateSidebar === "Vehicles"
               ? handleColumnsVehicle()
-              : null
+              : []
           }
           pageSize={5}
           rowsPerPageOptions={[5]}

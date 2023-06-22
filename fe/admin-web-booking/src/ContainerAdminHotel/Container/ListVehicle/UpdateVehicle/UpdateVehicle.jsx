@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../../configFirebase/config";
 import { UpdateVehicleInHotel } from "./apiUpdateVehicle";
+import LoadingImage from "../../../Components/LoadingImage/LoadingImage";
 
 const UpdateVehicle = ({ title }) => {
   const { state } = useLocation();
@@ -13,6 +14,9 @@ const UpdateVehicle = ({ title }) => {
   const [inputs, setInputs] = useState([]);
   const [formData, setFormData] = useState({});
   const [listImage, setListImage] = useState([]);
+  const [progress, setProgress] = useState(0);
+  const [startSave, setStartSave] = useState(false);
+
   useEffect(() => {
     const inputs = [
       {
@@ -58,10 +62,10 @@ const UpdateVehicle = ({ title }) => {
     ];
 
     let specification={
-      max_power:state.specification[0],
+      max_Power:state.specification[0],
       Fuel:state.specification[1],
       speed_4s:state.specification[2],
-      speed_max:state.specification[3]
+      max_Speed:state.specification[3]
     }
 
     const formdata = {
@@ -80,6 +84,7 @@ const UpdateVehicle = ({ title }) => {
 
   const handleAddListImage = async(file) => {
     //listImage have id, img
+    startSave(true)
     const listImageTemp = [...listImage];
     for (let i = 0; i < file.length; i++) {
       const storageRef = ref(storage, `/${state.hotel_id}/${file[i].name}`);
@@ -89,6 +94,7 @@ const UpdateVehicle = ({ title }) => {
           listImageTemp.push(url);
         });
       });
+      setProgress(((i+1) / file.length)*100);
     }
     setListImage(listImageTemp);
     // 'file' comes from the Blob or File API
@@ -137,7 +143,9 @@ const UpdateVehicle = ({ title }) => {
       image: listImage,
     };
     const res = await UpdateVehicleInHotel(state.id, data);
-    navigate("/listvehicle");
+    if(res.status===200){
+      navigate("/listvehicle");
+    }
   };
 
   return (
@@ -149,6 +157,7 @@ const UpdateVehicle = ({ title }) => {
         <div className="bottom">
           <div className="left">
             <div className="listImageContainer">
+            {startSave&&<LoadingImage progress={progress}/>}
               <div className="content">
                 {listImage.map((img) => (
                   <div className="item">
@@ -196,8 +205,8 @@ const UpdateVehicle = ({ title }) => {
                     <label>Specification</label>
                     <input
                     type={"text"}
-                    id={"max_power"}
-                    value={formData["specification"]&&formData["specification"]["max_power"] || ""}
+                    id={"max_Power"}
+                    value={formData["specification"]&&formData["specification"]["max_Power"] || ""}
                     placeholder={"Max Power"}
                     onChange={handleChangeInput}
                     />
@@ -217,9 +226,9 @@ const UpdateVehicle = ({ title }) => {
                     />
                     <input
                     type={"text"}
-                    id={"speed_max"}
-                    value={formData["specification"]&&formData["specification"]["speed_max"] || ""}
-                    placeholder={"Speed Max"}
+                    id={"max_Speed"}
+                    value={formData["specification"]&&formData["specification"]["max_Speed"] || ""}
+                    placeholder={"Max Speed"}
                     onChange={handleChangeInput}
                     />
                   </div>

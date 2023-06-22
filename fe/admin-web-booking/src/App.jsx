@@ -47,6 +47,7 @@ import BookingDetail from "./ContainerAdminHotel/Container/ListBooking/BookingDe
 import ListVehicle from "./ContainerAdminHotel/Container/ListVehicle/ListVehicle";
 import AddNewVehicle from "./ContainerAdminHotel/Container/ListVehicle/AddNewVehicle/AddNewVehicle";
 import UpdateVehicle from "./ContainerAdminHotel/Container/ListVehicle/UpdateVehicle/UpdateVehicle";
+import RevenueHotel from "./ContainerAdminHotel/Container/Revenue/RevenueHotel";
 
 function App() {
   const dispatch = useDispatch();
@@ -149,6 +150,15 @@ function App() {
         dispatch(setStateSidebar("rooms"));
       } else if (currentpath.split("/")[1] === "listbooking") {
         dispatch(setStateSidebar("Bookings"));
+      }
+      else if (currentpath.split("/")[1] === "listvehicle") {
+        dispatch(setStateSidebar("Vehicles"));
+      }
+      else if (currentpath.split("/")[1] === "revenue") {
+        dispatch(setStateSidebar("Revenue"));
+      }
+      else if (currentpath.split("/")[1] === "chat") {
+        dispatch(setStateSidebar("Chats"));
       }
     }
   }, [location.pathname, userInfo.roll, dispatch]);
@@ -370,12 +380,45 @@ function App() {
                         }
                       />
                     </Route>
+                    
 
                     <Route path="listvehicle">
                       <Route
                         index
                         element={
                           userInfo ? <ListVehicle /> : <Navigate to="/login" />
+                        }
+                      />
+                       <Route
+                        path="new"
+                        element={
+                          userInfo ? (
+                            <AddNewVehicle
+                              title={"Add New Vehicle"}
+                              inputs={VehicleInputs}
+                            />
+                          ) : (
+                            <Navigate to="/login" />
+                          )
+                        }
+                      />
+                      <Route
+                        path="edit/:vehicleId"
+                        element={
+                          userInfo ? (
+                            <UpdateVehicle title={"Update Vehicle"} />
+                          ) : (
+                            <Navigate to="/login" />
+                          )
+                        }
+                      />
+                    </Route>
+
+                    <Route path="revenue">
+                      <Route
+                        index
+                        element={
+                          userInfo ? <RevenueHotel /> : <Navigate to="/login" />
                         }
                       />
                     </Route>

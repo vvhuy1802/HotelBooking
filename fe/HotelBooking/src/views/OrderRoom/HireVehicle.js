@@ -5,8 +5,10 @@ import Icon from "react-native-vector-icons/FontAwesome"
 import CustomHeader from '../../components/CustomHeader';
 import Lottie from 'lottie-react-native';
 import { useTheme } from 'react-native-paper';
-import { GetAllVehicle, GetVehicleById } from './apiVehicle';
+import { AddNewVehicle, GetAllVehicle, GetVehicleById } from './apiVehicle';
+
 import { useSelector } from 'react-redux';
+import { motorcycleArray } from './datavehicle';
 
 const width = Dimensions.get("window").width
 const HireVehicle = ({navigation}) => {
@@ -27,13 +29,10 @@ const HireVehicle = ({navigation}) => {
     return number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
   };
 
-
   const onChangeSearchKey = text => {
       let dataFil= data.filter(item => {
-        console.log(item.name.toLowerCase())
                   return (item.name.toLowerCase().replace(/\s+/g, "")).includes(text.toLowerCase().replace(/\s+/g, ""));
         });
-        console.log(dataFil)
         setDataFilter(dataFil);
   }
 
@@ -52,8 +51,7 @@ const HireVehicle = ({navigation}) => {
                       }}> 
                        <TouchableOpacity style={{
                         marginHorizontal:20,
-                        borderColor: 'rgba(208, 208, 208, 0.5)',
-                        backgroundColor: "#F5F6F8",
+                        borderColor: 'rgba(208, 208, 208, 0.5)',        
                         borderWidth: 1,
                         borderRadius: 15,
                        }}
@@ -69,7 +67,7 @@ const HireVehicle = ({navigation}) => {
                         }}>
                                 <Image
                                 source={{
-                                      uri:item.image
+                                      uri:item.image[0]
                                 }}
                                 style={{
                                         width: 200,
@@ -210,6 +208,9 @@ const HireVehicle = ({navigation}) => {
           }
         />
         <FlatList
+        style={{
+                marginBottom:200
+        }}
         data={searchKey===""?data:dataFilter}
         renderItem={
                 ({item,index})=>renderVehicle(item,index)

@@ -1,4 +1,4 @@
-import "./featured.scss";
+import "./hotelfeatured.scss";
 import React, { useState, useEffect, useCallback } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -7,27 +7,28 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpOutLinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Tooltip from "@mui/material/Tooltip";
-import { moneyAdapter } from "../../functions/Adapter";
-import { AddOrder } from "../../middlewares/order";
-import { AddUser } from "../../middlewares/user";
+import { moneyAdapter } from "../../../functions/Adapter";
+import { AddOrder } from "../../../middlewares/order";
+import { AddUser } from "../../../middlewares/user";
 import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useSelector, useDispatch } from "react-redux";
-import { setLocalStorage } from "../../functions/asyncStorageFunctions";
-import { setTargetMonth } from "../../redux/Slices/Global";
+import { setLocalStorage } from "../../../functions/asyncStorageFunctions";
+import { setTargetMonth } from "../../../redux/Slices/Global";
 
 const Featured = () => {
-  const { totalOrder, typeMoney, targetThisMonth } = useSelector(
+  const { typeMoney, targetThisMonth } = useSelector(
     (state) => state.global
   );
+  const {order: totalOrder} = useSelector((state) => state.order);
   const dispatch = useDispatch();
 
   const totalToday = () => {
     var total = 0;
     const today = new Date();
-    totalOrder.data?.forEach((item) => {
+    totalOrder.forEach((item) => {
       const date = new Date(item.check_in);
       if (
         date.getDate() === today.getDate() &&
@@ -54,7 +55,7 @@ const Featured = () => {
       now.getDate() + (6 - now.getDay())
     ); // Lấy ngày kết thúc của tuần
     var total = 0;
-    totalOrder.data?.forEach((item) => {
+    totalOrder.forEach((item) => {
       const date = new Date(item.check_in);
       if (
         date >= startOfWeek &&
@@ -73,7 +74,7 @@ const Featured = () => {
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Lấy ngày kết thúc của tháng
 
     var total = 0;
-    totalOrder.data?.forEach((item) => {
+    totalOrder.forEach((item) => {
       const date = new Date(item.check_in);
       if (
         date >= startOfMonth &&

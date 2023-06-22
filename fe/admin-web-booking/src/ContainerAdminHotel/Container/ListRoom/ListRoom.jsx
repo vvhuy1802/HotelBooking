@@ -35,7 +35,9 @@ const ListRoom = () => {
   return (
     <>
       {isLoading ? (
-        <></>
+            <div className="loading-table">
+            <div className="loading-spinner-table"/>
+          </div>
       ) : (
         <div className="list">
           <div className="listContainer">

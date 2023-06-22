@@ -3,6 +3,7 @@ import "./listbooking.scss";
 import { GetAllOrders } from "./apiListBooking";
 import { useSelector } from "react-redux";
 import DataTable from "../../Components/DataTable/DataTable";
+import Loading from "../../Components/Loading/Loading";
 
 const ListBooking = () => {
   const [data, setData] = useState([]);
@@ -16,7 +17,8 @@ const ListBooking = () => {
       const data = await res.data.data.filter(
         (item) => item.id_hotel === userInfo.idHotel
       );
-      setData(data);
+      const recentOrders = data.sort((a, b) => new Date(b.check_in) - new Date(a.check_in))
+      setData(recentOrders );
       setIsLoading(false);
     }
   };
@@ -34,7 +36,7 @@ const ListBooking = () => {
   return (
     <>
       {isLoading ? (
-        <></>
+        <Loading/>
       ) : (
         <div className="list">
           <div className="listContainer">
