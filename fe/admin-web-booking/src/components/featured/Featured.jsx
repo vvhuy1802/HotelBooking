@@ -1,18 +1,28 @@
 import "./featured.scss";
+import React, { useState, useEffect, useCallback } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpOutLinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
-import { useSelector } from "react-redux";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import Tooltip from "@mui/material/Tooltip";
 import { moneyAdapter } from "../../functions/Adapter";
 import { AddOrder } from "../../middlewares/order";
 import { AddUser } from "../../middlewares/user";
+import FormControl from "@mui/material/FormControl";
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import { useSelector, useDispatch } from "react-redux";
+import { setLocalStorage } from "../../functions/asyncStorageFunctions";
+import { setTargetMonth } from "../../redux/Slices/Global";
 
 const Featured = () => {
   const { totalOrder, typeMoney, targetThisMonth } = useSelector(
     (state) => state.global
   );
+  const dispatch = useDispatch();
 
   const totalToday = () => {
     var total = 0;
@@ -114,8 +124,17 @@ const Featured = () => {
     }
   };
 
-  const targetWeek = moneyAdapter((targetThisMonth / 4) * 23000, typeMoney);
-  const targetMonth = moneyAdapter(targetThisMonth * 23000, typeMoney);
+  const [targetWeek, setW] = useState(
+    moneyAdapter((targetThisMonth / 4) * 23000, typeMoney)
+  );
+  const [targetMonth, setM] = useState(
+    moneyAdapter(targetThisMonth * 23000, typeMoney)
+  );
+
+  useEffect(() => {
+    setW(moneyAdapter((targetThisMonth / 4) * 23000, typeMoney));
+    setM(moneyAdapter(targetThisMonth * 23000, typeMoney));
+  }, [targetThisMonth]);
 
   const handleAddVirtualData = async () => {
     const id_user = [
@@ -319,9 +338,7 @@ const Featured = () => {
       await AddOrder(temp).then((res) => {
         if (res.status === 200) {
           i++;
-          console.log("success");
         } else {
-          console.log(res);
         }
       });
     }
@@ -482,11 +499,27 @@ const Featured = () => {
 
       await AddUser(temp).then((res) => {
         if (res.status === 200) {
-          console.log(res);
         } else {
-          console.log("fail");
         }
       });
+    }
+  };
+  const [showPopup, setShowPopup] = useState(false);
+  const [target, setTarget] = useState(targetThisMonth);
+  const handleShowPopup = () => {
+    setShowPopup(!showPopup);
+  };
+
+  const handleChange = (e) => {
+    const newValue = e.target.value; // Get the new input value
+    setTarget(newValue); // Update the target value
+  };
+
+  const handleSaveTarget = () => {
+    if (target > 0) {
+      setLocalStorage("target", target);
+      dispatch(setTargetMonth(target));
+      setShowPopup(false);
     }
   };
 
@@ -494,14 +527,62 @@ const Featured = () => {
     <div className="featured">
       <div className="top">
         <h1 className="title">Total Revenue</h1>
-        <MoreVertIcon
-          className="icon"
-          fontSize="small"
-          onClick={() => {
-            // handleAddVirtualData();
-            // handleAddVirtualUser();
-          }}
-        />
+        <Tooltip
+          title="
+        Change target
+        "
+          placement="bottom"
+        >
+          <MoreVertIcon
+            className="icon"
+            fontSize="small"
+            onClick={() => {
+              // handleAddVirtualData();
+              // handleAddVirtualUser();
+              handleShowPopup();
+            }}
+          />
+        </Tooltip>
+        <div className={`changetarget ${showPopup ? "active" : ""}`}>
+          <div className="header">
+            <p className="title">Change target</p>
+          </div>
+          <div className="bodyFuck">
+            <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+              <InputLabel htmlFor="standard-adornment-amount">
+                Target
+              </InputLabel>
+              <Tooltip
+                title="
+        The target must be > 0
+        "
+                placement="bottom"
+                arrow={true}
+                describeChild={false}
+              >
+                <Input
+                  id="standard-adornment-amount"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      {typeMoney === "USD" ? "$" : "VND"}
+                    </InputAdornment>
+                  }
+                  type="number"
+                  value={target}
+                  onChange={handleChange}
+                />
+              </Tooltip>
+            </FormControl>
+            <CheckCircleIcon
+              className={`icon ${
+                target !== targetThisMonth ? "activeFuck" : ""
+              }`}
+              onClick={() => {
+                handleSaveTarget();
+              }}
+            />
+          </div>
+        </div>
       </div>
       <div className="bottom">
         <div className="featuredChart">
@@ -521,7 +602,7 @@ const Featured = () => {
             <div className="itemTitle">Target</div>
             <div className="itemResult positive">
               <div className="resultAmount">
-                {moneyAdapter(30000 * 23000, typeMoney)}
+                {moneyAdapter(targetThisMonth * 23000, typeMoney)}
               </div>
             </div>
           </div>

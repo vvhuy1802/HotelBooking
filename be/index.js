@@ -100,6 +100,13 @@ async function StartApp() {
         }
       }
     });
+
+    socket.on("delete-msg", async (data) => {
+      const sendUserSocket = onlineUsers.get(data.to);
+      if (sendUserSocket) {
+        socket.to(sendUserSocket).emit("msg-deleted", data);
+      }
+    });
   });
 }
 

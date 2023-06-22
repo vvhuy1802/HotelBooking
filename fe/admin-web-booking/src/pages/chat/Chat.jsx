@@ -249,6 +249,10 @@ function Chat() {
   };
 
   const handleDeleteConversation = async (id) => {
+    socket.current.emit("delete-msg", {
+      to: id,
+      from: currentUser,
+    });
     const data = {
       id_sender: currentUser,
       id_receiver: id,
