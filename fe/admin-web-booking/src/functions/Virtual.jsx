@@ -205,7 +205,7 @@ const handleAddVirtualData = async () => {
     return new Date(timestamp);
   }
 
-  for (let i = 0; i < 2; ) {
+  for (let i = 0; i < 998; ) {
     const r = Math.floor(Math.random() * data_room_hotel.length);
 
     let start = randomDate(new Date(2021, 0, 1), new Date(2023, 5, 22));

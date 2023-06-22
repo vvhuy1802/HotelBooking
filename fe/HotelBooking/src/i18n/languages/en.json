@@ -207,7 +207,8 @@
     "Choose-Date": "Choose Date",
     "Price": "Price",
     "Instant-confirmation":"Instant confirmation",
-    "Free cancellation": "Free cancellation",,
-    "price": "Price"
+    "Free cancellation": "Free cancellation",
+    "price": "Price",
+    "time": "Time"
   }
 }

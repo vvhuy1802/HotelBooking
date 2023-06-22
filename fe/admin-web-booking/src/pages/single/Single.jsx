@@ -797,42 +797,76 @@ const Single = ({ inputs }) => {
                           <Skeleton variant="circular" className="vehicleImg" />
                         )}
                         <div className="infoVehicle">
-                          {booking?.vehicle?.name ? (
-                            <h1 className="itemTitle">
-                              {booking?.vehicle?.name}
-                            </h1>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              className="skeletonText dif"
-                            />
-                          )}
-                          {booking?.vehicle?.brand ? (
-                            <div className="detailItem">
-                              <span className="itemKey">Brand:</span>
-                              <span className="itemValue">
-                                {booking?.vehicle?.brand || "null"}
-                              </span>
+                          <div className="nameV">
+                            {booking?.vehicle?.name ? (
+                              <h1 className="itemTitle">
+                                {booking?.vehicle?.name}
+                              </h1>
+                            ) : (
+                              <Skeleton
+                                variant="text"
+                                className="skeletonText dif"
+                              />
+                            )}
+                          </div>
+                          <div className="inforV">
+                            <div className="itemV">
+                              {booking?.vehicle?.brand ? (
+                                <div className="detailItem">
+                                  <span className="itemKey">Brand:</span>
+                                  <span className="itemValue">
+                                    {booking?.vehicle?.brand || "null"}
+                                  </span>
+                                </div>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  className="skeletonText dif"
+                                />
+                              )}
+                              {booking?.vehicle?.price ? (
+                                <div className="detailItem">
+                                  <span className="itemKey">Price:</span>
+                                  <span className="itemValue">
+                                    {booking?.vehicle?.price || "null"}
+                                  </span>
+                                </div>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  className="skeletonText dif"
+                                />
+                              )}
                             </div>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              className="skeletonText dif"
-                            />
-                          )}
-                          {booking?.vehicle?.price ? (
-                            <div className="detailItem">
-                              <span className="itemKey">Price:</span>
-                              <span className="itemValue">
-                                {booking?.vehicle?.price || "null"}
-                              </span>
+                            <div className="itemV">
+                              {booking?.order?.start_date ? (
+                                <div className="detailItem">
+                                  <span className="itemKey">Start:</span>
+                                  <span className="itemValue">
+                                    {formatDate(booking?.order?.start_date) || "null"}
+                                  </span>
+                                </div>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  className="skeletonText dif"
+                                />
+                              )}
+                              {booking?.order?.end_date ? (
+                                <div className="detailItem">
+                                  <span className="itemKey">End:</span>
+                                  <span className="itemValue">
+                                    {formatDate(booking?.order?.end_date) || "null"}
+                                  </span>
+                                </div>
+                              ) : (
+                                <Skeleton
+                                  variant="text"
+                                  className="skeletonText dif"
+                                />
+                              )}
                             </div>
-                          ) : (
-                            <Skeleton
-                              variant="text"
-                              className="skeletonText dif"
-                            />
-                          )}
+                          </div>
                         </div>
                       </div>
                     </Tooltip>

@@ -210,7 +210,11 @@ const DetailBooking = ({ navigate, route }) => {
     };
 
     const formatPrice = price => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        try {
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        } catch (error) {
+            return '';
+        }
     };
 
     return (
@@ -327,7 +331,7 @@ const DetailBooking = ({ navigate, route }) => {
                                 width: '100%',
                                 height: 1,
                                 backgroundColor: colors.blurprimary,
-                                marginVertical: 20,
+                                marginVertical: 10,
                             }}
                         />
                         <View style={styles.detailBooking}>
@@ -459,43 +463,49 @@ const DetailBooking = ({ navigate, route }) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    marginTop: 10,
-                                }}>
-                                <Icon5
-                                    name="car"
-                                    size={20}
-                                    color={colors.text}
-                                />
-                                <View style={{ marginLeft: 15 }}>
-                                    <Text
-                                        style={{
-                                            fontSize: 15,
-                                            color: colors.text,
-                                            fontWeight: 'bold',
-                                        }}>
-                                        {item?.id_vehicle?.name} -{' '}
-                                        {item?.id_vehicle?.brand}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: colors.text,
-                                            fontSize: 14,
-                                        }}>
-                                        {t('check-out')} {t('at')} :12:00 PM
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: colors.text,
-                                            fontSize: 14,
-                                        }}>
-                                        {t('price')} :{' '}
-                                        {formatPrice(item?.id_vehicle?.price)}
-                                    </Text>
+                            {item?.id_vehicle && (
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        marginTop: 10,
+                                    }}>
+                                    <Icon5
+                                        name="car"
+                                        size={20}
+                                        color={colors.text}
+                                    />
+                                    <View style={{ marginLeft: 15 }}>
+                                        <Text
+                                            style={{
+                                                fontSize: 15,
+                                                color: colors.text,
+                                                fontWeight: 'bold',
+                                            }}>
+                                            {item?.id_vehicle?.name} -{' '}
+                                            {item?.id_vehicle?.brand}
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                color: colors.text,
+                                                fontSize: 14,
+                                            }}>
+                                            {t('time')} :{' '}
+                                            {formatDate(item?.start_date)} -{' '}
+                                            {formatDate(item?.end_date)}
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                color: colors.text,
+                                                fontSize: 14,
+                                            }}>
+                                            {t('price')} :{' '}
+                                            {formatPrice(
+                                                item?.id_vehicle?.price,
+                                            )}
+                                        </Text>
+                                    </View>
                                 </View>
-                            </View>
+                            )}
                         </View>
                     </View>
                     <Modal
