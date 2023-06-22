@@ -44,6 +44,7 @@ const DetailBooking = ({ navigate, route }) => {
         const test = async () => {
             setLoading(true);
             await GetOrder(id_booking).then(res => {
+                console.log(res.data.data.id_vehicle);
                 const temp = hotels.filter(item => item.id === id_hotel);
                 setItem(res.data.data);
                 setHotel(temp[0]);
@@ -206,6 +207,10 @@ const DetailBooking = ({ navigate, route }) => {
             }
         });
         navigation.goBack();
+    };
+
+    const formatPrice = price => {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     };
 
     return (
@@ -452,6 +457,43 @@ const DetailBooking = ({ navigate, route }) => {
                                             Xem đường đi
                                         </Text>
                                     </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    marginTop: 10,
+                                }}>
+                                <Icon5
+                                    name="car"
+                                    size={20}
+                                    color={colors.text}
+                                />
+                                <View style={{ marginLeft: 15 }}>
+                                    <Text
+                                        style={{
+                                            fontSize: 15,
+                                            color: colors.text,
+                                            fontWeight: 'bold',
+                                        }}>
+                                        {item?.id_vehicle?.name} -{' '}
+                                        {item?.id_vehicle?.brand}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: colors.text,
+                                            fontSize: 14,
+                                        }}>
+                                        {t('check-out')} {t('at')} :12:00 PM
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: colors.text,
+                                            fontSize: 14,
+                                        }}>
+                                        {t('price')} :{' '}
+                                        {formatPrice(item?.id_vehicle?.price)}
+                                    </Text>
                                 </View>
                             </View>
                         </View>

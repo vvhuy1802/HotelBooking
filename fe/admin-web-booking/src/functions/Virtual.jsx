@@ -160,6 +160,37 @@ const handleAddVirtualData = async () => {
     1300000, 1442828, 800000, 900000, 1200000, 200000, 600000, 700000, 1000000,
     1500000, 1800000, 2500000, 3000000, 3500000, 4000000, 4500000, 5000000,
   ];
+  const vehicle = [
+    "648eba6990ad946982c827fb",
+    "648eba6990ad946982c827fd",
+    "648eba6a90ad946982c8280b",
+    "648eba6990ad946982c827f9",
+    "648eba7e90ad946982c82815",
+    "648eba7e90ad946982c8281b",
+    "648eba7f90ad946982c82827",
+    "648eba7e90ad946982c82817",
+    "648eba9590ad946982c82836",
+    "648eba9590ad946982c82834",
+    "648eba9590ad946982c82830",
+    "648eba9590ad946982c82832",
+    "648eba9590ad946982c82838",
+    "648eba9590ad946982c82844",
+    "648ebab390ad946982c8284d",
+    "648ebab390ad946982c8284f",
+    "648ebab390ad946982c82851",
+    "648ebab390ad946982c8284b",
+    "648ebab390ad946982c82853",
+    "648ebac690ad946982c82868",
+    "648ebac690ad946982c8286e",
+    "648ebac690ad946982c82866",
+    "648ebac690ad946982c8286c",
+    "648ebac690ad946982c8286a",
+    "648f2bcc0c83798ddafe6b74",
+    "648f2c180c83798ddafe6b79",
+    "648f2eb30c83798ddafe6b96",
+    "648f2f020c83798ddafe6b9b",
+    "648fbdc4c491c8c6bdf5ab2f",
+  ];
 
   function randomDate(startDate, endDate) {
     let start = startDate.getTime();
@@ -174,7 +205,7 @@ const handleAddVirtualData = async () => {
     return new Date(timestamp);
   }
 
-  for (let i = 0; i < 712; ) {
+  for (let i = 0; i < 2; ) {
     const r = Math.floor(Math.random() * data_room_hotel.length);
 
     let start = randomDate(new Date(2021, 0, 1), new Date(2023, 5, 22));
@@ -190,9 +221,12 @@ const handleAddVirtualData = async () => {
           Math.floor(Math.random() * data_room_hotel[r].id_room.length)
         ],
       id_hotel: data_room_hotel[r].id_hotel,
+      id_vehicle: vehicle[Math.floor(Math.random() * vehicle.length)],
       total: total[Math.floor(Math.random() * total.length)],
       check_in: start,
       check_out: end,
+      start_date: start,
+      end_date: end,
       status: "Completed",
       paymented: true,
     };
@@ -200,7 +234,6 @@ const handleAddVirtualData = async () => {
     await AddOrder(temp).then((res) => {
       if (res.status === 200) {
         i++;
-      } else {
       }
     });
   }

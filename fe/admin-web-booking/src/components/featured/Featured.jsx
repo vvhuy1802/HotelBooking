@@ -16,6 +16,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { setLocalStorage } from "../../functions/asyncStorageFunctions";
 import { setTargetMonth } from "../../redux/Slices/Global";
 
+import { handleAddVirtualData } from "../../functions/Virtual";
+
 const Featured = () => {
   const { totalOrder, typeMoney, targetThisMonth } = useSelector(
     (state) => state.global
@@ -167,7 +169,8 @@ const Featured = () => {
             className="icon"
             fontSize="small"
             onClick={() => {
-              handleShowPopup();
+              // handleShowPopup();
+              handleAddVirtualData();
             }}
           />
         </Tooltip>

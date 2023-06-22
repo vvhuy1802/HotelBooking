@@ -181,14 +181,14 @@ const GetOrderByDate = async (req, res) => {
 };
 
 const GetOrderHotelByDate = async (req, res) => {
-  const {id_hotel, start, end } = req.body;
+  const { id_hotel, start, end } = req.body;
   try {
     const start1 = new Date(start);
     const end1 = new Date(end);
     const startDate = new Date(start1.toISOString().split("T")[0]);
     const endDate = new Date(end1.toISOString().split("T")[0]);
     // find by id hotel
-    const orders = await Order.find({ id_hotel: id_hotel })
+    const orders = await Order.find({ id_hotel: id_hotel });
 
     const data = [];
 
@@ -211,9 +211,9 @@ const GetOrderHotelByDate = async (req, res) => {
 };
 
 const GetOrderHotelByQuarter = async (req, res) => {
-  const {id_hotel, quarter } = req.body;
+  const { id_hotel, quarter } = req.body;
   try {
-    const orders = await Order.find({ id_hotel: id_hotel })
+    const orders = await Order.find({ id_hotel: id_hotel });
     var monthNames =
       quarter === 1
         ? ["Jan", "Feb", "Mar"]
@@ -351,19 +351,19 @@ const GetOrderHotelByQuarter = async (req, res) => {
       const check_in1 = new Date(order.check_in);
       const check_inDate = new Date(check_in1.toISOString().split("T")[0]);
       if (check_inDate.getFullYear() == 2021) {
-        if (checkQuarter(check_inDate, quarter) ) {
+        if (checkQuarter(check_inDate, quarter)) {
           data[0].month[getindex(check_inDate.getMonth() + 1)].total +=
             order.total;
           data[0].totalQuarter += order.total;
         }
       } else if (check_inDate.getFullYear() == 2022) {
-        if (checkQuarter(check_inDate, quarter) ) {
+        if (checkQuarter(check_inDate, quarter)) {
           data[1].month[getindex(check_inDate.getMonth() + 1)].total +=
             order.total;
           data[1].totalQuarter += order.total;
         }
       } else if (check_inDate.getFullYear() == 2023) {
-        if (checkQuarter(check_inDate, quarter) ) {
+        if (checkQuarter(check_inDate, quarter)) {
           data[2].month[getindex(check_inDate.getMonth() + 1)].total +=
             order.total;
           data[2].totalQuarter += order.total;
@@ -376,7 +376,6 @@ const GetOrderHotelByQuarter = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 const GetOrderByQuarter = async (req, res) => {
   const { quarter } = req.body;
@@ -519,19 +518,19 @@ const GetOrderByQuarter = async (req, res) => {
       const check_in1 = new Date(order.check_in);
       const check_inDate = new Date(check_in1.toISOString().split("T")[0]);
       if (check_inDate.getFullYear() == 2021) {
-        if (checkQuarter(check_inDate, quarter) ) {
+        if (checkQuarter(check_inDate, quarter)) {
           data[0].month[getindex(check_inDate.getMonth() + 1)].total +=
             order.total;
           data[0].totalQuarter += order.total;
         }
       } else if (check_inDate.getFullYear() == 2022) {
-        if (checkQuarter(check_inDate, quarter) ) {
+        if (checkQuarter(check_inDate, quarter)) {
           data[1].month[getindex(check_inDate.getMonth() + 1)].total +=
             order.total;
           data[1].totalQuarter += order.total;
         }
       } else if (check_inDate.getFullYear() == 2023) {
-        if (checkQuarter(check_inDate, quarter) ) {
+        if (checkQuarter(check_inDate, quarter)) {
           data[2].month[getindex(check_inDate.getMonth() + 1)].total +=
             order.total;
           data[2].totalQuarter += order.total;
@@ -540,6 +539,22 @@ const GetOrderByQuarter = async (req, res) => {
     });
 
     return res.status(200).json({ success: true, data: data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const ClearAllOrder = async (req, res) => {
+  try {
+    const users = await User.find();
+    
+    users.forEach(async (user) => {
+      user.orders = [];
+      await user.save();
+    });
+    res
+      .status(200)
+      .json({ success: true, message: "Clear all order successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -558,5 +573,6 @@ module.exports = {
   GetOrderByDate,
   GetOrderByQuarter,
   GetOrderHotelByDate,
-  GetOrderHotelByQuarter
+  GetOrderHotelByQuarter,
+  ClearAllOrder,
 };

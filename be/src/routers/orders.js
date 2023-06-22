@@ -13,7 +13,8 @@ const {
   GetOrderByDate,
   GetOrderByQuarter,
   GetOrderHotelByQuarter,
-  GetOrderHotelByDate
+  GetOrderHotelByDate,
+  ClearAllOrder
 } = require("../controllers/orderController");
 
 const router = express.Router();
@@ -21,6 +22,7 @@ const router = express.Router();
 router.get("/getallorders", GetAllOrders);
 router.get("/hotel/:id_hotel", GetOrderByIdHotel);
 router.get("/user/:id", GetOrderByIdUser);
+router.get("/clearall", ClearAllOrder);
 router.get("/:id", GetOrderById);
 router.post("/getbyquarter", GetOrderByQuarter);
 router.post("/addneworder", AddNewOrder);
