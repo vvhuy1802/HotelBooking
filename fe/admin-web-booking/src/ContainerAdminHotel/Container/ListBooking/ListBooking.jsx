@@ -17,7 +17,8 @@ const ListBooking = () => {
       const data = await res.data.data.filter(
         (item) => item.id_hotel === userInfo.idHotel
       );
-      setData(data);
+      const recentOrders = data.sort((a, b) => new Date(b.check_in) - new Date(a.check_in))
+      setData(recentOrders );
       setIsLoading(false);
     }
   };

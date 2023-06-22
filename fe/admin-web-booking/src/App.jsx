@@ -46,6 +46,7 @@ import BookingDetail from "./ContainerAdminHotel/Container/ListBooking/BookingDe
 import ListVehicle from "./ContainerAdminHotel/Container/ListVehicle/ListVehicle";
 import AddNewVehicle from "./ContainerAdminHotel/Container/ListVehicle/AddNewVehicle/AddNewVehicle";
 import UpdateVehicle from "./ContainerAdminHotel/Container/ListVehicle/UpdateVehicle/UpdateVehicle";
+import RevenueHotel from "./ContainerAdminHotel/Container/Revenue/RevenueHotel";
 
 function App() {
   const dispatch = useDispatch();
@@ -143,6 +144,12 @@ function App() {
       }
       else if (currentpath.split("/")[1] === "listvehicle") {
         dispatch(setStateSidebar("Vehicles"));
+      }
+      else if (currentpath.split("/")[1] === "revenue") {
+        dispatch(setStateSidebar("Revenue"));
+      }
+      else if (currentpath.split("/")[1] === "chat") {
+        dispatch(setStateSidebar("Chats"));
       }
     }
   }, [location.pathname, userInfo.roll, dispatch]);
@@ -365,6 +372,7 @@ function App() {
                         }
                       />
                     </Route>
+                    
 
                     <Route path="listvehicle">
                       <Route
@@ -394,6 +402,15 @@ function App() {
                           ) : (
                             <Navigate to="/login" />
                           )
+                        }
+                      />
+                    </Route>
+
+                    <Route path="revenue">
+                      <Route
+                        index
+                        element={
+                          userInfo ? <RevenueHotel /> : <Navigate to="/login" />
                         }
                       />
                     </Route>

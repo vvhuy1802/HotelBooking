@@ -80,7 +80,6 @@ const AddNewRoom = ({ title, inputs }) => {
     setProgress(0);
     //listImage have id, img
     let listImageTemp = [...listImage];
-    console.log(listImageTemp[index]);
     for (let i = 0; i < file.length; i++) {
       const storageRef = ref(storage, `/${userInfo.idHotel}/${file[i].name}`);
       await uploadBytes(storageRef, file[i]).then(async(snapshot) => {
@@ -118,7 +117,6 @@ const AddNewRoom = ({ title, inputs }) => {
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
-      console.log(file);
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workBook = XLSX.read(data, { type: "array" });
@@ -156,7 +154,7 @@ const AddNewRoom = ({ title, inputs }) => {
         tag: [],
       };
       const res = await AddNewRoomInHotel(data);
-      if(res.status===200){
+      if(res.status===200&&index===dataExcelTemp.length-1){
         navigate("/listroom"); 
       }
     });
@@ -302,7 +300,6 @@ const AddNewRoom = ({ title, inputs }) => {
                         isMulti
                         value={item.utility}
                         onChange={(e) => {
-                          console.log(index);
                           const newItem = { ...item };
                           newItem.utility = e;
                           const newData = [...dataExcel];

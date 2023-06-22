@@ -18,6 +18,15 @@ const moneyAdapter = (money, type, req) => {
   return m.split(".")[1] === "00" ? m.split(".")[0] : m;
 };
 
+
+const formatDate = (date) => {
+  const newDate = new Date(date);
+  const day = newDate.getDate();
+  const month = newDate.getMonth() + 1;
+  const year = newDate.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 const paymentAdapter = (method) => {
   if (method === "payment-hotel") {
     return "At hotel";
@@ -28,4 +37,4 @@ const paymentAdapter = (method) => {
   } else return "Null";
 };
 
-export { moneyAdapter, paymentAdapter };
+export { moneyAdapter, paymentAdapter,formatDate };

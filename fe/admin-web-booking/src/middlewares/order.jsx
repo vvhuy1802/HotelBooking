@@ -12,6 +12,19 @@ export const AddOrder = async (data) => {
   return response;
 };
 
+export const GetOrderHotelByDate = async (data) => {
+  const path = `/orders/gethotelbydate`;
+  const response = await POST(path, data);
+  return response;
+};
+
+export const GetOrderHotelByQuarter = async (data) => {
+  const path = `/orders/gethotelbyquarter`;
+  const response = await POST(path, data);
+  return response;
+};
+
+
 export const GetOrderByDate = async (data) => {
   const path = `/orders/getbydate`;
   const response = await POST(path, data);

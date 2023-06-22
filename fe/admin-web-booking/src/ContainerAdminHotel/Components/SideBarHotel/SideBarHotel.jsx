@@ -1,18 +1,13 @@
 import React from "react";
 import "./sidebarhotel.scss";
 import { useSelector, useDispatch } from "react-redux";
-
-
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import KingBedOutlinedIcon from '@mui/icons-material/KingBedOutlined';
 import ViewListOutlinedIcon from "@mui/icons-material/ViewListOutlined";
 import TwoWheelerIcon from '@mui/icons-material/TwoWheeler';
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import { setStateSidebar, setUserInfo } from "../../../redux/Slices/Global";
 import { setLocalStorage } from "../../../functions/asyncStorageFunctions";
 import CustomLink from "../../../components/customlink/CustomLink";
@@ -98,8 +93,7 @@ const SideBarHotel = () => {
               <span>Chat</span>
             </li>
           </CustomLink>
-          <p className="title">ACCOUNT</p>
-          <li
+          {/* <li
             className={stateSidebar === "Profile" ? "onUse" : ""}
             onClick={() => {
               setActive("Profile");
@@ -107,7 +101,20 @@ const SideBarHotel = () => {
           >
             <AccountCircleOutlinedIcon className="icon" />
             <span>Profile</span>
-          </li>
+          </li> */}
+          <p className="title">REVENUE</p>
+          <CustomLink to="revenue">
+            <li
+              className={stateSidebar === "Revenue" ? "onUse" : ""}
+              onClick={() => {
+                setActive("Revenue");
+              }}
+            >
+              <BarChartIcon className="icon" />
+              <span>Revenue</span>
+            </li>
+          </CustomLink>
+          <p className="title">ACCOUNT</p>
           <li
             className={stateSidebar === "Log" ? "onUse" : ""}
             onClick={() => {

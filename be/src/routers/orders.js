@@ -11,7 +11,9 @@ const {
   UpdateReview,
   UpdateStatus,
   GetOrderByDate,
-  GetOrderByQuarter
+  GetOrderByQuarter,
+  GetOrderHotelByQuarter,
+  GetOrderHotelByDate
 } = require("../controllers/orderController");
 
 const router = express.Router();
@@ -23,6 +25,8 @@ router.get("/:id", GetOrderById);
 router.post("/getbyquarter", GetOrderByQuarter);
 router.post("/addneworder", AddNewOrder);
 router.post("/getbydate", GetOrderByDate);
+router.post("/gethotelbyquarter", GetOrderHotelByQuarter);
+router.post("/gethotelbydate", GetOrderHotelByDate);
 router.put("/update/:id", UpdateOrder);
 router.put("/reviewd/:id", UpdateReview);
 router.put("/status/:id", UpdateStatus);

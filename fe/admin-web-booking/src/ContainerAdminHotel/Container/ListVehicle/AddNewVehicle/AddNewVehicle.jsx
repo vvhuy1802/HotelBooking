@@ -17,6 +17,12 @@ import LoadingImage from "../../../Components/LoadingImage/LoadingImage";
 
 const AddNewVehicle = ({ title, inputs }) => {
   const navigate = useNavigate();
+  const field=[
+    'max_Power',
+    'Fuel',
+    'speed_4s',
+    'max_Speed'
+]
   const { userInfo } = useSelector((state) => state.global);
   const [formData, setFormData] = useState({});
   const [dataExcel, setDataExcel] = useState([]);
@@ -81,6 +87,7 @@ const AddNewVehicle = ({ title, inputs }) => {
     }
   };
 
+
   const handleImportExcel = () => {
     setListImage([]);
     const input = document.createElement("input");
@@ -98,15 +105,21 @@ const AddNewVehicle = ({ title, inputs }) => {
         const dataExcel = XLSX.utils.sheet_to_json(workSheet);
         //add field image
         let listImageTemp = [...listImage];
-        setDataExcel(dataExcel);
         dataExcel.forEach((item,index) => {
           let urlExcel = {
             id: index,
             img: [],
           };
           listImageTemp.push(urlExcel);
+          let selected = item.specification.split(", ");
+          let seleted=field.reduce((acc,cur)=>{
+            acc[cur]=selected[field.indexOf(cur)]
+            return acc;
+          }, {})
+          item.specification = seleted;
         });
         setListImage(listImageTemp);
+        setDataExcel(dataExcel);
       };
     };
     input.click();
@@ -122,7 +135,7 @@ const AddNewVehicle = ({ title, inputs }) => {
         image: listImageTemp[index].img,
       };
       const res = await AddNewVehicleInHotel(data);
-      if(res.status===200){
+      if(res.status===200&&index===dataExcelTemp.length-1){
         navigate("/listvehicle");
       }
     });
@@ -148,6 +161,7 @@ const AddNewVehicle = ({ title, inputs }) => {
     listImageTemp.splice(index, 1);
     setListImage(listImageTemp);
   };
+
 
   const handleDeleteImageExcel =async (img,indexDelete) => {
     const listImageTemp = [...listImage];
@@ -265,30 +279,54 @@ const AddNewVehicle = ({ title, inputs }) => {
                     <input
                     type={"text"}
                     id={"max_Power"}
-                    value={formData["specification"]&&formData["specification"]["max_Power"] || ""}
+                    value={item["specification"]&&item["specification"]["max_Power"] || ""}
                     placeholder={"Max Power"}
-                    onChange={handleChangeInput}
+                    onChange={(e) => {
+                      const newItem = { ...item };
+                      newItem.specification.max_Power = e.target.value;
+                      const newData = [...dataExcel];
+                      newData[index] = newItem;
+                      setDataExcel(newData);
+                    }}
                     />
                     <input
                     type={"text"}
                     id={"Fuel"}
-                    value={formData["specification"]&&formData["specification"]["Fuel"] || ""}
+                    value={item["specification"]&&item["specification"]["Fuel"] || ""}
                     placeholder={"Fuel"}
-                    onChange={handleChangeInput}
+                    onChange={(e) => {
+                      const newItem = { ...item };
+                      newItem.specification.Fuel = e.target.value;
+                      const newData = [...dataExcel];
+                      newData[index] = newItem;
+                      setDataExcel(newData);
+                    }}
                     />
                     <input
                     type={"text"}
                     id={"speed_4s"}
-                    value={formData["specification"]&&formData["specification"]["speed_4s"] || ""}
+                    value={item["specification"]&&item["specification"]["speed_4s"] || ""}
                     placeholder={"Speed 4s"}
-                    onChange={handleChangeInput}
+                    onChange={(e) => {
+                      const newItem = { ...item };
+                      newItem.specification.speed_4s = e.target.value;
+                      const newData = [...dataExcel];
+                      newData[index] = newItem;
+                      setDataExcel(newData);
+                    }}
                     />
                     <input
                     type={"text"}
                     id={"max_Speed"}
-                    value={formData["specification"]&&formData["specification"]["max_Speed"] || ""}
+                    value={item["specification"]&&item["specification"]["max_Speed"] || ""}
                     placeholder={"Max Speed"}
-                    onChange={handleChangeInput}
+                    onChange={(e) => {
+                      const newItem = { ...item };
+                      newItem.specification.max_Speed = e.target.value;
+                      const newData = [...dataExcel];
+                      newData[index] = newItem;
+                      setDataExcel(newData);
+                    }}
                     />
                   </div>
                     </form>

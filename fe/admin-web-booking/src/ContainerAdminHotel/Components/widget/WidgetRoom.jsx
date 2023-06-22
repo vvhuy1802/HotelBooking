@@ -3,15 +3,16 @@ import "./widgetroom.scss";
 
 import { useDispatch } from "react-redux";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { useSelector } from "react-redux";
 import CustomLink from "../../../components/customlink/CustomLink";
 import { setStateSidebar } from "../../../redux/Slices/Global";
 import BarChartIcon from '@mui/icons-material/BarChart';
+import { moneyAdapter } from "../../../functions/Adapter";
 const WidgetRoom = ({ type }) => {
+  const { typeMoney} = useSelector(
+    (state) => state.global
+  );
   const {order,totalOrder}=useSelector(state=>state.order)
   const dispatch = useDispatch();
   let data;
@@ -45,7 +46,7 @@ const WidgetRoom = ({ type }) => {
       data = {
         title: "Revenue",
         isMoney: false,
-        amount: totalOrder,
+        amount:moneyAdapter(totalOrder, typeMoney),
         link: "View revenue details",
         icon: (
           <BarChartIcon

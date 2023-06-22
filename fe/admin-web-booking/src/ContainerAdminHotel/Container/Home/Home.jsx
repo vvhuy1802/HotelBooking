@@ -4,13 +4,13 @@ import "./Home.scss";
 import { useDispatch, useSelector } from "react-redux";
 import RoomTable from "../../Components/table/RoomTable";
 import WidgetRoom from "../../Components/widget/WidgetRoom";
-import Featured from "../../../components/featured/Featured";
 import Chart from "../../../components/chart/Chart";
 import { useEffect, useState } from "react";
 import {  GetAllOrders } from "./apiHome";
 
 import { setOrder, setTotalBooking } from "../../../redux/Slices/OrderReducer";
 import Loading from "../../Components/Loading/Loading";
+import HotelFeatured from "../../Components/Featured/HotelFeatured";
 const HomeHotel = () => {
   const [data, setData] = useState([]);
   const dispatch = useDispatch();
@@ -23,6 +23,7 @@ const HomeHotel = () => {
       const data = res.data.data.filter(
         (item) => item.id_hotel === userInfo.idHotel
       );
+      const recentOrders = data.sort((a, b) => new Date(b.check_in) - new Date(a.check_in)).slice(0, 5);
       let total = 0;
       await data.map((item) => {
         if (item.status !== "Cancelled"){
@@ -31,7 +32,7 @@ const HomeHotel = () => {
       });
       dispatch(setTotalBooking(total));
       dispatch(setOrder(data));
-      setData(data);
+      setData(recentOrders);
       setIsLoading(false);
     }
   };
@@ -50,7 +51,7 @@ const HomeHotel = () => {
           <WidgetRoom type="revenue" />
         </div>
         <div className="charts">
-          <Featured />
+          <HotelFeatured />
           <Chart
             dataChart={data}
             height={360}
