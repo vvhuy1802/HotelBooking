@@ -13,6 +13,7 @@ import { UpdateInfoAdmin } from "../../middlewares/admin";
 import { setAnnouncementAuto, setTotalAdmin } from "../../redux/Slices/Global";
 import { GetImageUrl } from "../../functions/Global";
 import CustomLink from "../../components/customlink/CustomLink";
+import Tooltip from "@mui/material/Tooltip";
 
 import Chart from "../../components/chart/Chart";
 import ListTable from "../../components/table/Table";
@@ -40,6 +41,7 @@ const Single = ({ inputs }) => {
   const dispatch = useDispatch();
   const { typeMoney, totalAdmin } = useSelector((state) => state.global);
 
+  const [isShow, setIsShow] = useState(true);
   const [user, setUser] = useState({});
   const [admin, setAdmin] = useState({});
   const [hotel, setHotel] = useState({});
@@ -107,9 +109,13 @@ const Single = ({ inputs }) => {
       GetOrderByID(currentPath.split("/")[2]).then((res) => {
         console.log(res.data.data);
         if (res.status === 200) {
+          if (res.data.data.id_vehicle === undefined) {
+            setIsShow(false);
+          }
           setBooking({
             user: res.data.data.id_user,
             room: res.data.data.id_room,
+            vehicle: res.data.data.id_vehicle,
             order: res.data.data,
           });
         }
@@ -123,6 +129,14 @@ const Single = ({ inputs }) => {
       total += order.total;
     });
     return moneyAdapter(total, typeMoney);
+  };
+
+  const formatDescription = (description) => {
+    if (description.length > 60) {
+      return description.slice(0, 60) + "...";
+    } else {
+      return description;
+    }
   };
 
   const handleOpenImage = (img) => {
@@ -605,7 +619,7 @@ const Single = ({ inputs }) => {
                     </div>
                   </div>
                 </div>
-              )} 
+              )}
               <div className="right">
                 <p>
                   <span>Informations</span>
@@ -656,7 +670,7 @@ const Single = ({ inputs }) => {
                   ) : (
                     <Skeleton variant="circular" className="itemImg" />
                   )}
-                  <div className="details">
+                  <div className="detailss">
                     {booking?.user?.email ? (
                       <CustomLink to={`/user/${booking?.user?._id}`}>
                         <h1 className="itemTitle">{booking?.user?.name}</h1>
@@ -711,7 +725,8 @@ const Single = ({ inputs }) => {
                         <div className="detailItem">
                           <span className="itemKey">Description:</span>
                           <span className="itemValue">
-                            {booking?.room?.description || "null"}
+                            {formatDescription(booking?.room?.description) ||
+                              "null"}
                           </span>
                         </div>
                       ) : (
@@ -743,41 +758,125 @@ const Single = ({ inputs }) => {
               <div className="listContainer">
                 <div className="listTitle">Order</div>
                 <div className="detailOrder">
-                  <div className="detailItem">
-                    <span className="itemKey">Check In:</span>
-                    <span className="itemValue">
-                      {formatDate(booking?.order?.check_in)}
-                    </span>
-                  </div>
-                  <div className="detailItem">
-                    <span className="itemKey">Check Out:</span>
-                    <span className="itemValue">
-                      {formatDate(booking?.order?.check_out)}
-                    </span>
-                  </div>
-                  <div className="detailItem">
-                    <span className="itemKey">Total:</span>
-                    <span className="itemValue">
-                      {moneyAdapter(booking?.order?.total, typeMoney)}
-                    </span>
-                  </div>
-                  <div className="detailItem">
-                    <span className="itemKey">Status:</span>
-                    <span className={`itemValue ${booking?.order?.status}`}>
-                      {booking?.order?.status}
-                    </span>
-                  </div>
-                  <div className="detailItem">
-                    <span className="itemKey">Payment Method:</span>
-                    <span className="itemValue">
-                      {paymentAdapter(booking?.order?.payment_method)}
-                    </span>
-                  </div>
-                  <div className="detailItem">
-                    <span className="itemKey">Payment:</span>
-                    <span className="itemValue">
-                      {booking?.order?.paymented ? "Paid" : "Not Paid"}
-                    </span>
+                  {isShow ? (
+                    <Tooltip
+                      title={
+                        <div className="customToolTip">
+                          <div className="item">
+                            {" "}
+                            Fuel: ${booking?.vehicle?.specification[0]?.Fuel}
+                          </div>
+                          <div className="item">
+                            {" "}
+                            Power: $
+                            {booking?.vehicle?.specification[0]?.max_Power}
+                          </div>
+                          <div className="item">
+                            {" "}
+                            Speed: $
+                            {booking?.vehicle?.specification[0]?.max_Speed}
+                          </div>
+                          <div className="item">
+                            {" "}
+                            Speed 4s: $
+                            {booking?.vehicle?.specification[0]?.speed_4s}
+                          </div>
+                        </div>
+                      }
+                      followCursor={true}
+                      placement="right"
+                    >
+                      <div className="vehicle">
+                        {booking?.vehicle?.name ? (
+                          <img
+                            src={booking?.vehicle?.image[0]}
+                            alt=""
+                            className="vehicleImg"
+                          />
+                        ) : (
+                          <Skeleton variant="circular" className="vehicleImg" />
+                        )}
+                        <div className="infoVehicle">
+                          {booking?.vehicle?.name ? (
+                            <h1 className="itemTitle">
+                              {booking?.vehicle?.name}
+                            </h1>
+                          ) : (
+                            <Skeleton
+                              variant="text"
+                              className="skeletonText dif"
+                            />
+                          )}
+                          {booking?.vehicle?.brand ? (
+                            <div className="detailItem">
+                              <span className="itemKey">Brand:</span>
+                              <span className="itemValue">
+                                {booking?.vehicle?.brand || "null"}
+                              </span>
+                            </div>
+                          ) : (
+                            <Skeleton
+                              variant="text"
+                              className="skeletonText dif"
+                            />
+                          )}
+                          {booking?.vehicle?.price ? (
+                            <div className="detailItem">
+                              <span className="itemKey">Price:</span>
+                              <span className="itemValue">
+                                {booking?.vehicle?.price || "null"}
+                              </span>
+                            </div>
+                          ) : (
+                            <Skeleton
+                              variant="text"
+                              className="skeletonText dif"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </Tooltip>
+                  ) : (
+                    <></>
+                  )}
+
+                  <div className="info">
+                    <div className="detailItem">
+                      <span className="itemKey">Check In:</span>
+                      <span className="itemValue">
+                        {formatDate(booking?.order?.check_in)}
+                      </span>
+                    </div>
+                    <div className="detailItem">
+                      <span className="itemKey">Check Out:</span>
+                      <span className="itemValue">
+                        {formatDate(booking?.order?.check_out)}
+                      </span>
+                    </div>
+                    <div className="detailItem">
+                      <span className="itemKey">Total:</span>
+                      <span className="itemValue">
+                        {moneyAdapter(booking?.order?.total, typeMoney)}
+                      </span>
+                    </div>
+                    <div className="detailItem">
+                      <span className="itemKey">Status:</span>
+                      <span className={`itemValue ${booking?.order?.status}`}>
+                        {booking?.order?.status}
+                      </span>
+                    </div>
+                    <div className="detailItem">
+                      <span className="itemKey">Payment Method:</span>
+                      <span className="itemValue">
+                        {paymentAdapter(booking?.order?.payment_method)}
+                      </span>
+                    </div>
+                    <div className="detailItem">
+                      <span className="itemKey">Payment:</span>
+                      <span className="itemValue">
+                        {booking?.order?.paymented ? "Paid" : "Not Paid"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
