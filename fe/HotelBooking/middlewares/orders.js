@@ -58,7 +58,10 @@ export const AddNewOrder = async dataOrder => {
   const {
     id_user,
     id_hotel,
+    id_vehicle,
     id_room,
+    start_date,
+    end_date,
     check_in,
     check_out,
     total,
@@ -73,7 +76,10 @@ export const AddNewOrder = async dataOrder => {
       body: JSON.stringify({
         id_user,
         id_hotel,
+        id_vehicle,
         id_room,
+        start_date,
+        end_date,
         check_in,
         check_out,
         total,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { GetAllOrders } from "../apiListBooking";
+import { GetAllOrders, SendNotification } from "../apiListBooking";
 import Skeleton from "@mui/material/Skeleton";
 import avatar from "../../../../assets/avatar.jpg";
 import { OrderInputs } from "../../../Components/Input/InputOrder";
@@ -21,17 +21,52 @@ const BookingDetail = () => {
       setIsLoading(false);
     }
   };
+// {
+//   "token": "cu6j7fwwTl-9vIFgdnhQLz:APA91bG0TPPq5ynKv4jF5p5zexw4-rWTXVgHd-c3p0Nf2UUCGjhSzQpbRd0MsvLcDO92sUiw-cblYhf88gnpFHRnZmL1BaGxNlVFr2nInYe8ANb4rfP31niKP0_pBmjkpmEhhmjwuHHv",
+//   "title": "Thông báo",
+//   "body": "Bạn đã đặt phòng thành công huy",
+//   "data": {
+//       "type": "booking",
+//       "id_user":"640aca4c8df7f8a1209eebc4",
+//       "id_booking":"646cd8fbbe03ac27ed28c617",
+//       "id_hotel":"raondalat"
+//   }
+// }
 
   const ConfirmBooking = async () => {
+      const dataNoti = {
+        token:data[0]?.id_user?.tokenNotification,
+        title:"Thông báo",
+        body:"Đơn đặt phòng của bạn đã được xác nhận",
+        data:{
+          type:"booking",
+          id_user:data[0]?.id_user?._id,
+          id_booking:data[0]?._id,
+          id_hotel:data[0]?.id_hotel
+        }
+      }
       const res = await updateStatusInOrder(bookingId,"Completed");
       if (res.status===200){
+        const resNoti = await SendNotification(dataNoti);
         navigate("/listbooking")
       }
   }
 
   const CancelBooking = async () => {
+    const dataNoti = {
+      token:data[0]?.tokenNotification,
+      title:"Thông báo",
+      body:"Đơn đặt phòng của bạn đã bị hủy. Xin vui lòng đặt lại phòng khác",
+      data:{
+        type:"booking",
+        id_user:data[0]?.id_user?._id,
+        id_booking:data[0]?._id,
+        id_hotel:data[0]?.id_hotel
+      }
+    }
       const res = await updateStatusInOrder(bookingId,"Cancelled");
       if(res.status===200){
+        const resNoti = await SendNotification(dataNoti);
         navigate("/listbooking")
       }
     }
@@ -118,10 +153,10 @@ const BookingDetail = () => {
                     </div>
                   ))}
                   {data[0]?.status==="Pending" && 
-                  <button onClick={ConfirmBooking} className="buttonSave">Confirm</button>
+                  <button onClick={(event) => { event.preventDefault(); ConfirmBooking(); }} className="buttonSave">Confirm</button>
                   }
                   {data[0]?.status==="Pending" && 
-                  <button onClick={CancelBooking} className="buttonCancel">Cancel</button>
+                  <button onClick={(event) => { event.preventDefault(); CancelBooking(); }} className="buttonCancel">Cancel</button>
                   }
                 </form>
               </div>

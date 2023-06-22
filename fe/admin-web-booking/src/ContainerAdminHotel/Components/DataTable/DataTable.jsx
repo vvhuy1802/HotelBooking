@@ -322,6 +322,18 @@ const DataTable = (props) => {
     setReload(true);
   };
 
+  // {
+//   "token": "cu6j7fwwTl-9vIFgdnhQLz:APA91bG0TPPq5ynKv4jF5p5zexw4-rWTXVgHd-c3p0Nf2UUCGjhSzQpbRd0MsvLcDO92sUiw-cblYhf88gnpFHRnZmL1BaGxNlVFr2nInYe8ANb4rfP31niKP0_pBmjkpmEhhmjwuHHv",
+//   "title": "Thông báo",
+//   "body": "Bạn đã đặt phòng thành công huy",
+//   "data": {
+//       "type": "booking",
+//       "id_user":"640aca4c8df7f8a1209eebc4",
+//       "id_booking":"646cd8fbbe03ac27ed28c617",
+//       "id_hotel":"raondalat"
+//   }
+// }
+
   const ConfirmBooking = async () => {
     for (let i = 0; i < selectionModel.length; i++) {
       const res = await updateStatusInOrder(selectionModel[i],"Completed");

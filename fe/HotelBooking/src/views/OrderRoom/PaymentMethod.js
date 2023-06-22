@@ -5,7 +5,7 @@ import {useTheme} from 'react-native-paper';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import {setPaymentMethod} from '../../../redux/Globalreducer';
+import { setPaymentMethod } from '../../../redux/VehicleReducer';
 const PaymentMethod = ({navigation}) => {
   const {colors} = useTheme();
   const {t} = useTranslation();
@@ -34,7 +34,7 @@ const PaymentMethod = ({navigation}) => {
     },
   ];
   const [selected, setSelected] = useState();
-  const {payment_method} = useSelector(state => state.global);
+  const {payment_method} = useSelector(state => state.VehicleReducer);
 
   const handleConfirm = () => {
     dispatch(setPaymentMethod(selected));

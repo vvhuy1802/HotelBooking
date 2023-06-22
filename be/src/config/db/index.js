@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", true);
 const config = process.env;
+const Order=require("../../models/order");
 
 async function connect() {
   var checkIndex = false;
@@ -19,6 +20,13 @@ async function connect() {
         setTimeout(connect, 5000);
       });
     if (checkIndex) {
+      // Order.updateMany({}, { $set: { start_date: "", end_date: "" } })
+      // .then((result) => {
+      //   console.log(result.nModified + ' records updated');
+      // })
+      // .catch((error) => {
+      //   console.error('Failed to update records', error);
+      // });
       const collection = mongoose.connection.collection("admins");
       collection.dropIndex("adminks", function (err, result) {
         if (err) {
