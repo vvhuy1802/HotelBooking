@@ -13,7 +13,7 @@ import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
-import { LOCAL_API_URL } from '../../../api';
+import { LOCAL_API_URL } from '../../api';
 import { RecieveMessage, SendMessage } from '../../../middlewares/chat';
 import CustomHeader from '../CustomHeader';
 import MsgComponent from './MsgComponent';

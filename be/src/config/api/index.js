@@ -85,7 +85,7 @@ async function UpdateAPI_URL() {
     });
 
     UpdateAPI_URL("../fe/HotelBooking/api.js");
-    UpdateAPI_URL("../fe/admin-web-booking/src/api.js");
+    UpdateAPI_URL("../fe/admin-web-booking/src/api/index.js");
   }
   return ipv4;
 }

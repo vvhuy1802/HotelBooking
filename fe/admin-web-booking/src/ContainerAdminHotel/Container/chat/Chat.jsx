@@ -13,7 +13,7 @@ import {
 } from "../../middlewares/message";
 import { GetSingleUser } from "../../middlewares/user";
 import avatar from "../../assets/avatar.jpg";
-import { LOCAL_API_URL } from "../../api";
+import { LOCAL_API_URL } from "../../../api";
 import { io } from "socket.io-client";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";

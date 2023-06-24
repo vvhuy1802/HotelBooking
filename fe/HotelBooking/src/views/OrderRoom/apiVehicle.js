@@ -1,4 +1,4 @@
-import {LOCAL_API_URL} from '../../../api';
+import {LOCAL_API_URL} from '../../api';
 
 export const GetAllVehicle = async() => {
   const API = `${LOCAL_API_URL}/vehicle/getallvehicles`;
