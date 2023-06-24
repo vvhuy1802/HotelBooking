@@ -31,8 +31,8 @@ async function StartApp() {
   router(app);
 
   //get ipv4 and update at be and fe
-  const api = require("./src/config/api");
-  const ipv4 = await api.UpdateAPI_URL();
+  // const api = require("./src/config/api");
+  // const ipv4 = await api.UpdateAPI_URL();
 
   const server = app.listen(config.PORT, ipv4, () => {
     console.log(`Server started at http://${ipv4}:${config.PORT}`);

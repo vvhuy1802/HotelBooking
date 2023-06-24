@@ -1,1 +1,1 @@
-export const LOCAL_API_URL ='http://172.19.192.1:6996'
+export const LOCAL_API_URL = "https://hotelbe.abcdavid.top:443";
