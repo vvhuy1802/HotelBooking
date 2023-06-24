@@ -40,7 +40,7 @@ async function StartApp() {
 
   const io = socket(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: "http://localhost:7102",
       methods: "GET,POST,PUT,DELETE",
       credentials: true,
     },
