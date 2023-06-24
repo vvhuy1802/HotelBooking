@@ -20,7 +20,7 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(errorMiddleware)
+app.use(errorMiddleware);
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   next();
@@ -34,8 +34,8 @@ async function StartApp() {
   // const api = require("./src/config/api");
   // const ipv4 = await api.UpdateAPI_URL();
 
-  const server = app.listen(config.PORT, ipv4, () => {
-    console.log(`Server started at http://${ipv4}:${config.PORT}`);
+  const server = app.listen(config.PORT, () => {
+    console.log(`Server is running on port ${config.PORT}`);
   });
 
   const io = socket(server, {
